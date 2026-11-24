@@ -8,7 +8,6 @@
   :root{
     --bg:#eef2f7; --panel:#fff; --ink:#16233b; --muted:#6b7a90;
     --line:#e3e9f2; --navy:#12315c; --accent:#2f6fd0;
-    --up:#d92d20; --down:#12805c;
     --shadow:0 2px 10px rgba(20,40,80,.06),0 8px 28px rgba(20,40,80,.05);
   }
   *{box-sizing:border-box}
@@ -56,27 +55,6 @@
     color:var(--muted);font-size:13px;background:#fff;z-index:1}
   .pane.loaded .loader{display:none}
 
-  /* 港股通表格页（无本地原件，用数据表格呈现） */
-  .sheet{height:100%;overflow:auto;padding:20px 24px}
-  .card{background:var(--panel);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
-  .card-h{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-  .card-h h2{font-size:17px;margin:0;font-weight:800;color:var(--navy)}
-  .card-h .hint{font-size:12px;color:var(--muted);margin-left:auto}
-  .lead{background:linear-gradient(180deg,#f7faff,#fff);border-left:4px solid var(--accent);
-    border-radius:8px;padding:12px 16px;color:#334155;font-size:13.5px;margin-bottom:16px}
-  .lead b{color:var(--navy)}
-  .tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--line)}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
-  th{background:#f4f7fb;color:var(--navy);font-weight:700;font-size:12px;white-space:nowrap}
-  tbody tr:hover{background:#fafcff}
-  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:600}
-  .pill.up{background:#fdecea;color:var(--up)}
-  .pill.down{background:#e7f5ef;color:var(--down)}
-  .note{font-size:12px;color:var(--muted);margin-top:10px}
-  .note a{color:var(--accent);text-decoration:none}
-
   @media(max-width:700px){
     .meta{display:none}
     h1{font-size:16px}
@@ -96,52 +74,24 @@
         <p class="subtitle">原始看板原样呈现 · 点击顶部标签切换</p>
       </div>
       <div class="meta">
-        <span class="chip">来源 · <b>ima 知识库 / 南方国际看板</b></span>
-        <span class="chip">看板 · <b>5</b></span>
-        <span class="chip">更新 · <b>2026-11-24</b></span>
+        <span class="chip">来源 · <b>资料库 / 南方国际看板源文件</b></span>
+        <span class="chip">看板 · <b>3</b></span>
+
       </div>
     </div>
   </div>
 </div>
 
 <div class="tabbar" role="tablist">
-  <button class="tab active" data-target="t1" role="tab">恒生科技主线<small>销售版 08-14</small></button>
-  <button class="tab" data-target="t5" role="tab">恒科扩容至50只<small>09-30 · 新增</small></button>
-  <button class="tab" data-target="t2" role="tab">汇丰渣打·股价与宏观<small>09-11</small></button>
-  <button class="tab" data-target="t3" role="tab">费城半导体主线<small>桌面版 08-11</small></button>
-  <button class="tab" data-target="t4" role="tab">港股通标的调整<small>上交所 11-20</small></button>
+  <button class="tab active" data-target="t1" role="tab">恒生科技主线<small>销售版 2026-08-14</small></button>
+  <button class="tab" data-target="t2" role="tab">汇丰渣打<small>股价与宏观周期看板</small></button>
+  <button class="tab" data-target="t3" role="tab">费城半导体主线<small>桌面版 2026-08-11</small></button>
 </div>
 
 <div class="stage">
-  <div class="pane active loaded" id="t1" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hengtai.html" title="恒生科技主线看板"></iframe></div>
-  <div class="pane" id="t5" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/expand.html" title="恒科扩容至50只预测"></iframe></div>
-  <div class="pane" id="t2" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打看板"></iframe></div>
-  <div class="pane" id="t3" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/sox.html" title="费城半导体看板"></iframe></div>
-  <div class="pane" id="t4" role="tabpanel">
-    <div class="sheet">
-      <div class="card">
-        <div class="card-h"><h2>港股通标的证券调整信息</h2><span class="hint">上海证券交易所 · 更新日期 2026-11-20</span></div>
-        <div class="lead">港股通标的证券调整一览，含证券代码、简称、品种、调整内容与生效日期。<b>实际以交易所公告披露为准。</b></div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th class="num">序号</th><th>证券代码</th><th>英文简称</th><th>中文简称（参考）</th><th>品种</th><th>调整内容</th><th>生效日期</th></tr></thead>
-          <tbody>
-            <tr><td class="num">1</td><td>01440</td><td>STAR SHINE HLDG</td><td>应星控股</td><td>—</td><td><span class="pill down">调出</span></td><td>2026-11-23</td></tr>
-            <tr><td class="num">2</td><td>02384</td><td>DSBJ</td><td>东山精密</td><td>股票</td><td><span class="pill up">调进</span></td><td>2026-11-23</td></tr>
-            <tr><td class="num">3</td><td>02947</td><td>DEEPZERO-OLD</td><td>深演智能（旧）</td><td>—</td><td><span class="pill down">调出</span></td><td>2026-11-23</td></tr>
-            <tr><td class="num">4</td><td>02963</td><td>STAR SHINE HLDG</td><td>应星控股</td><td>股票</td><td><span class="pill up">调进</span></td><td>2026-11-23</td></tr>
-            <tr><td class="num">5</td><td>02636</td><td>TRANSSION</td><td>传音控股</td><td>股票</td><td><span class="pill up">调进</span></td><td>2026-11-12</td></tr>
-            <tr><td class="num">6</td><td>02805</td><td>CG BS CNASEAN</td><td>银河博时东盟</td><td>ETF</td><td><span class="pill up">调进</span></td><td>2026-11-09</td></tr>
-            <tr><td class="num">7</td><td>03031</td><td>FG HS HIGHDIV</td><td>ＦＧ恒生红利</td><td>ETF</td><td><span class="pill up">调进</span></td><td>2026-11-09</td></tr>
-            <tr><td class="num">8</td><td>03140</td><td>CAM HKUS AI</td><td>华夏港美ＡＩ</td><td>ETF</td><td><span class="pill up">调进</span></td><td>2026-11-09</td></tr>
-            <tr><td class="num">9</td><td>03169</td><td>HGI TECH 50</td><td>嘉实科技５０</td><td>ETF</td><td><span class="pill up">调进</span></td><td>2026-11-09</td></tr>
-            <tr><td class="num">10</td><td>03190</td><td>FB SSH HIGH DIV</td><td>富邦沪深港高股息</td><td>ETF</td><td><span class="pill up">调进</span></td><td>2026-11-09</td></tr>
-          </tbody>
-        </table></div>
-        <div class="note">共 10 条调整：调进 8 条（股票 3、ETF 5）、调出 2 条。应星控股同日「旧代码调出 / 新代码调进」，属代码切换。</div>
-        <div class="note">原始来源：<a href="https://query.sse.com.cn/commonExcelDd.do?sqlId=COMMON_SSE_JYFW_HGT_XXPL_BDZQTZXX_L" target="_blank" rel="noopener">上交所 · 港股通标的证券调整信息</a>（知识库收录版本，更新至 2026-11-20）。本页为文字表格版；其余 4 个看板为原始 HTML 文件原样呈现。</div>
-      </div>
-    </div>
-  </div>
+  <div class="pane active loaded" id="t1" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hengtai.html" title="恒生科技主线"></iframe></div>
+  <div class="pane" id="t2" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打"></iframe></div>
+  <div class="pane" id="t3" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/sox.html" title="费城半导体主线"></iframe></div>
 </div>
 
 <script>
