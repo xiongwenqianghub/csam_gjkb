@@ -6,166 +6,82 @@
 <title>南方国际看板</title>
 <style>
   :root{
-    --bg:#eef2f7;
-    --panel:#ffffff;
-    --ink:#16233b;
-    --ink-2:#334155;
-    --muted:#6b7a90;
-    --line:#e3e9f2;
-    --navy:#12315c;
-    --navy-2:#1b4b8f;
-    --accent:#2f6fd0;
-    --up:#d92d20;      /* 涨：红 */
-    --up-bg:#fdecea;
-    --down:#12805c;    /* 跌：绿 */
-    --down-bg:#e7f5ef;
-    --warn:#b25e09;
-    --warn-bg:#fdf1e3;
+    --bg:#eef2f7; --panel:#fff; --ink:#16233b; --muted:#6b7a90;
+    --line:#e3e9f2; --navy:#12315c; --accent:#2f6fd0;
+    --up:#d92d20; --down:#12805c;
     --shadow:0 2px 10px rgba(20,40,80,.06),0 8px 28px rgba(20,40,80,.05);
-    --radius:14px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
+  html,body{margin:0;padding:0;height:100%}
   body{
     font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
+    background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;height:100vh;overflow:hidden;
   }
   .topbar{
-    background:linear-gradient(135deg,#0f2c54 0%,#1b4b8f 100%);
-    color:#fff;
-    padding:30px 20px 74px;
-    position:relative;
-    overflow:hidden;
+    background:linear-gradient(135deg,#0f2c54 0%,#1b4b8f 100%);color:#fff;
+    padding:14px 20px 12px;flex:none;
   }
-  .topbar::after{
-    content:"";position:absolute;right:-60px;top:-80px;width:320px;height:320px;
-    background:radial-gradient(circle,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 70%);
-  }
-  .wrap{max-width:1180px;margin:0 auto}
-  .brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .wrap{max-width:1600px;width:100%;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .logo{
-    width:46px;height:46px;border-radius:12px;flex:none;
-    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
-    display:flex;align-items:center;justify-content:center;
-    font-size:22px;font-weight:800;letter-spacing:-1px;
+    width:38px;height:38px;border-radius:10px;flex:none;background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;
+    font-size:19px;font-weight:800;
   }
-  h1{font-size:26px;margin:0;font-weight:800;letter-spacing:.5px}
-  .subtitle{margin:6px 0 0;font-size:13.5px;color:#c9daf3}
-  .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-  .chip{
-    font-size:12px;padding:5px 12px;border-radius:999px;
-    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#eaf2ff;
-  }
+  h1{font-size:19px;margin:0;font-weight:800;letter-spacing:.5px}
+  .subtitle{margin:2px 0 0;font-size:11.5px;color:#c9daf3}
+  .meta{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:11px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.18);color:#eaf2ff}
   .chip b{color:#fff}
 
-  .tabbar-wrap{margin-top:-46px;position:relative;z-index:5}
-  .tabbar{
-    background:var(--panel);border-radius:var(--radius);
-    box-shadow:var(--shadow);padding:8px;display:flex;gap:6px;overflow-x:auto;
-  }
+  .tabbar{flex:none;background:var(--panel);border-bottom:1px solid var(--line);
+    padding:0 12px;display:flex;gap:4px;overflow-x:auto;box-shadow:0 2px 8px rgba(20,40,80,.04)}
   .tab{
-    flex:1 0 auto;min-width:170px;cursor:pointer;user-select:none;
-    border:none;background:transparent;font:inherit;font-size:14px;font-weight:600;
-    color:var(--muted);padding:13px 16px;border-radius:10px;text-align:center;
-    transition:.18s;white-space:nowrap;
+    flex:0 0 auto;cursor:pointer;user-select:none;border:none;background:transparent;font:inherit;
+    font-size:13px;font-weight:600;color:var(--muted);padding:12px 16px;white-space:nowrap;
+    border-bottom:3px solid transparent;transition:.15s;
   }
-  .tab small{display:block;font-size:11px;font-weight:400;color:#9aa8bc;margin-top:2px}
-  .tab:hover{background:#f4f7fb;color:var(--ink-2)}
-  .tab.active{background:linear-gradient(135deg,#1b4b8f,#2f6fd0);color:#fff;box-shadow:0 6px 16px rgba(47,111,208,.28)}
-  .tab.active small{color:#d7e6ff}
+  .tab small{font-size:10.5px;font-weight:400;color:#9aa8bc;margin-left:6px}
+  .tab:hover{color:var(--ink);background:#f7f9fc}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab.active small{color:#7b93b8}
 
-  main{padding:24px 0 8px}
-  .panel{display:none;animation:fade .35s ease}
-  .panel.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .stage{flex:1;position:relative;min-height:0}
+  .pane{display:none;position:absolute;inset:0;background:#fff}
+  .pane.active{display:block}
+  iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+  .loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-size:13px;background:#fff;z-index:1}
+  .pane.loaded .loader{display:none}
 
-  .card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
-  .card.tight{padding:18px 22px}
-  .card-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  /* 港股通表格页（无本地原件，用数据表格呈现） */
+  .sheet{height:100%;overflow:auto;padding:20px 24px}
+  .card{background:var(--panel);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+  .card-h{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
   .card-h h2{font-size:17px;margin:0;font-weight:800;color:var(--navy)}
-  .card-h .idx{font-size:12px;color:#fff;background:var(--navy-2);border-radius:6px;padding:1px 8px;font-weight:600}
   .card-h .hint{font-size:12px;color:var(--muted);margin-left:auto}
-
-  .lead{
-    background:linear-gradient(180deg,#f7faff,#ffffff);
-    border-left:4px solid var(--accent);border-radius:8px;
-    padding:14px 18px;color:var(--ink-2);font-size:14px;margin-bottom:18px;
-  }
+  .lead{background:linear-gradient(180deg,#f7faff,#fff);border-left:4px solid var(--accent);
+    border-radius:8px;padding:12px 16px;color:#334155;font-size:13.5px;margin-bottom:16px}
   .lead b{color:var(--navy)}
-
-  .grid{display:grid;gap:12px}
-  .g2{grid-template-columns:repeat(2,1fr)}
-  .g3{grid-template-columns:repeat(3,1fr)}
-  .g4{grid-template-columns:repeat(4,1fr)}
-  .metric{
-    background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:13px 15px;
-  }
-  .metric .k{font-size:12px;color:var(--muted)}
-  .metric .v{font-size:21px;font-weight:800;margin-top:3px;letter-spacing:-.3px}
-  .metric .s{font-size:11.5px;color:var(--muted);margin-top:2px}
-  .up{color:var(--up)!important}
-  .down{color:var(--down)!important}
-  .neutral{color:var(--ink)!important}
-  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:600}
-  .pill.up{background:var(--up-bg)}
-  .pill.down{background:var(--down-bg)}
-
+  .tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--line)}
   table{width:100%;border-collapse:collapse;font-size:13px}
-  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
   th{background:#f4f7fb;color:var(--navy);font-weight:700;font-size:12px;white-space:nowrap}
   tbody tr:hover{background:#fafcff}
   td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--line)}
-
-  .bars{display:flex;flex-direction:column;gap:13px}
-  .bar-row{display:grid;grid-template-columns:150px 1fr 62px;align-items:center;gap:12px}
-  .bar-row .name{font-size:13px;font-weight:600;color:var(--ink-2)}
-  .bar-track{height:12px;background:#eef2f7;border-radius:99px;overflow:hidden}
-  .bar-fill{height:100%;border-radius:99px;transition:width .6s ease}
-  .bar-row .val{font-size:13px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
-  .bar-legend{font-size:11.5px;color:var(--muted);margin-top:12px}
-
-  .flow{display:flex;flex-direction:column;gap:10px}
-  .flow-row{display:grid;grid-template-columns:120px 1fr 96px;align-items:center;gap:10px;font-size:13px}
-  .flow-track{position:relative;height:10px;background:#f1f4f8;border-radius:99px;overflow:hidden}
-  .flow-fill{position:absolute;top:0;bottom:0;border-radius:99px}
-
-  .timeline{position:relative;padding-left:22px;display:flex;flex-direction:column;gap:14px}
-  .timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
-  .tl-item{position:relative}
-  .tl-item::before{content:"";position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px var(--accent)}
-  .tl-date{font-size:12px;font-weight:800;color:var(--accent)}
-  .tl-body{font-size:13px;color:var(--ink-2)}
-  .tl-body small{color:var(--muted)}
-
-  .events{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .event{border:1px solid var(--line);border-radius:10px;padding:13px 15px;background:#fbfcfe}
-  .event .t{font-size:13.5px;font-weight:700;color:var(--navy)}
-  .event .d{font-size:12px;color:var(--muted);margin:3px 0 7px}
-  .event .x{font-size:12.5px;color:var(--ink-2)}
-
-  .stage-table td:first-child{white-space:nowrap;font-weight:700;color:var(--navy);background:#f8fafc}
+  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:600}
+  .pill.up{background:#fdecea;color:var(--up)}
+  .pill.down{background:#e7f5ef;color:var(--down)}
   .note{font-size:12px;color:var(--muted);margin-top:10px}
-  .divider{height:1px;background:var(--line);margin:18px 0}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .note a{color:var(--accent);text-decoration:none}
 
-  footer{padding:14px 20px 40px;text-align:center;color:var(--muted);font-size:12px}
-  footer a{color:var(--accent);text-decoration:none}
-
-  @media(max-width:900px){
-    .g4{grid-template-columns:repeat(2,1fr)}
-    .g3{grid-template-columns:repeat(2,1fr)}
-    .two-col,.events{grid-template-columns:1fr}
-  }
-  @media(max-width:620px){
-    .g4,.g3,.g2{grid-template-columns:1fr 1fr}
-    h1{font-size:21px}
-    .bar-row{grid-template-columns:110px 1fr 48px;gap:8px}
-    .flow-row{grid-template-columns:88px 1fr 74px;gap:6px;font-size:12px}
-    .metric .v{font-size:18px}
+  @media(max-width:700px){
+    .meta{display:none}
+    h1{font-size:16px}
+    .tab{padding:10px 12px;font-size:12px}
+    .tab small{display:none}
   }
 </style>
 </head>
@@ -177,361 +93,36 @@
       <div class="logo">南</div>
       <div>
         <h1>南方国际看板</h1>
-        <p class="subtitle">汇聚恒生科技、汇丰渣打、费城半导体与港股通调整，一页切换速览</p>
+        <p class="subtitle">原始看板原样呈现 · 点击顶部标签切换</p>
       </div>
-    </div>
-    <div class="meta">
-      <span class="chip">来源 · <b>ima 知识库 / 南方国际看板</b></span>
-      <span class="chip">看板数量 · <b>5</b></span>
-      <span class="chip">汇总日期 · <b>2026-11-24</b></span>
+      <div class="meta">
+        <span class="chip">来源 · <b>ima 知识库 / 南方国际看板</b></span>
+        <span class="chip">看板 · <b>5</b></span>
+        <span class="chip">更新 · <b>2026-11-24</b></span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="wrap tabbar-wrap">
-  <div class="tabbar" role="tablist">
-    <button class="tab active" data-target="p1" role="tab">恒生科技主线<small>销售版 · 2026-08-14</small></button>
-    <button class="tab" data-target="p5" role="tab">恒科扩容至50只预测<small>数据截至 2026-09-30 · 新增</small></button>
-    <button class="tab" data-target="p2" role="tab">汇丰渣打 · 股价与宏观<small>更新至 2026-09-11</small></button>
-    <button class="tab" data-target="p3" role="tab">费城半导体主线<small>桌面版 · 2026-08-11</small></button>
-    <button class="tab" data-target="p4" role="tab">港股通标的调整<small>上交所 · 2026-11-20</small></button>
-  </div>
+<div class="tabbar" role="tablist">
+  <button class="tab active" data-target="t1" role="tab">恒生科技主线<small>销售版 08-14</small></button>
+  <button class="tab" data-target="t5" role="tab">恒科扩容至50只<small>09-30 · 新增</small></button>
+  <button class="tab" data-target="t2" role="tab">汇丰渣打·股价与宏观<small>09-11</small></button>
+  <button class="tab" data-target="t3" role="tab">费城半导体主线<small>桌面版 08-11</small></button>
+  <button class="tab" data-target="t4" role="tab">港股通标的调整<small>上交所 11-20</small></button>
 </div>
 
-<main class="wrap">
-
-  <!-- ============ 面板 1：恒生科技 ============ -->
-  <section class="panel active" id="p1" role="tabpanel">
-    <div class="card">
-      <div class="card-h"><span class="idx">01</span><h2>恒生科技主线看板</h2><span class="hint">数据截至 2026-08-14</span></div>
-      <div class="lead">
-        本周美股在 PPI 低于预期推动下高位震荡，港股恒生科技承压，<b>软硬件跷跷板效应明显</b>。AI 产业链核心矛盾从前端训练转向推理与企业工作流渗透，云厂商成为大模型向传统企业渗透的关键载体，软件短期优于硬件。板块推荐序列为 <b>创新药 ≈ 恒生科技 ＞ 红利</b>。
-      </div>
-      <div class="grid g4">
-        <div class="metric"><div class="k">恒生科技指数</div><div class="v down">4707.62</div><div class="s"><span class="pill down">-1.77%</span> 当日</div></div>
-        <div class="metric"><div class="k">年初至今</div><div class="v down">-14.65%</div><div class="s">恒生指数 -2.00%</div></div>
-        <div class="metric"><div class="k">近 5 日 / 近 20 日</div><div class="v"><span class="down">-3.10%</span> / <span class="up">+1.83%</span></div><div class="s">8 月至今 <span class="down">-2.52%</span></div></div>
-        <div class="metric"><div class="k">60 日年化波动</div><div class="v neutral">30.5%</div><div class="s">近 5 日日均成交 722 亿港元</div></div>
-      </div>
-    </div>
-
-    <div class="two-col">
+<div class="stage">
+  <div class="pane active loaded" id="t1" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hengtai.html" title="恒生科技主线看板"></iframe></div>
+  <div class="pane" id="t5" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/expand.html" title="恒科扩容至50只预测"></iframe></div>
+  <div class="pane" id="t2" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打看板"></iframe></div>
+  <div class="pane" id="t3" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/sox.html" title="费城半导体看板"></iframe></div>
+  <div class="pane" id="t4" role="tabpanel">
+    <div class="sheet">
       <div class="card">
-        <div class="card-h"><h2>市场情绪评分</h2><span class="hint">截至 2026-08-14 · 四端合计＝指数 100% 权重</span></div>
-        <div class="bars">
-          <div class="bar-row"><div class="name">硬件·消费电子</div><div class="bar-track"><div class="bar-fill" style="width:87%;background:linear-gradient(90deg,#e5484d,#d92d20)"></div></div><div class="val up">87</div></div>
-          <div class="bar-row"><div class="name">AI 算力·模型</div><div class="bar-track"><div class="bar-fill" style="width:57%;background:linear-gradient(90deg,#e9a13b,#d98324)"></div></div><div class="val" style="color:#b25e09">57</div></div>
-          <div class="bar-row"><div class="name">智能电动车</div><div class="bar-track"><div class="bar-fill" style="width:27%;background:linear-gradient(90deg,#7fb98f,#3f9e6a)"></div></div><div class="val down">27</div></div>
-          <div class="bar-row"><div class="name">互联网平台·线上消费</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:linear-gradient(90deg,#7fb98f,#2f8f5f)"></div></div><div class="val down">25</div></div>
-        </div>
-        <div class="bar-legend">80+ 趋势强 · 65-79 升温 · 50-64 中性 · 35-49 偏弱 · 0-34 降温　｜　评分为看板自建资金强弱指标，非官方指标，不构成投资判断。</div>
-        <div class="divider"></div>
-        <div class="note"><b>当前解读：</b>硬件端 87 分领先，20 日（+11.94%）与 5 日（+6.05%）相对恒科均为正，AI 需求外溢已反映到报表；AI 算力·模型 57 分，中芯收入与毛利率均高于指引；互联网平台 25 分，需待 8/20 阿里披露后看完整；智能电动车 27 分，新车周期未到。</div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><h2>ETF 走势对比</h2><span class="hint">南方旗下相关 ETF</span></div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>产品</th><th class="num">最新价</th><th class="num">当日</th><th class="num">区间</th></tr></thead>
-            <tbody>
-              <tr><td>恒生科技ETF南方 <small>520570</small></td><td class="num">0.752 元</td><td class="num down">-1.70%</td><td class="num down">-8.40%</td></tr>
-              <tr><td>港股通科技ETF南方 <small>159269</small></td><td class="num">0.865 元</td><td class="num down">-1.03%</td><td class="num down">-7.88%</td></tr>
-              <tr><td>港股通互联网ETF南方 <small>520650</small></td><td class="num">0.612 元</td><td class="num down">-1.29%</td><td class="num down">-16.16%</td></tr>
-              <tr><td>恒生指数ETF南方 <small>513600</small></td><td class="num">2.740 元</td><td class="num down">-0.90%</td><td class="num down">-5.06%</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="note">区间口径以原看板为准；表中数据为看板截取时点值。</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-h"><h2>估值与盈利位置</h2><span class="hint">估值/盈利预期截至 2026-08-07</span></div>
-      <div class="grid g4" style="margin-bottom:14px">
-        <div class="metric"><div class="k">前瞻市盈率</div><div class="v neutral">16.8x</div><div class="s">2020 年末以来 29% 分位 / 近 3 年 54%</div></div>
-        <div class="metric"><div class="k">估值区间</div><div class="v neutral" style="font-size:16px">12.6 ~ 44.7x</div><div class="s">均值 22.1x，恒指 10.7x</div></div>
-        <div class="metric"><div class="k">2026E 盈利预期</div><div class="v up">+2.19%</div><div class="s">较 2026-05-15 低点回升</div></div>
-        <div class="metric"><div class="k">近 4 周修正</div><div class="v down">-1.16%</div><div class="s">同期恒生指数 <span class="up">+0.72%</span></div></div>
-      </div>
-      <div class="lead" style="margin-bottom:0">赔率端已清晰：前瞻 PE 16.8x 低于均值 22.1x；胜率端信号是盈利一致预期由降转升，2026E 自 5/15 低点回升 +2.19%，但近 4 周 -1.16%，信号尚未完全确认。<b>8 月下旬财报（8/20 阿里）为最近验证窗口；赔率具备、胜率待确认下，分批参与优于空仓等待。</b></div>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-h"><h2>资金面拆解：谁有定价权</h2><span class="hint">外资/南向截至 2026-08-05</span></div>
-        <div class="flow">
-          <div class="flow-row"><span>南向资金</span><div class="flow-track"><div class="flow-fill" style="left:0;width:100%;background:linear-gradient(90deg,#e5484d,#d92d20)"></div></div><span class="up" style="text-align:right;font-weight:700">+482 亿美元</span></div>
-          <div class="flow-row"><span>被动型外资</span><div class="flow-track"><div class="flow-fill" style="left:0;width:16%;background:linear-gradient(90deg,#e5484d,#d92d20)"></div></div><span class="up" style="text-align:right;font-weight:700">+79 亿美元</span></div>
-          <div class="flow-row"><span>主动型外资</span><div class="flow-track"><div class="flow-fill" style="left:50%;width:3%;background:linear-gradient(90deg,#3f9e6a,#12805c)"></div></div><span class="down" style="text-align:right;font-weight:700">-15 亿美元</span></div>
-        </div>
-        <div class="divider"></div>
-        <div class="note">今年以来南向净流入 +482 亿美元、被动外资 +79、主动外资 -15，<b>南向占三者净流入合计的 88%</b>；近 13 周南向 +137、被动 +31、主动 -27（仍净卖出）。边际定价权在南向，外资仍是未动用的潜在增量。上周南向自红利切向科技（商贸零售 +60、电子 +52 亿港元），集中于阿里、华虹、中芯。</div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><h2>接下来的催化</h2><span class="hint">事件驱动时间线</span></div>
-        <div class="timeline">
-          <div class="tl-item"><div class="tl-date">08-20 · 阿里 6 月季度业绩</div><div class="tl-body">云收入增速与 AI 收入占比继续抬升，则利好港股互联网平台端盈利预期 <small>（AI 占云外部收入 &gt;30%）</small></div></div>
-          <div class="tl-item"><div class="tl-date">08-21 · 恒指季度检讨公布</div><div class="tl-body">若新纳入与权重上调集中在科技股，利好被动配置买盘 <small>（9/7、9/14 分两批生效）</small></div></div>
-          <div class="tl-item"><div class="tl-date">09-15 · FOMC 与点阵图</div><div class="tl-body">若指向年内继续降息、2 年期美债回落，利好高久期成长股估值</div></div>
-          <div class="tl-item"><div class="tl-date">12-11 · 指数修订正式生效</div><div class="tl-body">若成分由 30 只扩到 50 只，利好港股 AI 与先进硬件权重占比</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-h"><h2>重点事件追踪</h2><span class="hint">每条事件线对应指数的一个定价环节</span></div>
-      <div class="events">
-        <div class="event"><div class="t">Q2 财报季：盈利能否上修</div><div class="d">2026.08.12 – 08 月下旬 · 兑现中</div><div class="x">腾讯、中芯、京东已披露；阿里 8/20、美团与小米 8 月下旬。腾讯收入 2047.85 亿元（+11%），中芯单季收入首破 30 亿美元、毛利率 25.3%，京东经营利润扭亏。</div></div>
-        <div class="event"><div class="t">AI 从叙事走向 ARR</div><div class="d">2026.07 – 08 持续 · 兑现中</div><div class="x">阿里 AI 占云外部收入破 30%、AI 模型与应用 ARR 6 月破 100 亿元（年底目标 300 亿）；智谱 ARR 达 10 亿美元，从 1 亿到 10 亿用时 5 个月。</div></div>
-        <div class="event"><div class="t">平台端盈利上限取决于内需</div><div class="d">数据截至 2026.07（8/17 公布）· 待验证</div><div class="x">7 月社零同比 +0.6%，1-7 月 +1.2%。内需决定平台端上限。</div></div>
-        <div class="event"><div class="t">等待 2 年期美债利率回落</div><div class="d">2026.07.29 决议 / 09.15-16 下次 · 有压力</div><div class="x">2 年期美债 4.17%，近 3 个月 +0.17pp，压制港股估值修复。</div></div>
-      </div>
-      <div class="note">观察清单：腾讯资本开支 +176% 后折旧摊销节奏 · 中芯 Q3 毛利率 26%~28% 指引兑现 · 阿里云增速与 AI 收入占比 · 财报后一周 2026E 一致预期曲线是否重新上行。</div>
-    </div>
-  </section>
-
-  <!-- ============ 面板 5：恒科扩容至50只预测 ============ -->
-  <section class="panel" id="p5" role="tabpanel">
-    <div class="card">
-      <div class="card-h"><span class="idx">05</span><h2>恒生科技指数扩容至 50 只 · 成分与权重预测</h2><span class="hint">数据截至 2026-09-30 · 依据恒指公司 10/7 咨询总结定稿规则</span></div>
-      <div class="lead">依据恒指公司 2026 年 10 月 7 日咨询总结的定稿规则（含新增的成交额及收入两项要求），在恒生综合大中型股选股池内重新测算。<b>原 30 只成分全部保留</b>，新增 20 只（市值组 10 + 增长组 10）。</div>
-      <div class="grid g4">
-        <div class="metric"><div class="k">原成分保留</div><div class="v up">30</div><div class="s">权重合计 87.7%</div></div>
-        <div class="metric"><div class="k">市值组新增</div><div class="v up">+10</div><div class="s">权重合计 10.2%</div></div>
-        <div class="metric"><div class="k">增长组新增</div><div class="v up">+10</div><div class="s">权重合计 2.1%</div></div>
-        <div class="metric"><div class="k">前十大权重</div><div class="v neutral">66.5%</div><div class="s">现指数约 70.6%</div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-h"><h2>定稿规则的两项新增要求</h2><span class="hint">其余四项按咨询稿采纳 · 是上一版多只新增股出局的主因</span></div>
-      <div class="two-col">
-        <div class="event"><div class="t">近 3 个月日均成交额 ≥ 1 亿港元</div><div class="x">适用于所有非现有成分股，不排除上市不足 3 个月的新股。思格新能、曦智科技、中环新能源、黑芝麻智能因此出局；希音（9/1 上市）按上市以来计算达标，基准情形纳入。</div></div>
-        <div class="event"><div class="t">最近两个财年收入均 ≥ 5 亿港元</div><div class="x">仅适用于收入增长组。滴普科技（增速 149%）、晶泰控股、微创机器人因此出局。</div></div>
-      </div>
-      <div class="divider"></div>
-      <div class="card-h"><h2>新科技主题分布</h2><span class="hint">数码平台 14 → 15 只，权重占比 55.1%</span></div>
-      <div class="bars">
-        <div class="bar-row"><div class="name">数码平台及解决方案</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#e5484d,#d92d20)"></div></div><div class="val up">55.1%</div></div>
-        <div class="bar-row"><div class="name">先进硬件</div><div class="bar-track"><div class="bar-fill" style="width:46%;background:linear-gradient(90deg,#e9a13b,#d98324)"></div></div><div class="val" style="color:#b25e09">25.6%</div></div>
-        <div class="bar-row"><div class="name">机器人及自动化</div><div class="bar-track"><div class="bar-fill" style="width:27%;background:linear-gradient(90deg,#8bc4a0,#3f9e6a)"></div></div><div class="val down">15.1%</div></div>
-        <div class="bar-row"><div class="name">人工智能</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:linear-gradient(90deg,#9fb3c8,#6b7a90)"></div></div><div class="val" style="color:var(--muted)">2.9%</div></div>
-        <div class="bar-row"><div class="name">云端</div><div class="bar-track"><div class="bar-fill" style="width:3%;background:linear-gradient(90deg,#9fb3c8,#6b7a90)"></div></div><div class="val" style="color:var(--muted)">1.2%</div></div>
-      </div>
-      <div class="bar-legend">括号内为成分只数：数码平台 15、先进硬件 18、机器人 9、人工智能 5、云端 3；前沿科技 0。光学雷达明确归入专用元件及硬件，禾赛计入先进硬件。</div>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-h"><h2>市值组新增（10 只）</h2><span class="hint">非成分股中 12 个月日均市值最高的合资格股票</span></div>
+        <div class="card-h"><h2>港股通标的证券调整信息</h2><span class="hint">上海证券交易所 · 更新日期 2026-11-20</span></div>
+        <div class="lead">港股通标的证券调整一览，含证券代码、简称、品种、调整内容与生效日期。<b>实际以交易所公告披露为准。</b></div>
         <div class="tbl-wrap"><table>
-          <thead><tr><th>简称</th><th>主题</th><th class="num">预测权重</th><th>备注</th></tr></thead>
-          <tbody>
-            <tr><td>宁德时代 <small>3750</small></td><td>先进硬件</td><td class="num up">2.62%</td><td>港股通</td></tr>
-            <tr><td>长飞光纤光缆 <small>6869</small></td><td>先进硬件</td><td class="num up">1.76%</td><td>本版新增</td></tr>
-            <tr><td>建滔积层板 <small>1888</small></td><td>先进硬件</td><td class="num up">1.45%</td><td>港股通</td></tr>
-            <tr><td>万国数据-SW <small>9698</small></td><td>云端</td><td class="num up">0.87%</td><td>非港股通</td></tr>
-            <tr><td>希音-W <small>0625</small></td><td>数码平台</td><td class="num up">0.87%</td><td>本版新增 · 非港股通</td></tr>
-            <tr><td>瑞声科技 <small>2018</small></td><td>先进硬件</td><td class="num up">0.74%</td><td>港股通</td></tr>
-            <tr><td>优必选 <small>9880</small></td><td>机器人</td><td class="num up">0.64%</td><td>港股通</td></tr>
-            <tr><td>ASMPT <small>0522</small></td><td>先进硬件</td><td class="num up">0.61%</td><td>本版新增</td></tr>
-            <tr><td>思摩尔国际 <small>6969</small></td><td>先进硬件</td><td class="num up">0.43%</td><td>港股通</td></tr>
-            <tr><td>壁仞科技 <small>6082</small></td><td>先进硬件</td><td class="num up">0.17%</td><td>港股通</td></tr>
-          </tbody>
-        </table></div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><h2>收入增长组新增（10 只）</h2><span class="hint">两年收入均≥5亿港元，按过去12个月收入增长排名</span></div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>简称</th><th>主题</th><th class="num">预测权重</th><th class="num">收入增长</th></tr></thead>
-          <tbody>
-            <tr><td>英诺赛科 <small>2577</small></td><td>先进硬件</td><td class="num up">0.42%</td><td class="num up">57.4%</td></tr>
-            <tr><td>胜宏科技 <small>2476</small></td><td>先进硬件</td><td class="num up">0.36%</td><td class="num up">54.1%</td></tr>
-            <tr><td>汇聚科技 <small>1729</small></td><td>先进硬件</td><td class="num up">0.34%</td><td class="num up">84.0%</td></tr>
-            <tr><td>澜起科技 <small>6809</small></td><td>先进硬件</td><td class="num up">0.31%</td><td class="num up">40.3%</td></tr>
-            <tr><td>东方甄选 <small>1797</small></td><td>数码平台</td><td class="num up">0.31%</td><td class="num up">36.7%</td></tr>
-            <tr><td>金山云 <small>3896</small></td><td>云端</td><td class="num up">0.27%</td><td class="num up">37.1%</td></tr>
-            <tr><td>迅策 <small>3317</small></td><td>云端</td><td class="num up">0.05%</td><td class="num up">294.0%</td></tr>
-            <tr><td>云知声 <small>9678</small></td><td>人工智能</td><td class="num up">0.04%</td><td class="num up">42.7%</td></tr>
-            <tr><td>海致科技集团 <small>2706</small></td><td>人工智能</td><td class="num up">0.02%</td><td class="num up">57.5%</td></tr>
-            <tr><td>禾赛-W <small>2525</small></td><td>先进硬件</td><td class="num up">0.02%</td><td class="num up">40.7%</td></tr>
-          </tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-h"><h2>潜在被动资金变化</h2><span class="hint">跟踪规模 371 亿美元（约 2,894 亿港元，汇率 7.8）</span></div>
-      <div class="grid g3" style="margin-bottom:14px">
-        <div class="metric"><div class="k">20 只新纳入合计买入</div><div class="v up">+356 亿</div><div class="s">港元</div></div>
-        <div class="metric"><div class="k">原成分股合计卖出</div><div class="v down">-358 亿</div><div class="s">港元</div></div>
-        <div class="metric"><div class="k">所需交易日 ≥ 5 天</div><div class="v neutral">4 只</div><div class="s">万国数据、希音、瑞声、思摩尔</div></div>
-      </div>
-      <div class="note">资金 = 规模 ×（预测权重 − 当前权重）；所需交易日 = 资金 ÷ 近 3 个月日均成交额（按占用全部成交额的极端情形）。原成分股普遍被摊薄约 12%，卖出最多的是联想集团、京东集团和百度集团。若按日均成交额的 20% 参与交易，天数约为表中 5 倍。</div>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-h"><h2>与上一版预测的变化</h2><span class="hint">上一版基于 6/30 数据和咨询稿规则</span></div>
-        <div class="note" style="margin-top:0"><b>本版新增（9 只）：</b>ASMPT、希音-W、东方甄选、禾赛-W、英诺赛科、海致科技、金山云、长飞光纤光缆、云知声。</div>
-        <div class="divider"></div>
-        <div class="note"><b>本版移出（9 只）：</b>同程旅行（市值降至候补）、文远知行-W、滴普科技（收入不足5亿）、中环新能源、曦智科技-P、晶泰控股、微创机器人-B、黑芝麻智能、思格新能——多为未达 1 亿港元成交额或 5 亿收入新要求。</div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><h2>候补与主要风险项</h2><span class="hint">差异较小，口径变化可能改变结果</span></div>
-        <div class="note" style="margin-top:0">市值组第 10 名优必选 468 亿，候补鸿腾精密 450 亿、同程旅行 421 亿，差距较小。思格新能、中创新航成交额 0.84 亿接近 1 亿门槛，恒指口径如有差异可能改变结果。</div>
-        <div class="divider"></div>
-        <div class="note"><b>关键风险：</b>希音-W（9/1 上市不足 3 个月，若要求满 3 个月则由鸿腾精密补入）· 赣锋锂业（若「电池级功能材料」被认定属新能源储能，将替换东方甄选）· 东方甄选（主题认定不确定）· 长飞光纤光缆（若不被认定科技主题，由同程旅行补入）。</div>
-      </div>
-    </div>
-
-    <div class="card tight">
-      <div class="note" style="margin-top:0">方法与来源：选股范畴为恒生综合大中型股指数成份股（349 只）；合资格需符合六大科技主题、换手率测试达标、通过创新筛选；权重为流通市值加权、个股上限 8%。<b>本页为预测测算，非恒指公司官方结果，最终以正式检讨公告为准，不构成投资建议。</b></div>
-    </div>
-  </section>
-
-  <!-- ============ 面板 2：汇丰渣打 ============ -->
-  <section class="panel" id="p2" role="tabpanel">
-    <div class="card">
-      <div class="card-h"><span class="idx">02</span><h2>汇丰渣打 · 股价与宏观周期看板</h2><span class="hint">股价更新至 2026-09-11 · 宏观数据更新至 2026-09-10</span></div>
-      <div class="lead">股价相对表现、利率与通胀的统一观察框架。<b>两家银行最终均收敛至「跨境对公网络 + 富裕客群财富管理」双引擎</b>，并压缩地域层级；重组路径不同——汇丰以组合筛选主动退出整国业务，渣打在 2015 年亏损后以供股、RWA 重整和降本完成危机修复。</div>
-      <div class="grid g4">
-        <div class="metric"><div class="k">汇丰控股 · 复权股价</div><div class="v up">4.02</div><div class="s">2019 年首个交易日 = 1</div></div>
-        <div class="metric"><div class="k">汇丰 · 相对恒指强弱</div><div class="v up">3.08</div><div class="s">相对恒生全收益指数</div></div>
-        <div class="metric"><div class="k">渣打集团 · 复权股价</div><div class="v up">4.99</div><div class="s">2019 年首个交易日 = 1</div></div>
-        <div class="metric"><div class="k">渣打 · 相对恒指强弱</div><div class="v up">3.83</div><div class="s">相对恒生全收益指数</div></div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-h"><h2>管理层与战略重组</h2><span class="hint">2010—2026</span></div>
-        <div class="events" style="grid-template-columns:1fr">
-          <div class="event"><div class="t">共同终点</div><div class="x">两家银行最终均收敛至「跨境对公网络 + 富裕客群财富管理」双引擎，压缩地域层级。</div></div>
-          <div class="event"><div class="t">重组路径不同</div><div class="x">汇丰以组合筛选主动退出整国业务；渣打在 2015 年亏损后以供股、RWA 重整和降本完成危机修复。</div></div>
-          <div class="event"><div class="t">治理结构反差</div><div class="x">汇丰十五年四任 CEO、战略持续加速；渣打温拓思任职逾十年，连贯性更强但继任风险上升。</div></div>
-          <div class="event"><div class="t">股价修复含义</div><div class="x">重组先改善资本与成本，利率上行再放大收入弹性；2023 年后市场开始确认结构改善具有持续性。</div></div>
-        </div>
-        <div class="divider"></div>
-        <div class="note"><b>核心管理层：</b>汇丰——温拓思（2015—至今，修复与双引擎）；渣打——治理节点包括 2016 年韦浩思任主席、2025 年 Maria Ramos 接任，2024 年 Simon Cooper、2026 年 CFO Diego De Giorgi 离任，<b>CEO 继任成为主要治理变量</b>。</div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><h2>业务结构：从全能银行到双引擎</h2></div>
-        <div class="events" style="grid-template-columns:1fr">
-          <div class="event"><div class="t">汇丰</div><div class="x">全球零售与全能投行 → 香港/英国双主场 + CIB 跨境走廊 + IWPB 财富制造。</div></div>
-          <div class="event"><div class="t">渣打</div><div class="x">新兴市场批发 + 消费信贷 → CIB 跨境网络 + WRB 富裕与财富客户。</div></div>
-        </div>
-        <div class="divider"></div>
-        <div class="grid g2">
-          <div class="metric"><div class="k">汇丰 2025 经营收入</div><div class="v neutral">68,274</div><div class="s">百万美元 · 同比 <span class="up">+3.67%</span></div></div>
-          <div class="metric"><div class="k">渣打 · 双引擎</div><div class="v neutral" style="font-size:16px">CIB + WRB</div><div class="s">ROTE 重返双位数</div></div>
-        </div>
-        <div class="note">区域分布保留网络深度；组织架构从矩阵到端到端。渣打提出 2028 年 ROTE 超过 15%，以 AI 推动职能部门到 2030 年减岗 15% 以上。</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-h"><h2>战略阶段对照</h2><span class="hint">聚焦影响资本配置、业务结构与盈利能力的关键节点</span></div>
-      <div class="tbl-wrap">
-        <table class="stage-table">
-          <thead><tr><th style="width:110px">阶段</th><th>汇丰控股</th><th>渣打集团</th></tr></thead>
-          <tbody>
-            <tr><td>2010—2014</td><td>六重筛选与全球收缩：放弃「世界的本地银行」，出售美国信用卡、平安股权及多国零售，确立四大环球业务纵向管理。</td><td>高增长模式见顶：2012 年制裁罚款、2013—14 利润连降，暴露新兴市场信用、合规与成本纪律问题。</td></tr>
-            <tr><td>2015—2017</td><td>转向亚洲：削减约 2,900 亿美元 RWA 并再配置至亚洲，出售巴西业务，完成第一轮资本与成本止血。</td><td>休克式重组：供股 51 亿美元、裁员 1.5 万人、降本 29 亿美元，重整逾 1,000 亿美元 RWA，8 大区并 4 区。</td></tr>
-            <tr><td>2018—2019</td><td>重返增长未完成：范宁提出八项战略重点与大规模科技投资，美国业务扭转迟滞，任职 18 个月后离任。</td><td>从修复转向增长：成本承诺兑现，成立 SC Ventures 并出售印尼 Permata 股权，但 ROTE 仍未达资本成本。</td></tr>
-            <tr><td>2020—2021</td><td>155 年最大重组：裁员 3.5 万人、削减逾 1,000 亿美元 RWA、降本 45 亿美元，五年投资亚洲 60 亿美元。</td><td>四分部并为两大引擎：整合为 CCIB 与 CPBB，组织从地域导向转为客户价值链导向。</td></tr>
-            <tr><td>2022—2024</td><td>完成欧美零售退出：出售加拿大、法国零售及阿根廷业务，否决分拆亚洲议案，强化「国际网络不可分割」叙事。</td><td>双引擎成型：退出非洲中东七国在岸业务并加码中东，推出 Fit for Growth，ROTE 重返双位数。</td></tr>
-            <tr><td>2025—2026</td><td>艾桥智推动极致简化：四大业务 + 东西分区，年化 15 亿美元降本提前达成，重点转向执行效率。</td><td>超级连接者与 AI 重组：财富净流入创新高，提出 2028 ROTE &gt;15%，继任悬念升温。</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 面板 3：费城半导体 ============ -->
-  <section class="panel" id="p3" role="tabpanel">
-    <div class="card">
-      <div class="card-h"><span class="idx">03</span><h2>费城半导体主线看板</h2><span class="hint">桌面版 · 数据截至 2026-08-11</span></div>
-      <div class="lead">四张图回答四个问题。五端按产业链切，把 30 只成分股完整拆进 5 个端，权重合计 100.0%，每条结论都能加总回指数本身。<b>先说不利的：指数距 6/22 高点还差 -17.3%，今年 +70.8% 的涨幅里有 87 个点是 3/20 → 6/18 三个月涨出来的。</b></div>
-      <div class="grid g4">
-        <div class="metric"><div class="k">指数距 6/22 高点</div><div class="v down">-17.3%</div><div class="s">高点 2026-06-22</div></div>
-        <div class="metric"><div class="k">今年涨幅</div><div class="v up">+70.8%</div><div class="s">其中 87 点来自 3/20–6/18</div></div>
-        <div class="metric"><div class="k">五端权重合计</div><div class="v neutral">100.0%</div><div class="s">30 只成分股全覆盖</div></div>
-        <div class="metric"><div class="k">核心矛盾</div><div class="v neutral" style="font-size:16px">存储 vs 设备</div><div class="s">谁的预期先减速</div></div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-h"><h2>五端交易景气度</h2><span class="hint">截至 2026-08-11 · 分数越高＝近期越被资金买</span></div>
-        <div class="bars">
-          <div class="bar-row"><div class="name">逻辑·AI计算与互连</div><div class="bar-track"><div class="bar-fill" style="width:63%;background:linear-gradient(90deg,#e5484d,#d92d20)"></div></div><div class="val up">63</div></div>
-          <div class="bar-row"><div class="name">代工</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:linear-gradient(90deg,#e9a13b,#d98324)"></div></div><div class="val" style="color:#b25e09">45</div></div>
-          <div class="bar-row"><div class="name">设备与材料</div><div class="bar-track"><div class="bar-fill" style="width:41%;background:linear-gradient(90deg,#8bc4a0,#3f9e6a)"></div></div><div class="val down">41</div></div>
-          <div class="bar-row"><div class="name">存储</div><div class="bar-track"><div class="bar-fill" style="width:21%;background:linear-gradient(90deg,#7fb98f,#2f8f5f)"></div></div><div class="val down">21</div></div>
-        </div>
-        <div class="bar-legend">评分 = 40%×近20日相对SOX超额 + 35%×近5日超额 + 25%×近5日量能（剔除全指数共同项）。为看板自建资金温度计，非官方指标，与盈利预期是两件事。</div>
-        <div class="divider"></div>
-        <div class="note"><b>最值得说的一件事：</b>今年涨最多的存储端（今年 +256%，五端第一）现在资金最冷，景气度 21 分垫底、近 20 日相对指数 -7.04%；设备材料端 41 分倒数第二，但一致预期上修排第二档（近 13 周 +19.27%、近 4 周 +10.80%）。最高分是逻辑·AI 计算与互连（63 分，近 20 日 +4.09%、量能 +12%）。回撤中资金从高 beta 往低 beta 权重股缩，是降风险而非看好。</div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><h2>今年 +70.8% 是谁涨出来的</h2><span class="hint">价格指数口径 · 链式还原起点权重</span></div>
-        <div class="bars" style="margin-top:6px">
-          <div class="bar-row"><div class="name">逻辑·AI计算与互连</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#e5484d,#d92d20)"></div></div><div class="val up">权重42.9%</div></div>
-          <div class="bar-row"><div class="name">存储</div><div class="bar-track"><div class="bar-fill" style="width:88%;background:linear-gradient(90deg,#ec6a5e,#d92d20)"></div></div><div class="val up">今年+256%</div></div>
-          <div class="bar-row"><div class="name">设备与材料</div><div class="bar-track"><div class="bar-fill" style="width:52%;background:linear-gradient(90deg,#e9a13b,#d98324)"></div></div><div class="val" style="color:#b25e09">上修第二</div></div>
-          <div class="bar-row"><div class="name">代工</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:linear-gradient(90deg,#8bc4a0,#3f9e6a)"></div></div><div class="val down">近4周+11.03%</div></div>
-          <div class="bar-row"><div class="name">车规·工业</div><div class="bar-track"><div class="bar-fill" style="width:24%;background:linear-gradient(90deg,#9fb3c8,#6b7a90)"></div></div><div class="val" style="color:var(--muted)">与AI无关</div></div>
-        </div>
-        <div class="bar-legend">示意图：五端对指数点位的贡献此消彼长。逻辑端权重最大（42.9%，9 只），存储端今年涨幅第一但当前最冷。</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-h"><h2>五条事件线</h2><span class="hint">每条对应指数的一个定价环节</span></div>
-      <div class="events">
-        <div class="event"><div class="t">存储涨价</div><div class="x">今年最大的单一利润源；存储是产能驱动品种，其一致预期修正先加速、先减速。</div></div>
-        <div class="event"><div class="t">AI 资本开支</div><div class="x">需求的唯一来源；设备端跟在存储后面 1–2 个季度，两条线斜率差比绝对值更有信息量。</div></div>
-        <div class="event"><div class="t">先进制程</div><div class="x">决定供给瓶颈在哪；代工端近 4 周一致预期上修 +11.03%，为五端第一。</div></div>
-        <div class="event"><div class="t">出口管制与关税</div><div class="x">决定可售市场。</div></div>
-        <div class="event"><div class="t">车规·工业</div><div class="x">这个指数里唯一与 AI 无关的一半。</div></div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-h"><h2>周期定位：S0–S7 状态机</h2><span class="hint">商品超级周期框架</span></div>
-        <div class="note" style="margin-top:0">借用「商品超级周期」框架（S0 过剩崩溃 → S7 反转再累积）给 SOX 定位，半导体（尤其存储与代工）正是其原型。<b>它定位的是产业周期，不是股价——两者可差 6 到 12 个月。</b></div>
-        <div class="grid g2" style="margin-top:12px">
-          <div class="metric"><div class="k">三点像顶 · 该警惕的</div><div class="v" style="font-size:14px;line-height:1.5">看这三个数，别看情绪</div></div>
-          <div class="metric"><div class="k">三个证伪条件</div><div class="v" style="font-size:14px;line-height:1.5">可跟踪的反向信号</div></div>
-        </div>
-        <div class="divider"></div>
-        <div class="note">最强反证：存储端 vs 设备端的预期减速节奏 · SOX ÷ 标普500 相对强弱分位 · SOX 历次 30%+ 回撤的跌多久/补多久（中位收复期与标普完全不是一个量级）。</div>
-      </div>
-
-      <div class="card">
-        <div class="card-h"><h2>估值与境内配置</h2><span class="hint">周期股的 PE 会骗人</span></div>
-        <div class="note" style="margin-top:0">半导体没有免费的长历史 PE 序列，本页不画长历史分位、也不编造——所有估值均为成分股自下而上重算的当期值。看分子往哪走（一致预期修正速度）与五端估值站位（前瞻 PE × 市净率，气泡大小＝权重）。</div>
-        <div class="divider"></div>
-        <div class="lead" style="margin-bottom:0;border-left-color:var(--warn)"><b>境内怎么买：没有直接工具，只有替代品。</b>已逐只核查，境内没有任何一只公募产品跟踪 SOX。可及的替代工具按与 SOX 的日收益相关系数降序排列——<b>相关系数越低，越不能当 SOX 用</b>（境外与 A 股收盘时点不同，口径列标注当日或滞后一日，不做调整会系统性低估相关性）。</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 面板 4：港股通调整 ============ -->
-  <section class="panel" id="p4" role="tabpanel">
-    <div class="card">
-      <div class="card-h"><span class="idx">04</span><h2>港股通标的证券调整信息</h2><span class="hint">上海证券交易所 · 更新日期 2026-11-20</span></div>
-      <div class="lead">港股通标的证券调整一览，含证券代码、简称、品种、调整内容与生效日期。<b>实际以交易所公告披露为准。</b></div>
-      <div class="tbl-wrap">
-        <table>
           <thead><tr><th class="num">序号</th><th>证券代码</th><th>英文简称</th><th>中文简称（参考）</th><th>品种</th><th>调整内容</th><th>生效日期</th></tr></thead>
           <tbody>
             <tr><td class="num">1</td><td>01440</td><td>STAR SHINE HLDG</td><td>应星控股</td><td>—</td><td><span class="pill down">调出</span></td><td>2026-11-23</td></tr>
@@ -545,49 +136,43 @@
             <tr><td class="num">9</td><td>03169</td><td>HGI TECH 50</td><td>嘉实科技５０</td><td>ETF</td><td><span class="pill up">调进</span></td><td>2026-11-09</td></tr>
             <tr><td class="num">10</td><td>03190</td><td>FB SSH HIGH DIV</td><td>富邦沪深港高股息</td><td>ETF</td><td><span class="pill up">调进</span></td><td>2026-11-09</td></tr>
           </tbody>
-        </table>
+        </table></div>
+        <div class="note">共 10 条调整：调进 8 条（股票 3、ETF 5）、调出 2 条。应星控股同日「旧代码调出 / 新代码调进」，属代码切换。</div>
+        <div class="note">原始来源：<a href="https://query.sse.com.cn/commonExcelDd.do?sqlId=COMMON_SSE_JYFW_HGT_XXPL_BDZQTZXX_L" target="_blank" rel="noopener">上交所 · 港股通标的证券调整信息</a>（知识库收录版本，更新至 2026-11-20）。本页为文字表格版；其余 4 个看板为原始 HTML 文件原样呈现。</div>
       </div>
-      <div class="note">共 10 条调整：调进 8 条（股票 3、ETF 5）、调出 2 条。应星控股同日「旧代码调出 / 新代码调进」，属代码切换。</div>
-      <div class="divider"></div>
-      <div class="note">原始来源：<a href="https://query.sse.com.cn/commonExcelDd.do?sqlId=COMMON_SSE_JYFW_HGT_XXPL_BDZQTZXX_L" target="_blank" rel="noopener">上交所 · 港股通标的证券调整信息</a>（知识库收录版本，更新至 2026-11-20）。</div>
     </div>
-  </section>
-
-</main>
-
-<footer>
-  数据来源：ima 知识库「南方国际看板」　·　仅供内部研究参考，不构成任何投资建议　·　市场有风险，投资需谨慎
-</footer>
+  </div>
+</div>
 
 <script>
 (function(){
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
-  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
-
-  function activate(id, pushHash){
-    var target = document.getElementById(id);
-    if(!target) return;
-    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.target === id); });
-    panels.forEach(function(p){ p.classList.toggle('active', p === target); });
-    if(pushHash && history.replaceState){ history.replaceState(null, '', '#' + id); }
-    window.scrollTo({top:0, behavior:'smooth'});
+  var panes = Array.prototype.slice.call(document.querySelectorAll('.pane'));
+  function load(pane){
+    var f = pane.querySelector('iframe');
+    if(f && !f.src && f.dataset.src){
+      f.src = f.dataset.src;
+      f.onload = function(){ pane.classList.add('loaded'); };
+    }
   }
-
-  tabs.forEach(function(t){
-    t.addEventListener('click', function(){ activate(t.dataset.target, true); });
-  });
-
-  // 键盘左右方向键切换
+  function activate(id, hash){
+    var t = document.getElementById(id);
+    if(!t) return;
+    tabs.forEach(function(x){ x.classList.toggle('active', x.dataset.target === id); });
+    panes.forEach(function(p){ p.classList.toggle('active', p === t); });
+    load(t);
+    if(hash && history.replaceState) history.replaceState(null,'','#'+id);
+  }
+  tabs.forEach(function(x){ x.addEventListener('click', function(){ activate(x.dataset.target, true); }); });
   document.addEventListener('keydown', function(e){
-    if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    var cur = tabs.findIndex(function(t){ return t.classList.contains('active'); });
-    if(cur < 0) return;
-    var next = e.key === 'ArrowRight' ? (cur+1) % tabs.length : (cur-1+tabs.length) % tabs.length;
-    activate(tabs[next].dataset.target, true);
+    if(e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
+    var i = tabs.findIndex(function(x){ return x.classList.contains('active'); });
+    if(i<0) return;
+    var n = e.key==='ArrowRight' ? (i+1)%tabs.length : (i-1+tabs.length)%tabs.length;
+    activate(tabs[n].dataset.target, true);
   });
-
-  // 支持通过 #p1~#p4 直达指定看板，便于分享
-  var h = (location.hash || '').replace('#','');
+  load(document.querySelector('.pane.active'));
+  var h = (location.hash||'').replace('#','');
   if(h && document.getElementById(h)) activate(h, false);
 })();
 </script>

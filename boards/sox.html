@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>费城半导体主线看板 · 桌面版 | 南方基金</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+:root{
+  --brand:#0052D9;--brand2:#3A7BFF;--brand3:#E8F0FF;--brand4:#F5F8FF;
+  --up:#E34D59;--down:#2BA471;
+  --bg:#EEF1F7;--card:#FFFFFF;
+  --ink:#141A2E;--ink2:#48546F;--ink3:#8A94AC;--ink4:#B4BCCD;
+  --line:#E5EAF3;--line2:#F0F3F9;
+  --amber:#FFF7EA;--amberLine:#F5A524;
+  --platform:#0052D9;--aichip:#7A4DFF;--hardware:#F5A524;--ev:#2BA471;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1680px;margin:0 auto;padding:0 28px 60px;}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+}
+.topbar-in{max-width:1680px;margin:0 auto;padding:0 28px;height:58px;
+  display:flex;align-items:center;gap:22px;}
+.logo{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:800;letter-spacing:.5px;}
+.logo .dot{width:9px;height:22px;border-radius:3px;background:linear-gradient(180deg,var(--brand),var(--brand2));}
+.logo small{font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:0;}
+.navlinks{display:flex;gap:2px;margin-left:8px;}
+.navlinks a{
+  font-size:13px;color:var(--ink2);text-decoration:none;padding:7px 13px;border-radius:8px;
+  cursor:pointer;transition:.15s;white-space:nowrap;
+}
+.navlinks a:hover{background:var(--brand3);color:var(--brand);}
+.topbar .asof{margin-left:auto;font-size:12px;color:var(--ink3);text-align:right;line-height:1.4;}
+.topbar .asof b{color:var(--ink2);font-weight:600;}
+
+/* ---------- Hero ---------- */
+.hero{
+  margin:20px 0 18px;border-radius:16px;padding:22px 26px;
+  background:linear-gradient(118deg,#04204F 0%,#0A3B96 42%,#1256D6 78%,#2E7BFF 100%);
+  position:relative;overflow:hidden;color:#fff;
+}
+.hero::after{content:'';position:absolute;right:-60px;top:-90px;width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,165,36,.30) 0%,transparent 68%);}
+.hero::before{content:'';position:absolute;left:38%;bottom:-140px;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(58,123,255,.45) 0%,transparent 70%);}
+.hero-top{display:flex;align-items:flex-end;gap:26px;position:relative;z-index:2;flex-wrap:wrap;}
+.hero h1{font-size:27px;font-weight:800;letter-spacing:1.5px;line-height:1.1;}
+.hero .sub{font-size:12.5px;color:rgba(255,255,255,.72);margin-top:7px;line-height:1.6;max-width:560px;}
+.hero .sub b{color:#FFD873;font-weight:600;}
+.hero .quote{margin-left:auto;text-align:right;}
+.hero .quote .px{font-size:38px;font-weight:800;letter-spacing:-.5px;line-height:1;}
+.hero .quote .px small{font-size:15px;font-weight:600;margin-left:8px;}
+.hero .quote .meta{font-size:11.5px;color:rgba(255,255,255,.66);margin-top:6px;}
+.hero-stats{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:20px;position:relative;z-index:2;}
+.hstat{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:11px;padding:10px 12px;}
+.hstat .l{font-size:11px;color:rgba(255,255,255,.62);}
+.hstat .v{font-size:19px;font-weight:700;margin-top:3px;letter-spacing:-.3px;}
+.hstat .s{font-size:10.5px;color:rgba(255,255,255,.55);margin-top:2px;}
+.pos{color:#FF9A9A;}.neg{color:#8DEFC0;}
+
+/* ---------- Sections ---------- */
+.sec{margin-top:34px;}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;}
+.sec-num{font-size:12px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand2));
+  width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  align-self:center;}
+.sec-title{font-size:20px;font-weight:800;letter-spacing:.3px;}
+.sec-tag{font-size:11.5px;color:var(--ink3);border:1px solid var(--line);background:#fff;
+  padding:3px 9px;border-radius:20px;}
+.sec-desc{font-size:13px;color:var(--ink2);line-height:1.75;margin:8px 0 16px;max-width:1180px;}
+.sec-desc b{color:var(--brand);font-weight:600;}
+
+.card{background:var(--card);border-radius:14px;padding:18px 20px;border:1px solid var(--line);
+  box-shadow:0 1px 3px rgba(20,40,90,.04);}
+.card-h{display:flex;align-items:center;gap:9px;margin-bottom:3px;}
+.card-h h3{font-size:15px;font-weight:700;}
+.card-h .badge{font-size:10.5px;padding:2px 8px;border-radius:20px;background:var(--brand3);color:var(--brand);font-weight:600;}
+.card-h .right{margin-left:auto;font-size:11.5px;color:var(--ink3);}
+.card-sub{font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:14px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-12{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;}
+.grid-21{display:grid;grid-template-columns:1fr .78fr;gap:16px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* ---------- Prosperity ---------- */
+.pbar{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--line2);cursor:pointer;transition:.15s;}
+.pbar:last-of-type{border-bottom:none;}
+.pbar:hover{background:var(--brand4);}
+.pbar .dot{width:9px;height:9px;border-radius:50%;margin-right:10px;flex-shrink:0;}
+.pbar .nm{width:138px;flex-shrink:0;}
+.pbar .nm b{font-size:13px;font-weight:600;display:block;}
+.pbar .nm span{font-size:10.5px;color:var(--ink3);}
+.pbar .barwrap{flex:1;height:26px;background:#F1F4F9;border-radius:13px;position:relative;overflow:hidden;margin:0 14px;}
+.pbar .fill{height:100%;border-radius:13px;display:flex;align-items:center;justify-content:flex-end;
+  padding-right:9px;font-size:11.5px;color:#fff;font-weight:700;transition:width .7s cubic-bezier(.2,.8,.2,1);}
+.pbar .mt{display:flex;gap:5px;flex-shrink:0;}
+.tag{font-size:11px;padding:3px 7px;border-radius:5px;min-width:66px;text-align:center;font-variant-numeric:tabular-nums;}
+.tag-up{background:#FFF1F1;color:var(--up);}
+.tag-dn{background:#EFFBF5;color:var(--down);}
+.tag-n{background:#F2F4F8;color:var(--ink2);}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:10.5px;color:var(--ink3);margin-top:12px;}
+.legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:4px;}
+.note{margin-top:12px;font-size:11.5px;color:var(--ink2);line-height:1.7;background:var(--brand4);
+  padding:11px 13px;border-radius:9px;border-left:3px solid var(--brand2);}
+.note b{color:var(--ink);}
+.note.amber{background:var(--amber);border-left-color:var(--amberLine);}
+.note.grey{background:#F5F7FA;border-left-color:#C3CBDA;}
+
+/* ---------- charts ---------- */
+.chart{width:100%;height:270px;}
+.chart-sm{width:100%;height:190px;}
+.chart-xs{width:100%;height:150px;}
+.cfoot{font-size:10.5px;color:var(--ink4);text-align:right;margin-top:7px;line-height:1.5;}
+.rangebtns{display:flex;gap:6px;margin-left:auto;}
+.rb{font-size:11.5px;padding:4px 11px;border-radius:16px;border:1px solid var(--line);background:#fff;
+  color:var(--ink2);cursor:pointer;transition:.15s;}
+.rb.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+
+/* ---------- KPI mini ---------- */
+.kpis{display:grid;gap:9px;}
+.kpi{background:#F7F9FD;border:1px solid var(--line2);border-radius:10px;padding:10px 12px;}
+.kpi .l{font-size:11px;color:var(--ink3);}
+.kpi .v{font-size:17px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums;}
+.kpi .s{font-size:10.5px;color:var(--ink3);margin-top:2px;line-height:1.5;}
+
+/* ---------- table ---------- */
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{font-size:11px;color:var(--ink3);font-weight:600;text-align:right;padding:7px 8px;
+  border-bottom:1px solid var(--line);white-space:nowrap;}
+th:first-child,td:first-child{text-align:left;}
+td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums;
+  white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--brand4);}
+.tname{font-weight:600;color:var(--ink);}
+.tcode{color:var(--ink4);font-size:11px;margin-left:5px;}
+.ttag{color:var(--ink3);font-size:11px;white-space:normal;line-height:1.45;text-align:left;}
+
+/* ---------- events ---------- */
+.ev-wrap{display:grid;grid-template-columns:296px 1fr;gap:16px;}
+.ev-list{display:flex;flex-direction:column;gap:9px;}
+.ev-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;
+  transition:.18s;position:relative;overflow:hidden;}
+.ev-item:hover{border-color:var(--brand2);}
+.ev-item.active{border-color:var(--brand);box-shadow:0 4px 14px rgba(0,82,217,.13);background:linear-gradient(120deg,#fff,#F6FAFF);}
+.ev-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand);}
+.ev-item .k{font-size:10.5px;color:var(--ink3);display:flex;align-items:center;gap:6px;}
+.ev-item .t{font-size:13.5px;font-weight:700;margin-top:5px;line-height:1.4;}
+.ev-item .d{font-size:11px;color:var(--ink3);margin-top:5px;line-height:1.5;}
+.st{font-size:10px;padding:1.5px 7px;border-radius:20px;font-weight:600;}
+.st-live{background:#FFF1F1;color:var(--up);}
+.st-hot{background:#F3EEFF;color:#7A4DFF;}
+.st-weak{background:#F2F4F8;color:var(--ink2);}
+.st-neu{background:#EAF3FF;color:var(--brand);}
+.st-ok{background:#EFFBF5;color:var(--down);}
+.ev-panel{display:none;}
+.ev-panel.active{display:block;}
+.ev-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+.ev-block{background:#F7F9FD;border-radius:10px;padding:13px 15px;font-size:12.5px;line-height:1.8;color:var(--ink2);}
+.ev-block h5{font-size:12px;color:var(--brand);margin-bottom:6px;font-weight:700;letter-spacing:.3px;}
+.ev-block .hl{color:var(--ink);font-weight:700;}
+.ev-block ul{margin:0;padding-left:16px;}
+.ev-block li{margin-bottom:3px;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.chip{font-size:11px;background:var(--brand3);color:var(--brand);padding:3px 10px;border-radius:14px;}
+.chip.g{background:#F2F4F8;color:var(--ink2);}
+
+/* ---------- sector tabs ---------- */
+.stabs{display:flex;gap:8px;margin-bottom:14px;}
+.stab{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;
+  transition:.18s;text-align:left;}
+.stab:hover{border-color:var(--brand2);}
+.stab.active{border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(0,82,217,.18);}
+.stab .n{font-size:13.5px;font-weight:700;}
+.stab .w{font-size:11px;opacity:.8;margin-top:3px;}
+.stab .sc{font-size:22px;font-weight:800;float:right;line-height:1;}
+.sdetail{display:none;}
+.sdetail.active{display:block;}
+
+/* ---------- fee ---------- */
+.feebar{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12px;}
+.feebar .fn{width:180px;flex-shrink:0;line-height:1.35;}
+.feebar .fw{flex:1;height:20px;background:#F1F4F9;border-radius:10px;overflow:hidden;}
+.feebar .ff{height:100%;border-radius:10px;display:flex;align-items:center;justify-content:flex-end;
+  padding-right:8px;color:#fff;font-size:11px;font-weight:600;}
+.feebar .fv{width:120px;text-align:right;color:var(--ink3);font-size:11px;}
+.prod{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;transition:.18s;}
+.pcard:hover{border-color:var(--brand2);box-shadow:0 4px 14px rgba(0,82,217,.08);}
+.pcard .tag{display:inline-block;font-size:10px;color:var(--brand);background:var(--brand3);
+  padding:2px 8px;border-radius:12px;min-width:0;margin-bottom:7px;}
+.pcard .nm{font-size:14px;font-weight:700;display:flex;align-items:baseline;gap:8px;}
+.pcard .nm span{font-size:15px;font-weight:800;color:var(--brand);margin-left:auto;}
+.pcard .ds{font-size:11.5px;color:var(--ink2);line-height:1.6;margin-top:6px;}
+.pcard .fe{font-size:11px;color:var(--ink3);margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);}
+
+.footer{margin-top:36px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 24px;}
+.footer p{font-size:11px;color:var(--ink3);line-height:1.8;margin-bottom:7px;}
+.footer p b{color:var(--ink2);}
+.footer .stamp{font-size:12px;color:var(--ink2);font-weight:700;margin-bottom:10px;}
+.hr{height:1px;background:var(--line);margin:16px 0;}
+@media(max-width:1400px){
+  .hero-stats{grid-template-columns:repeat(4,1fr);}
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  .ev-wrap{grid-template-columns:1fr;}
+  .stabs{flex-wrap:wrap;}
+}
+
+/* 三轮下跌 */
+.ddrow{border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin-top:11px;background:#FCFDFF;}
+.ddrow:first-child{margin-top:4px;}
+.ddrow.dd-red{border-left:3px solid #E34D59;}
+.ddrow.dd-amber{border-left:3px solid #F5A524;}
+.ddrow.dd-blue{border-left:3px solid #0052D9;}
+.ddhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:9px;}
+.ddp{font-size:12.5px;font-weight:700;color:var(--ink3);font-variant-numeric:tabular-nums;}
+.ddamp{font-size:19px;font-weight:800;color:#E34D59;letter-spacing:-.5px;}
+.ddwhat{font-size:14px;font-weight:800;color:var(--ink);}
+.ddbody{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12.5px;line-height:1.75;color:var(--ink2);}
+.ddbody b{color:var(--ink);}
+.ddk{font-size:10.5px;font-weight:700;color:var(--ink4);letter-spacing:1px;margin-bottom:3px;}
+@media(max-width:1080px){.ddbody{grid-template-columns:1fr;}}
+
+/* 版本标识 */
+.vtag{font-size:12px;font-weight:700;letter-spacing:1px;margin-left:12px;padding:3px 11px;border-radius:20px;
+  vertical-align:middle;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;}
+.vtag.vs{background:#FFDA6E;border-color:#FFDA6E;color:#6B4A00;}
+.vbar{margin-top:11px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.vbar .vl{font-size:11.5px;color:rgba(255,255,255,.6);}
+.vbar a{font-size:11.5px;color:#fff;text-decoration:none;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.24);padding:4px 12px;border-radius:20px;}
+.vbar a:hover{background:rgba(255,255,255,.28);}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="logo"><span class="dot"></span>费城半导体主线看板<small>南方基金 · 桌面版</small></div>
+    <div class="navlinks">
+      <a onclick="jump('s1')">一眼看懂</a>
+      <a onclick="jump('s2')">事件追踪</a>
+      <a onclick="jump('s3')">周期走到哪一段</a>
+      <a onclick="jump('s4')">五端详情</a>
+      <a onclick="jump('s5')">境内怎么买</a>
+    </div>
+    <div class="asof">数据截至 <b id="asofTop"></b><br>SOX 指数 / 30 只成分股收盘</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <h1>费城半导体指数 · SOX</h1>
+      <p class="sub" id="heroSub"></p>
+    </div>
+    <div class="quote">
+      <div class="px" id="heroPx">--<small id="heroChg"></small></div>
+      <div class="meta" id="heroMeta"></div>
+    </div>
+  </div>
+  <div class="hero-stats" id="heroStats"></div>
+</div>
+
+<!-- ============ S1 ============ -->
+<div class="sec" id="s1">
+  <div class="sec-head"><span class="sec-num">1</span><span class="sec-title">此刻的费城半导体 · 一眼看懂</span>
+    <span class="sec-tag">景气度 · 归因 · 估值盈利 · 全球与通道</span></div>
+  <p class="sec-desc">四张图回答四个问题。五端按<b>产业链</b>切，把 <b id="ncons"></b> 只成分股完整拆进 5 个端，
+    <b>五端权重合计 <span id="covw"></span>%</b>，每一条结论都能加总回指数本身。
+    <b>先说不利的：</b>指数距 <span id="hiDt"></span> 的高点还差 <span id="hiGap"></span>，今年 <span id="ytdHead2"></span> 的涨幅里，
+    有 <span id="segBig"></span> 个点是在 <span id="segWin"></span> 这三个月里涨出来的。</p>
+
+  <div class="grid-12">
+    <div class="card">
+      <div class="card-h"><h3>a · 五端交易景气度</h3><span class="badge">近 20 日 / 近 5 日 / 量能</span>
+        <span class="right" id="prosDate"></span></div>
+      <div class="card-sub">分数越高＝这一端近期越被资金买。<b>它是温度计，不是预测器</b>——高分说明钱在这里，不代表接下来还涨。</div>
+      <div id="prosBars"></div>
+      <div class="legend" id="prosLegend"></div>
+      <div class="note" id="prosNote"></div>
+      <div class="note grey" style="font-size:11px;" id="prosFormula"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>b · 今年这 <span id="ytdHead"></span> 是谁涨出来的</h3>
+        <span class="badge">价格指数口径 · 链式还原起点权重</span><span class="right" id="attDate"></span></div>
+      <div class="card-sub">每一条的长度＝<b>该端对指数点位的贡献（百分点）</b>，五条相加＝指数涨幅（本页做到小数点后三位相等，方法见页脚）。</div>
+      <div class="chart-sm" id="chartAttr" style="height:172px;"></div>
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-top:10px;" id="attKpis"></div>
+      <div class="chart-sm" id="chartBk" style="height:186px;margin-top:12px;"></div>
+      <div class="cfoot" id="bkFoot"></div>
+      <div class="note amber" id="attNote"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h"><h3>c · 估值与盈利位置</h3><span class="badge">周期股的 PE 会骗人</span><span class="right" id="valDate"></span></div>
+    <div class="card-sub">左图是分子在往哪走（一致预期修正的<b>速度</b>），右图是各端的估值站位。
+      <b>半导体没有免费的长历史 PE 序列，本页不画长历史分位图，也不编一个出来</b>——所有估值都是成分股自下而上重算的当期值。</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:6px;">下一财年一致预期修正幅度（指数层面，市值加权）</div>
+        <div class="chart-sm" id="chartEPS" style="height:224px;"></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:6px;">五端：前瞻 PE（横） × 市净率（纵），气泡大小＝权重</div>
+        <div class="chart-sm" id="chartVal" style="height:224px;"></div>
+      </div>
+    </div>
+    <div class="kpis" style="grid-template-columns:repeat(5,1fr);margin-top:12px;" id="valKpis"></div>
+    <div class="note amber" id="valNote"></div>
+    <div class="note grey" id="valNote2"></div>
+  </div>
+
+  <div class="grid-21" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-h"><h3>d · 放到全球与相关资产里看</h3><span class="badge">本币计价 · 价格指数</span>
+        <span class="right" id="globDate"></span></div>
+      <div class="kpis" style="grid-template-columns:repeat(6,1fr);margin-bottom:12px;" id="globKpis"></div>
+      <div class="chart" id="chartGlob" style="height:262px;"></div>
+      <div class="cfoot" id="globFoot"></div>
+      <div class="note" id="globNote"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>境内通道：没有</h3><span class="badge">已逐只核查</span>
+        <span class="right" id="etfDate"></span></div>
+      <div class="card-sub">境内<b>没有任何一只公募产品跟踪 SOX</b>。下面是可及的替代工具与它们跟 SOX 的<b>日收益相关系数</b>——
+        相关系数越低，越不能当 SOX 用。</div>
+      <div id="corrBars"></div>
+      <div class="note amber" id="corrNote"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ S2 ============ -->
+<div class="sec" id="s2">
+  <div class="sec-head"><span class="sec-num">2</span><span class="sec-title">五条事件线</span>
+    <span class="sec-tag">每条都对应指数的一个定价环节</span></div>
+  <p class="sec-desc"><b>存储涨价</b>是今年最大的单一利润源、<b>AI 资本开支</b>是需求的唯一来源、<b>先进制程</b>决定供给瓶颈在哪、
+    <b>出口管制与关税</b>决定可售市场、<b>车规工业</b>是这个指数里唯一与 AI 无关的一半。点左侧切换。</p>
+  <div class="ev-wrap">
+    <div class="ev-list" id="evList"></div>
+    <div class="card" id="evPanels"></div>
+  </div>
+</div>
+
+<!-- ============ S3 周期定位 ============ -->
+<div class="sec" id="s3">
+  <div class="sec-head"><span class="sec-num">3</span><span class="sec-title">这轮半导体行情，走到周期哪一段？</span>
+    <span class="sec-tag">S0–S7 状态机 · 三点像顶 / 三点不像</span></div>
+  <p class="sec-desc" id="s3desc"></p>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-h"><h3>状态机定位</h3><span class="badge">商品超级周期 S0–S7</span>
+      <span class="right" id="smDate"></span></div>
+    <div class="card-sub">这套状态机来自本机既有的<b>「商品超级周期」框架</b>（S0 过剩崩溃 → S7 反转再累积），
+      原本用于内存、铜、铀这类<b>高固定成本、慢供给、可压库存</b>的品种。半导体（尤其存储与代工）正是它的原型，
+      所以直接借来给 SOX 定位。<b>它定位的是产业周期，不是股价</b>——两者可以差 6 到 12 个月。</div>
+    <div id="smBar"></div>
+    <div class="grid-2" style="margin-top:14px;">
+      <div><div class="ev-block"><h5>为什么落在这一档</h5><div id="smWhy"></div></div></div>
+      <div><div class="ev-block"><h5>最强反证 · 什么会推翻这个定位</h5><div id="smAgainst"></div></div></div>
+    </div>
+    <div class="note amber" id="smNote"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-h"><h3>存储端 vs 设备端：谁的预期在减速</h3>
+        <span class="badge">周期见顶的领先信号</span><span class="right" id="revDate"></span></div>
+      <div class="card-sub">存储是产能驱动品种，它的一致预期修正<b>先加速、先减速</b>；设备端跟在它后面 1–2 个季度。
+        两条线的<b>斜率差</b>比绝对值更有信息量。</div>
+      <div class="chart" id="chartRev" style="height:262px;"></div>
+      <div class="cfoot" id="revFoot"></div>
+      <div class="note" id="revNote"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>SOX ÷ 标普500：相对强弱在什么分位</h3>
+        <span class="right" id="rsDate"></span></div>
+      <div class="chart" id="chartRS" style="height:262px;"></div>
+      <div class="cfoot" id="rsFoot"></div>
+      <div class="note amber" id="rsNote"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h"><h3>SOX 的 <span id="zzN"></span> 次 30% 以上回撤：跌多久 · 补多久</h3>
+      <span class="badge" id="zzFrom"></span></div>
+    <div class="card-sub">这张表不是用来安慰的。<b>半导体的回撤中位数是 <span id="zzMed"></span>，中位收复期 <span id="zzBack"></span> 天</b>，
+      跟标普500 完全不是一个量级。</div>
+    <div style="max-height:340px;overflow:auto;"><table id="zzTable"></table></div>
+    <div class="note amber" id="zzNote"></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-h"><h3>三点像周期顶</h3><span class="badge" style="background:#FFF1F1;color:#E34D59;">该警惕的</span></div>
+      <div id="like"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>三点不像</h3><span class="badge" style="background:#EFFBF5;color:#2BA471;">该记住的</span></div>
+      <div id="unlike"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h"><h3>三个可跟踪的证伪条件</h3>
+      <span class="badge">看这三个数，别看情绪</span></div>
+    <div id="falsify"></div>
+  </div>
+</div>
+
+<!-- ============ S4 ============ -->
+<div class="sec" id="s4">
+  <div class="sec-head"><span class="sec-num">4</span><span class="sec-title">五端详情</span>
+    <span class="sec-tag">按产业链切，五端合计＝指数 <span id="covw2"></span>% 权重</span></div>
+  <p class="sec-desc">先看这一端在指数里扮演什么角色（权重、beta、今年贡献），再判断它走到哪一步、下一步验证什么。</p>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-h"><h3>换一种切法：按交易主线</h3><span class="badge">与五端交叉，不是替代</span>
+      <span class="right" id="lineDate"></span></div>
+    <div class="card-sub">五端回答"钱在产业链哪个环节"，主线回答"钱在赌哪件事"。同一只股票同时有一个端和一个主线标签；
+      主线是<b>本页自建的归类</b>（规则见页脚），30 只成分股全部有归属。</div>
+    <div style="overflow:auto;"><table id="lineTable"></table></div>
+    <div class="note amber" id="lineNote"></div>
+  </div>
+
+  <div class="stabs" id="stabs"></div>
+  <div id="sdetails"></div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h"><h3>成分股全景 · 全部 30 只</h3>
+      <span class="right">权重来自 <span id="holdDt"></span> 持仓｜行情与一致预期截至 <span id="cstDate"></span></span></div>
+    <div style="display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;" id="cstTabs"></div>
+    <div style="max-height:560px;overflow:auto;"><table id="cstTable"></table></div>
+    <div class="cfoot" id="cstFoot"></div>
+  </div>
+</div>
+
+<!-- ============ S5 ============ -->
+<div class="sec" id="s5">
+  <div class="sec-head"><span class="sec-num">5</span><span class="sec-title">境内怎么买：没有直接工具，只有替代品</span>
+    <span class="sec-tag">先说结论：境内没有跟踪 SOX 的产品</span></div>
+  <p class="sec-desc" id="s5desc"></p>
+
+  <div class="card">
+    <div class="card-h"><h3>核查过程与结果</h3><span class="right" id="chkDate"></span></div>
+    <div id="chkBox"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h"><h3>替代方案对照表</h3><span class="badge">相关系数是这张表的主键</span>
+      <span class="right" id="altDate"></span></div>
+    <div class="card-sub">按与 SOX 的<b>日收益相关系数</b>降序。境外市场与 A 股收盘时点不同，
+      表里的"口径"列标出取的是当日还是滞后一日——<b>不做这个调整会系统性低估相关性</b>。</div>
+    <div style="overflow:auto;"><table id="altTable"></table></div>
+    <div class="note amber" id="altNote"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h"><h3>相关系数意味着什么</h3><span class="badge">别把 0.2 当成 1</span></div>
+    <div class="grid-2">
+      <div><div class="chart-sm" id="chartAlt" style="height:236px;"></div></div>
+      <div id="altCalc"></div>
+    </div>
+    <div class="note grey" id="altCalcNote"></div>
+  </div>
+
+  <div class="prod" id="prodCards"></div>
+</div>
+
+<div class="footer" id="foot">
+  <p class="stamp" id="footStamp"></p>
+  <div id="footBody"></div>
+</div>
+
+</div>
+
+<script>
+var DATA = {"asof": "2026-08-11", "cov_w": 100.0, "n_cons": 30, "qc": {"missing": [], "stale": [], "asof": "2026-08-11", "cov_w": 99.99999999999999, "stale_w": 0.0, "fix": {"fixed": ["ALAB"], "unfix": []}}, "cons_meta": {"asof_holdings": "2026-08-10", "n": 30, "w_raw_sum": 99.924637}, "eps_qc": {"fail": [], "n": 30, "cov": 99.99999999999999}, "capsched": {"ref": "2026-05-29", "top3": [["NVDA", 12.098], ["AVGO", 10.232], ["MU", 7.995]], "n_at_cap": 9, "rest_max": 4.041}, "weight_qc": {"src_holdings": "2026-08-10", "seg_bounds": ["2025-12-31", "2026-03-20", "2026-06-18", "2026-08-11"], "seg_resid": [0.0001, 0.0001, 0.0], "ytd_rec": 70.807, "ytd_act": 70.807, "ytd_gap": -0.0, "te": 0.574, "corr": 0.99994, "n_days": 152, "naive_rec": 56.23}, "hero": {"close": 12098.47, "chg1d": 0.87, "chg5d": -0.66, "chg20d": -4.45, "chg60d": 0.2, "ytd": 70.81, "ytd_spx": 12.89, "ytd_ndx": 16.93, "y26_high": 14634.72, "y26_high_dt": "2026-06-22", "y26_low": 7142.33, "y26_low_dt": "2026-03-30", "from_high": -17.33, "from_low": 69.39, "dd26": -28.61, "vol60": 64.8, "vol250": 44.2, "vix": 15.31, "tnx": 4.68, "ath": "2026-06-22", "beta_spx": 2.59}, "yearly": [["2011", -11.51], ["2012", 5.38], ["2013", 39.31], ["2014", 28.38], ["2015", -3.41], ["2016", 36.62], ["2017", 38.23], ["2018", -7.81], ["2019", 60.12], ["2020", 51.14], ["2021", 41.16], ["2022", -35.83], ["2023", 64.9], ["2024", 19.27], ["2025", 42.23], ["2026", 70.81]], "rebal_alpha": {"index": 70.81, "static": 67.73, "diff": 3.08}, "attrib": {"total": 70.81, "index_ytd": 70.81, "bucket": {"equip": {"contrib": 13.12, "w0": 20.28, "w1": 21.9, "ret": 64.69}, "mem": {"contrib": 14.03, "w0": 5.49, "w1": 8.09, "ret": 255.56}, "logic": {"contrib": 26.99, "w0": 43.62, "w1": 42.89, "ret": 61.88}, "analog": {"contrib": 7.46, "w0": 21.48, "w1": 18.0, "ret": 34.73}, "foundry": {"contrib": 9.21, "w0": 9.13, "w1": 9.12, "ret": 100.88}}, "top": [["MU", "美光", 14.01, 204.3, 7.66, 4.78], ["MRVL", "迈威尔", 9.04, 149.8, 4.39, 3.76], ["INTC", "英特尔", 7.37, 164.8, 3.67, 3.6], ["AMD", "AMD", 6.29, 121.5, 3.93, 7.79], ["AMAT", "应用材料", 3.26, 104.5, 5.01, 4.03], ["AVGO", "博通", 2.91, 20.2, 10.21, 8.5], ["LRCX", "泛林", 2.8, 81.9, 4.16, 4.34], ["NVDA", "英伟达", 2.71, 16.6, 13.35, 12.51], ["ASML", "阿斯麦", 2.25, 68.2, 4.65, 3.99], ["TXN", "德州仪器", 2.24, 62.1, 3.98, 4.08], ["TER", "泰瑞达", 2.01, 96.1, 2.35, 2.2], ["KLAC", "科磊", 1.98, 65.0, 4.33, 4.09]], "bot": [["RMBS", "Rambus", 0.02, 4.9, 0.43, 0.72], ["SWKS", "Skyworks", 0.04, 7.8, 0.43, 0.68], ["QRVO", "Qorvo", 0.07, 14.4, 0.35, 0.57], ["NVMI", "Nova", 0.13, 20.6, 0.5, 0.7], ["NXPI", "恩智浦", 0.24, 8.9, 2.42, 3.96], ["QCOM", "高通", 0.26, -4.9, 2.79, 4.03]], "n_up": 29, "n_dn": 1, "median_ret": 63.55, "mean_ret": 66.73, "gap": {"rec": 70.807, "act": 70.807, "gap": -0.0, "gap_rel": -0.0, "seg_resid_max": 0.0001, "daily_err_max_bp": 25.28, "daily_err_med_bp": 3.38, "n_days": 152, "no_recon": true}, "top5": 25.16, "top5_w": 40.88, "top5_w0": 33.81, "top5_names": ["英伟达", "博通", "美光", "应用材料", "阿斯麦"], "rest": 45.65, "eq_ytd": 66.73, "eq_geo": 59.62}, "segs": [{"t0": "2025-12-31", "t1": "2026-03-20", "ret": 8.29}, {"t0": "2026-03-20", "t1": "2026-06-18", "ret": 86.97}, {"t0": "2026-06-18", "t1": "2026-08-11", "ret": -15.64}], "conc": {"top3": 31.22, "top5": 40.88, "top10": 62.09, "top10_list": [["英伟达", 13.35], ["博通", 10.21], ["美光", 7.66], ["应用材料", 5.01], ["阿斯麦", 4.65], ["迈威尔", 4.39], ["科磊", 4.33], ["台积电", 4.32], ["泛林", 4.16], ["亚德诺", 4.01]], "n_half": 8, "cap12": 12.0, "cap4": 4.0, "bk_line": {"dates": ["2025-12-31", "2026-01-02", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11"], "sox": [100.0, 104.01, 105.13, 108.02, 106.94, 104.98, 107.84, 108.35, 109.39, 108.73, 110.65, 111.92, 110.04, 113.54, 113.72, 112.35, 111.91, 114.6, 117.27, 117.47, 112.92, 114.84, 112.47, 107.57, 107.5, 113.63, 115.24, 114.46, 117.06, 114.14, 114.89, 114.87, 115.97, 115.39, 116.62, 115.96, 117.64, 119.54, 115.73, 114.33, 114.88, 109.62, 111.74, 110.43, 106.09, 110.27, 111.04, 111.74, 107.91, 107.96, 110.07, 110.64, 110.05, 111.01, 108.29, 109.74, 111.15, 112.49, 107.1, 105.29, 100.84, 107.13, 110.15, 110.59, 111.76, 113.0, 120.16, 122.68, 125.51, 127.62, 130.23, 130.44, 131.71, 134.91, 135.52, 136.2, 139.9, 142.29, 148.43, 146.94, 141.68, 145.01, 148.29, 149.59, 148.73, 155.02, 161.97, 157.57, 166.25, 170.56, 165.42, 169.67, 170.46, 163.61, 159.57, 159.61, 166.78, 168.91, 172.28, 181.8, 179.33, 181.12, 181.13, 183.05, 193.79, 196.48, 192.25, 172.53, 182.22, 178.7, 172.33, 185.96, 188.78, 199.06, 187.69, 190.27, 202.48, 206.61, 190.35, 190.0, 196.82, 186.41, 193.55, 201.14, 188.52, 178.26, 182.12, 173.66, 177.53, 182.97, 183.07, 174.33, 178.76, 175.05, 167.55, 164.81, 165.8, 174.44, 175.21, 174.27, 166.86, 163.13, 155.8, 147.5, 159.58, 159.69, 161.37, 171.95, 169.54, 170.1, 174.45, 169.33, 170.81], "equip": [100.0, 106.58, 112.67, 116.91, 114.77, 112.06, 118.82, 120.62, 120.07, 119.16, 125.24, 127.73, 124.59, 127.84, 126.55, 126.5, 127.94, 133.58, 134.38, 137.53, 128.18, 129.71, 127.58, 120.55, 122.25, 131.27, 132.58, 131.92, 136.21, 132.66, 135.94, 136.21, 139.38, 138.79, 141.29, 140.81, 142.58, 146.65, 141.34, 139.6, 139.36, 131.49, 134.4, 130.8, 121.86, 128.74, 130.93, 132.13, 127.04, 127.73, 130.69, 133.39, 132.35, 135.01, 132.45, 135.42, 139.86, 138.53, 128.68, 127.58, 121.67, 129.29, 133.8, 131.73, 132.71, 133.83, 146.07, 150.57, 152.39, 153.78, 155.0, 152.44, 149.77, 154.37, 153.93, 153.0, 154.94, 154.4, 160.64, 156.79, 149.52, 146.49, 149.93, 148.75, 147.49, 154.15, 163.29, 157.15, 164.06, 164.35, 160.17, 163.6, 164.91, 158.13, 152.75, 150.93, 159.57, 162.49, 165.42, 173.28, 169.77, 169.67, 169.36, 170.06, 179.89, 184.34, 184.24, 167.12, 179.51, 181.39, 178.12, 198.28, 202.95, 210.15, 199.24, 203.75, 214.96, 221.81, 202.68, 202.71, 219.18, 207.88, 225.53, 238.17, 214.86, 195.81, 196.3, 183.46, 187.42, 194.37, 195.07, 185.92, 192.77, 189.57, 183.48, 178.47, 176.77, 187.22, 185.24, 186.8, 178.97, 171.49, 160.83, 150.53, 167.68, 167.78, 169.31, 180.9, 176.86, 176.23, 179.73, 175.56, 180.33], "mem": [100.0, 110.38, 109.19, 119.5, 117.87, 113.72, 119.81, 120.03, 117.66, 116.4, 117.63, 126.57, 127.45, 136.37, 139.11, 139.22, 135.66, 142.74, 151.56, 151.54, 144.14, 151.67, 144.53, 131.6, 132.55, 137.05, 133.61, 129.98, 141.63, 142.54, 142.25, 138.36, 145.47, 144.28, 147.71, 144.78, 144.08, 147.86, 143.55, 142.32, 142.36, 130.71, 137.94, 136.72, 127.69, 133.93, 138.51, 143.82, 139.25, 146.36, 151.35, 157.86, 157.86, 152.31, 145.12, 139.21, 136.28, 132.13, 123.08, 123.53, 111.25, 116.96, 127.08, 126.78, 130.49, 130.41, 140.66, 145.8, 145.85, 148.0, 161.44, 158.22, 158.55, 158.31, 156.11, 156.66, 169.29, 167.85, 174.02, 182.15, 173.28, 177.96, 177.78, 185.65, 196.7, 217.9, 227.56, 220.79, 253.35, 269.48, 259.8, 272.18, 262.85, 246.0, 231.79, 237.15, 249.01, 259.52, 256.05, 304.14, 313.66, 312.03, 326.9, 347.69, 359.1, 364.49, 337.56, 292.66, 320.72, 315.85, 300.79, 334.71, 330.42, 363.81, 341.07, 347.83, 378.07, 402.35, 350.27, 348.71, 400.36, 373.45, 379.02, 383.24, 343.49, 324.01, 327.0, 311.29, 315.14, 329.3, 325.11, 310.42, 325.25, 300.11, 283.81, 282.47, 287.58, 321.46, 317.58, 327.11, 304.23, 297.8, 271.42, 245.06, 288.67, 272.73, 274.95, 296.1, 295.75, 292.13, 291.5, 285.42, 287.86], "logic": [100.0, 102.37, 101.39, 100.78, 100.7, 97.97, 99.14, 100.17, 101.35, 99.07, 100.13, 100.82, 98.04, 99.62, 99.99, 99.3, 98.91, 100.71, 101.28, 100.49, 98.72, 98.4, 95.96, 90.85, 89.98, 97.43, 100.97, 100.29, 99.06, 95.78, 95.11, 95.93, 96.84, 97.4, 97.55, 97.09, 98.13, 99.77, 95.86, 94.28, 95.76, 92.61, 94.29, 95.06, 94.45, 98.04, 98.03, 98.13, 95.77, 94.4, 96.14, 95.34, 94.6, 95.71, 92.7, 94.84, 94.89, 97.46, 93.48, 91.37, 87.92, 93.57, 95.27, 96.75, 97.01, 98.59, 102.66, 104.14, 108.99, 111.61, 114.82, 116.73, 117.73, 120.24, 121.21, 122.28, 126.42, 126.17, 131.78, 130.42, 125.82, 127.48, 129.38, 130.35, 128.49, 131.76, 137.54, 134.24, 139.81, 143.45, 140.32, 143.68, 147.58, 141.94, 138.9, 139.16, 144.98, 146.64, 148.87, 152.56, 150.25, 153.6, 155.01, 159.08, 168.63, 167.79, 163.25, 148.2, 154.0, 150.01, 143.77, 151.51, 153.03, 160.7, 152.7, 155.06, 162.7, 162.08, 152.36, 151.97, 151.96, 146.31, 150.41, 155.45, 149.34, 143.29, 147.58, 143.03, 147.14, 151.08, 152.11, 144.49, 146.86, 144.96, 137.59, 135.88, 137.86, 143.39, 145.97, 144.35, 138.49, 134.97, 130.09, 124.12, 132.42, 134.41, 138.07, 147.93, 146.34, 147.68, 151.84, 146.25, 146.33], "analog": [100.0, 102.22, 103.44, 110.54, 107.93, 108.49, 109.67, 108.79, 109.85, 111.12, 111.15, 111.66, 110.38, 113.69, 114.18, 112.79, 113.03, 113.64, 119.89, 119.8, 116.38, 120.05, 118.1, 119.08, 119.93, 121.06, 120.6, 121.18, 126.02, 123.4, 125.06, 125.18, 125.2, 122.91, 124.68, 124.38, 124.35, 125.08, 122.95, 121.77, 121.2, 116.17, 116.26, 113.22, 108.29, 110.53, 110.5, 110.8, 106.67, 106.92, 108.86, 109.24, 108.28, 108.15, 107.31, 108.57, 111.49, 112.49, 109.56, 107.22, 104.09, 110.41, 111.51, 111.45, 114.24, 114.39, 121.03, 122.75, 123.12, 124.7, 125.25, 124.71, 128.46, 132.93, 135.66, 136.3, 137.66, 149.92, 149.95, 146.37, 141.9, 149.57, 155.43, 155.11, 154.83, 157.25, 161.57, 158.4, 160.52, 164.9, 161.52, 166.73, 165.84, 162.05, 160.02, 159.29, 162.25, 159.04, 165.17, 174.01, 170.92, 170.97, 166.12, 161.52, 170.1, 173.11, 170.88, 157.15, 161.14, 159.64, 154.31, 163.09, 164.74, 171.2, 163.45, 160.66, 170.62, 174.87, 160.78, 160.56, 163.2, 149.03, 149.53, 154.11, 151.19, 146.35, 151.03, 145.5, 148.86, 153.25, 153.15, 146.92, 151.03, 149.23, 144.08, 142.39, 142.41, 147.09, 148.86, 145.99, 141.78, 141.99, 138.45, 132.59, 137.88, 137.9, 135.11, 141.11, 138.64, 139.47, 145.44, 142.23, 143.15], "foundry": [100.0, 105.84, 106.34, 108.67, 110.44, 108.16, 113.95, 113.82, 117.37, 118.26, 120.38, 119.03, 118.89, 124.91, 124.9, 116.4, 113.76, 117.22, 122.42, 121.39, 116.9, 121.05, 120.01, 117.82, 118.27, 124.35, 125.32, 122.61, 128.15, 125.22, 125.36, 124.11, 122.48, 120.9, 122.19, 121.56, 127.27, 128.83, 124.91, 124.93, 124.67, 118.65, 122.16, 122.22, 116.6, 120.68, 121.44, 123.07, 116.46, 117.35, 118.31, 117.43, 117.15, 118.52, 114.45, 116.39, 117.91, 122.17, 114.65, 113.21, 108.97, 116.61, 121.17, 122.93, 123.74, 126.54, 137.27, 140.08, 141.69, 144.06, 144.49, 144.6, 146.29, 149.17, 147.17, 148.17, 151.25, 152.11, 169.75, 171.77, 168.53, 177.95, 178.87, 183.19, 182.11, 191.71, 200.32, 196.22, 207.36, 208.91, 200.36, 201.71, 202.51, 193.43, 190.01, 190.68, 199.81, 204.28, 205.88, 211.58, 210.16, 209.89, 203.8, 203.75, 206.56, 208.37, 209.13, 190.15, 201.64, 199.49, 194.42, 206.5, 212.7, 219.95, 207.4, 211.97, 229.67, 237.01, 221.58, 222.36, 222.57, 216.77, 224.87, 236.04, 217.8, 208.21, 213.13, 199.28, 200.92, 203.23, 200.37, 190.85, 193.79, 189.35, 181.58, 177.44, 179.52, 191.47, 188.31, 184.72, 174.88, 173.35, 166.14, 158.36, 172.44, 171.96, 172.95, 183.47, 181.82, 182.18, 185.47, 180.4, 181.62]}}, "rs": {"now": 1.5655, "pct_all": 99.4, "pct_10y": 97.9, "max": 1.9584, "max_dt": "2026-06-22", "min2000s": 0.2156, "min2000s_dt": "2008-12-08", "peak2000": 0.9553, "peak2000_dt": "2000-03-10", "series": [["1994-05-08", 0.2628], ["1994-05-15", 0.2557], ["1994-05-22", 0.2607], ["1994-05-29", 0.2589], ["1994-06-05", 0.2759], ["1994-06-12", 0.2591], ["1994-06-19", 0.2608], ["1994-06-26", 0.2578], ["1994-07-03", 0.2692], ["1994-07-10", 0.2795], ["1994-07-17", 0.2743], ["1994-07-24", 0.2649], ["1994-07-31", 0.2672], ["1994-08-07", 0.2717], ["1994-08-14", 0.2854], ["1994-08-21", 0.2922], ["1994-08-28", 0.2917], ["1994-09-04", 0.278], ["1994-09-11", 0.2818], ["1994-09-18", 0.2896], ["1994-09-25", 0.2828], ["1994-10-02", 0.2783], ["1994-10-09", 0.2697], ["1994-10-16", 0.2685], ["1994-10-23", 0.2837], ["1994-10-30", 0.2983], ["1994-11-06", 0.3021], ["1994-11-13", 0.3019], ["1994-11-20", 0.3105], ["1994-11-27", 0.3078], ["1994-12-04", 0.3037], ["1994-12-11", 0.3005], ["1994-12-18", 0.2924], ["1994-12-25", 0.2975], ["1995-01-01", 0.305], ["1995-01-08", 0.299], ["1995-01-15", 0.3141], ["1995-01-22", 0.3141], ["1995-01-29", 0.3058], ["1995-02-05", 0.305], ["1995-02-12", 0.3235], ["1995-02-19", 0.3253], ["1995-02-26", 0.3254], ["1995-03-05", 0.3479], ["1995-03-12", 0.3448], ["1995-03-19", 0.3463], ["1995-03-26", 0.3628], ["1995-04-02", 0.3484], ["1995-04-09", 0.351], ["1995-04-16", 0.3687], ["1995-04-23", 0.3536], ["1995-04-30", 0.3832], ["1995-05-07", 0.3876], ["1995-05-14", 0.3965], ["1995-05-21", 0.4248], ["1995-05-28", 0.4241], ["1995-06-04", 0.4204], ["1995-06-11", 0.4274], ["1995-06-18", 0.4355], ["1995-06-25", 0.4578], ["1995-07-02", 0.4479], ["1995-07-09", 0.4731], ["1995-07-16", 0.5002], ["1995-07-23", 0.4759], ["1995-07-30", 0.5044], ["1995-08-06", 0.4741], ["1995-08-13", 0.4935], ["1995-08-20", 0.5254], ["1995-08-27", 0.4956], ["1995-09-03", 0.486], ["1995-09-10", 0.5193], ["1995-09-17", 0.4763], ["1995-09-24", 0.4824], ["1995-10-01", 0.4707], ["1995-10-08", 0.432], ["1995-10-15", 0.4202], ["1995-10-22", 0.4288], ["1995-10-29", 0.4331], ["1995-11-05", 0.4401], ["1995-11-12", 0.4199], ["1995-11-19", 0.3819], ["1995-11-26", 0.3616], ["1995-12-03", 0.3665], ["1995-12-10", 0.3597], ["1995-12-17", 0.3255], ["1995-12-24", 0.3362], ["1995-12-31", 0.3258], ["1996-01-07", 0.3181], ["1996-01-14", 0.2987], ["1996-01-21", 0.2842], ["1996-01-28", 0.3023], ["1996-02-04", 0.3082], ["1996-02-11", 0.3041], ["1996-02-18", 0.2985], ["1996-02-25", 0.3111], ["1996-03-03", 0.2774], ["1996-03-10", 0.2726], ["1996-03-17", 0.285], ["1996-03-24", 0.2752], ["1996-03-31", 0.2726], ["1996-04-07", 0.2718], ["1996-04-14", 0.283], ["1996-04-21", 0.2993], ["1996-04-28", 0.3251], ["1996-05-05", 0.3303], ["1996-05-12", 0.3137], ["1996-05-19", 0.3178], ["1996-05-26", 0.2913], ["1996-06-02", 0.3077], ["1996-06-09", 0.2945], ["1996-06-16", 0.2873], ["1996-06-23", 0.2646], ["1996-06-30", 0.2605], ["1996-07-07", 0.2644], ["1996-07-14", 0.2455], ["1996-07-21", 0.2391], ["1996-07-28", 0.2465], ["1996-08-04", 0.2528], ["1996-08-11", 0.2599], ["1996-08-18", 0.2529], ["1996-08-25", 0.2558], ["1996-09-01", 0.2599], ["1996-09-08", 0.2469], ["1996-09-15", 0.2469], ["1996-09-22", 0.2664], ["1996-09-29", 0.2756], ["1996-10-06", 0.2642], ["1996-10-13", 0.2793], ["1996-10-20", 0.2763], ["1996-10-27", 0.2686], ["1996-11-03", 0.2672], ["1996-11-10", 0.2837], ["1996-11-17", 0.2936], ["1996-11-24", 0.3113], ["1996-12-01", 0.3143], ["1996-12-08", 0.3291], ["1996-12-15", 0.3387], ["1996-12-22", 0.3253], ["1996-12-29", 0.323], ["1997-01-05", 0.3353], ["1997-01-12", 0.3423], ["1997-01-19", 0.344], ["1997-01-26", 0.3514], ["1997-02-02", 0.3673], ["1997-02-09", 0.3575], ["1997-02-16", 0.3551], ["1997-02-23", 0.3435], ["1997-03-02", 0.3451], ["1997-03-09", 0.3471], ["1997-03-16", 0.3556], ["1997-03-23", 0.3304], ["1997-03-30", 0.3523], ["1997-04-06", 0.3773], ["1997-04-13", 0.3702], ["1997-04-20", 0.3434], ["1997-04-27", 0.3437], ["1997-05-04", 0.3726], ["1997-05-11", 0.382], ["1997-05-18", 0.3695], ["1997-05-25", 0.3777], ["1997-06-01", 0.3669], ["1997-06-08", 0.3499], ["1997-06-15", 0.3301], ["1997-06-22", 0.342], ["1997-06-29", 0.3461], ["1997-07-06", 0.3454], ["1997-07-13", 0.3708], ["1997-07-20", 0.3833], ["1997-07-27", 0.3833], ["1997-08-03", 0.3982], ["1997-08-10", 0.4108], ["1997-08-17", 0.4152], ["1997-08-24", 0.424], ["1997-08-31", 0.4149], ["1997-09-07", 0.419], ["1997-09-14", 0.4063], ["1997-09-21", 0.4026], ["1997-09-28", 0.4005], ["1997-10-05", 0.3923], ["1997-10-12", 0.4031], ["1997-10-19", 0.3675], ["1997-10-26", 0.335], ["1997-11-02", 0.3301], ["1997-11-09", 0.3319], ["1997-11-16", 0.3163], ["1997-11-23", 0.3198], ["1997-11-30", 0.3042], ["1997-12-07", 0.2959], ["1997-12-14", 0.2603], ["1997-12-21", 0.2819], ["1997-12-28", 0.2764], ["1998-01-04", 0.2821], ["1998-01-11", 0.2683], ["1998-01-18", 0.2713], ["1998-01-25", 0.2835], ["1998-02-01", 0.2949], ["1998-02-08", 0.2981], ["1998-02-15", 0.3008], ["1998-02-22", 0.3037], ["1998-03-01", 0.3016], ["1998-03-08", 0.2776], ["1998-03-15", 0.2761], ["1998-03-22", 0.2595], ["1998-03-29", 0.2716], ["1998-04-05", 0.2721], ["1998-04-12", 0.2596], ["1998-04-19", 0.2683], ["1998-04-26", 0.2899], ["1998-05-03", 0.2828], ["1998-05-10", 0.2853], ["1998-05-17", 0.2641], ["1998-05-24", 0.2446], ["1998-05-31", 0.2377], ["1998-06-07", 0.2284], ["1998-06-14", 0.2144], ["1998-06-21", 0.2145], ["1998-06-28", 0.2215], ["1998-07-05", 0.2142], ["1998-07-12", 0.2197], ["1998-07-19", 0.2245], ["1998-07-26", 0.2183], ["1998-08-02", 0.2277], ["1998-08-09", 0.2476], ["1998-08-16", 0.2378], ["1998-08-23", 0.2231], ["1998-08-30", 0.2054], ["1998-09-06", 0.2042], ["1998-09-13", 0.2096], ["1998-09-20", 0.208], ["1998-09-27", 0.2175], ["1998-10-04", 0.2031], ["1998-10-11", 0.204], ["1998-10-18", 0.2186], ["1998-10-25", 0.2334], ["1998-11-01", 0.239], ["1998-11-08", 0.2418], ["1998-11-15", 0.2591], ["1998-11-22", 0.2661], ["1998-11-29", 0.2688], ["1998-12-06", 0.2929], ["1998-12-13", 0.2843], ["1998-12-20", 0.294], ["1998-12-27", 0.2849], ["1999-01-03", 0.2852], ["1999-01-10", 0.307], ["1999-01-17", 0.3244], ["1999-01-24", 0.3206], ["1999-01-31", 0.3286], ["1999-02-07", 0.3115], ["1999-02-14", 0.3186], ["1999-02-21", 0.3147], ["1999-02-28", 0.2877], ["1999-03-07", 0.296], ["1999-03-14", 0.2824], ["1999-03-21", 0.2886], ["1999-03-28", 0.2835], ["1999-04-04", 0.2994], ["1999-04-11", 0.3041], ["1999-04-18", 0.2997], ["1999-04-25", 0.2914], ["1999-05-02", 0.2773], ["1999-05-09", 0.2877], ["1999-05-16", 0.2969], ["1999-05-23", 0.307], ["1999-05-30", 0.2981], ["1999-06-06", 0.308], ["1999-06-13", 0.3377], ["1999-06-20", 0.3403], ["1999-06-27", 0.344], ["1999-07-04", 0.3543], ["1999-07-11", 0.3629], ["1999-07-18", 0.3736], ["1999-07-25", 0.3561], ["1999-08-01", 0.3718], ["1999-08-08", 0.3817], ["1999-08-15", 0.3914], ["1999-08-22", 0.3745], ["1999-08-29", 0.3887], ["1999-09-05", 0.4133], ["1999-09-12", 0.4178], ["1999-09-19", 0.4233], ["1999-09-26", 0.4043], ["1999-10-03", 0.3963], ["1999-10-10", 0.3869], ["1999-10-17", 0.4109], ["1999-10-24", 0.3947], ["1999-10-31", 0.4078], ["1999-11-07", 0.4534], ["1999-11-14", 0.47], ["1999-11-21", 0.46], ["1999-11-28", 0.4502], ["1999-12-05", 0.4588], ["1999-12-12", 0.4464], ["1999-12-19", 0.4499], ["1999-12-26", 0.4772], ["2000-01-02", 0.4795], ["2000-01-09", 0.4792], ["2000-01-16", 0.5528], ["2000-01-23", 0.5579], ["2000-01-30", 0.5507], ["2000-02-06", 0.6094], ["2000-02-13", 0.6576], ["2000-02-20", 0.6953], ["2000-02-27", 0.774], ["2000-03-05", 0.8596], ["2000-03-12", 0.9553], ["2000-03-19", 0.8568], ["2000-03-26", 0.8429], ["2000-04-02", 0.7887], ["2000-04-09", 0.8067], ["2000-04-16", 0.6577], ["2000-04-23", 0.714], ["2000-04-30", 0.8067], ["2000-05-07", 0.7714], ["2000-05-14", 0.6912], ["2000-05-21", 0.6754], ["2000-05-28", 0.6601], ["2000-06-04", 0.7837], ["2000-06-11", 0.8022], ["2000-06-18", 0.7909], ["2000-06-25", 0.8445], ["2000-07-02", 0.7841], ["2000-07-09", 0.7847], ["2000-07-16", 0.8206], ["2000-07-23", 0.7313], ["2000-07-30", 0.6742], ["2000-08-06", 0.6296], ["2000-08-13", 0.648], ["2000-08-20", 0.7607], ["2000-08-27", 0.7592], ["2000-09-03", 0.7513], ["2000-09-10", 0.6959], ["2000-09-17", 0.6649], ["2000-09-24", 0.6396], ["2000-10-01", 0.5928], ["2000-10-08", 0.5673], ["2000-10-15", 0.5518], ["2000-10-22", 0.5389], ["2000-10-29", 0.497], ["2000-11-05", 0.5191], ["2000-11-12", 0.457], ["2000-11-19", 0.491], ["2000-11-26", 0.5028], ["2000-12-03", 0.4093], ["2000-12-10", 0.466], ["2000-12-17", 0.4411], ["2000-12-24", 0.4496], ["2000-12-31", 0.4367], ["2001-01-07", 0.4756], ["2001-01-14", 0.5087], ["2001-01-21", 0.5359], ["2001-01-28", 0.5111], ["2001-02-04", 0.5097], ["2001-02-11", 0.4746], ["2001-02-18", 0.5082], ["2001-02-25", 0.4883], ["2001-03-04", 0.4717], ["2001-03-11", 0.4811], ["2001-03-18", 0.4704], ["2001-03-25", 0.5633], ["2001-04-01", 0.4697], ["2001-04-08", 0.432], ["2001-04-15", 0.5052], ["2001-04-22", 0.5386], ["2001-04-29", 0.5128], ["2001-05-06", 0.5049], ["2001-05-13", 0.4951], ["2001-05-20", 0.5089], ["2001-05-27", 0.5123], ["2001-06-03", 0.4899], ["2001-06-10", 0.5342], ["2001-06-17", 0.5014], ["2001-06-24", 0.4785], ["2001-07-01", 0.5097], ["2001-07-08", 0.4758], ["2001-07-15", 0.4886], ["2001-07-22", 0.4743], ["2001-07-29", 0.499], ["2001-08-05", 0.5279], ["2001-08-12", 0.4983], ["2001-08-19", 0.4781], ["2001-08-26", 0.5021], ["2001-09-02", 0.4964], ["2001-09-09", 0.4733], ["2001-09-16", 0.466], ["2001-09-23", 0.3945], ["2001-09-30", 0.359], ["2001-10-07", 0.379], ["2001-10-14", 0.434], ["2001-10-21", 0.3948], ["2001-10-28", 0.4352], ["2001-11-04", 0.4502], ["2001-11-11", 0.4524], ["2001-11-18", 0.4654], ["2001-11-25", 0.4445], ["2001-12-02", 0.4554], ["2001-12-09", 0.4936], ["2001-12-16", 0.4888], ["2001-12-23", 0.4547], ["2001-12-30", 0.4641], ["2002-01-06", 0.5031], ["2002-01-13", 0.4966], ["2002-01-20", 0.4639], ["2002-01-27", 0.4729], ["2002-02-03", 0.4927], ["2002-02-10", 0.4849], ["2002-02-17", 0.5023], ["2002-02-24", 0.467], ["2002-03-03", 0.5012], ["2002-03-10", 0.5479], ["2002-03-17", 0.5095], ["2002-03-24", 0.514], ["2002-03-31", 0.5188], ["2002-04-07", 0.51], ["2002-04-14", 0.5046], ["2002-04-21", 0.5179], ["2002-04-28", 0.4782], ["2002-05-05", 0.4474], ["2002-05-12", 0.4559], ["2002-05-19", 0.4898], ["2002-05-26", 0.461], ["2002-06-02", 0.4463], ["2002-06-09", 0.4292], ["2002-06-16", 0.4229], ["2002-06-23", 0.3842], ["2002-06-30", 0.3916], ["2002-07-07", 0.4006], ["2002-07-14", 0.4093], ["2002-07-21", 0.4295], ["2002-07-28", 0.3694], ["2002-08-04", 0.3488], ["2002-08-11", 0.3477], ["2002-08-18", 0.3752], ["2002-08-25", 0.3574], ["2002-09-01", 0.3277], ["2002-09-08", 0.3227], ["2002-09-15", 0.3153], ["2002-09-22", 0.2944], ["2002-09-29", 0.298], ["2002-10-06", 0.2835], ["2002-10-13", 0.2948], ["2002-10-20", 0.3034], ["2002-10-27", 0.3258], ["2002-11-03", 0.3475], ["2002-11-10", 0.3352], ["2002-11-17", 0.3514], ["2002-11-24", 0.3897], ["2002-12-01", 0.3989], ["2002-12-08", 0.3632], ["2002-12-15", 0.3477], ["2002-12-22", 0.3326], ["2002-12-29", 0.3387], ["2003-01-05", 0.3457], ["2003-01-12", 0.3655], ["2003-01-19", 0.3299], ["2003-01-26", 0.3293], ["2003-02-02", 0.3176], ["2003-02-09", 0.3145], ["2003-02-16", 0.3356], ["2003-02-23", 0.3455], ["2003-03-02", 0.3538], ["2003-03-09", 0.3449], ["2003-03-16", 0.3662], ["2003-03-23", 0.3752], ["2003-03-30", 0.359], ["2003-04-06", 0.3544], ["2003-04-13", 0.3434], ["2003-04-20", 0.3726], ["2003-04-27", 0.3615], ["2003-05-04", 0.3688], ["2003-05-11", 0.3757], ["2003-05-18", 0.3753], ["2003-05-25", 0.369], ["2003-06-01", 0.3968], ["2003-06-08", 0.393], ["2003-06-15", 0.3652], ["2003-06-22", 0.3726], ["2003-06-29", 0.3682], ["2003-07-06", 0.3743], ["2003-07-13", 0.3915], ["2003-07-20", 0.3863], ["2003-07-27", 0.391], ["2003-08-03", 0.4017], ["2003-08-10", 0.3771], ["2003-08-17", 0.3982], ["2003-08-24", 0.4427], ["2003-08-31", 0.4524], ["2003-09-07", 0.4502], ["2003-09-14", 0.4437], ["2003-09-21", 0.4446], ["2003-09-28", 0.426], ["2003-10-05", 0.4361], ["2003-10-12", 0.4501], ["2003-10-19", 0.4476], ["2003-10-26", 0.4451], ["2003-11-02", 0.4726], ["2003-11-09", 0.4998], ["2003-11-16", 0.4855], ["2003-11-23", 0.4855], ["2003-11-30", 0.5002], ["2003-12-07", 0.47], ["2003-12-14", 0.4619], ["2003-12-21", 0.4499], ["2003-12-28", 0.4551], ["2004-01-04", 0.4554], ["2004-01-11", 0.4843], ["2004-01-18", 0.4888], ["2004-01-25", 0.4617], ["2004-02-01", 0.4548], ["2004-02-08", 0.4545], ["2004-02-15", 0.4456], ["2004-02-22", 0.4456], ["2004-02-29", 0.4387], ["2004-03-07", 0.4359], ["2004-03-14", 0.4329], ["2004-03-21", 0.4175], ["2004-03-28", 0.4325], ["2004-04-04", 0.45], ["2004-04-11", 0.4492], ["2004-04-18", 0.4232], ["2004-04-25", 0.4278], ["2004-05-02", 0.4005], ["2004-05-09", 0.416], ["2004-05-16", 0.4116], ["2004-05-23", 0.419], ["2004-05-30", 0.4362], ["2004-06-06", 0.4195], ["2004-06-13", 0.4191], ["2004-06-20", 0.3992], ["2004-06-27", 0.4222], ["2004-07-04", 0.4064], ["2004-07-11", 0.4054], ["2004-07-18", 0.3727], ["2004-07-25", 0.3734], ["2004-08-01", 0.378], ["2004-08-08", 0.3636], ["2004-08-15", 0.3443], ["2004-08-22", 0.3514], ["2004-08-29", 0.3451], ["2004-09-05", 0.3213], ["2004-09-12", 0.3413], ["2004-09-19", 0.3442], ["2004-09-26", 0.3446], ["2004-10-03", 0.3552], ["2004-10-10", 0.3471], ["2004-10-17", 0.3441], ["2004-10-24", 0.3606], ["2004-10-31", 0.3648], ["2004-11-07", 0.3583], ["2004-11-14", 0.3579], ["2004-11-21", 0.369], ["2004-11-28", 0.3644], ["2004-12-05", 0.3738], ["2004-12-12", 0.3559], ["2004-12-19", 0.3548], ["2004-12-26", 0.3524], ["2005-01-02", 0.3575], ["2005-01-09", 0.3436], ["2005-01-16", 0.3403], ["2005-01-23", 0.3337], ["2005-01-30", 0.341], ["2005-02-06", 0.3476], ["2005-02-13", 0.3613], ["2005-02-20", 0.356], ["2005-02-27", 0.3663], ["2005-03-06", 0.3546], ["2005-03-13", 0.3565], ["2005-03-20", 0.3481], ["2005-03-27", 0.355], ["2005-04-03", 0.3506], ["2005-04-10", 0.353], ["2005-04-17", 0.3349], ["2005-04-24", 0.3379], ["2005-05-01", 0.3334], ["2005-05-08", 0.3388], ["2005-05-15", 0.3537], ["2005-05-22", 0.3576], ["2005-05-29", 0.3591], ["2005-06-05", 0.3631], ["2005-06-12", 0.3595], ["2005-06-19", 0.3538], ["2005-06-26", 0.3584], ["2005-07-03", 0.3511], ["2005-07-10", 0.3653], ["2005-07-17", 0.3776], ["2005-07-24", 0.3852], ["2005-07-31", 0.3844], ["2005-08-07", 0.3842], ["2005-08-14", 0.3762], ["2005-08-21", 0.379], ["2005-08-28", 0.385], ["2005-09-04", 0.3838], ["2005-09-11", 0.3884], ["2005-09-18", 0.3835], ["2005-09-25", 0.3791], ["2005-10-02", 0.3868], ["2005-10-09", 0.3856], ["2005-10-16", 0.3731], ["2005-10-23", 0.3746], ["2005-10-30", 0.3545], ["2005-11-06", 0.3703], ["2005-11-13", 0.3735], ["2005-11-20", 0.3833], ["2005-11-27", 0.3821], ["2005-12-04", 0.3997], ["2005-12-11", 0.3948], ["2005-12-18", 0.3908], ["2005-12-25", 0.3877], ["2006-01-01", 0.3841], ["2006-01-08", 0.4042], ["2006-01-15", 0.409], ["2006-01-22", 0.4063], ["2006-01-29", 0.4292], ["2006-02-05", 0.4183], ["2006-02-12", 0.4265], ["2006-02-19", 0.4159], ["2006-02-26", 0.4068], ["2006-03-05", 0.4178], ["2006-03-12", 0.392], ["2006-03-19", 0.3797], ["2006-03-26", 0.3875], ["2006-04-02", 0.3859], ["2006-04-09", 0.3975], ["2006-04-16", 0.394], ["2006-04-23", 0.3954], ["2006-04-30", 0.3944], ["2006-05-07", 0.399], ["2006-05-14", 0.3807], ["2006-05-21", 0.3865], ["2006-05-28", 0.3646], ["2006-06-04", 0.3685], ["2006-06-11", 0.3547], ["2006-06-18", 0.3624], ["2006-06-25", 0.3579], ["2006-07-02", 0.3478], ["2006-07-09", 0.3352], ["2006-07-16", 0.3309], ["2006-07-23", 0.3103], ["2006-07-30", 0.3224], ["2006-08-06", 0.3213], ["2006-08-13", 0.32], ["2006-08-20", 0.3424], ["2006-08-27", 0.3349], ["2006-09-03", 0.3391], ["2006-09-10", 0.3377], ["2006-09-17", 0.3519], ["2006-09-24", 0.3417], ["2006-10-01", 0.3404], ["2006-10-08", 0.3344], ["2006-10-15", 0.3451], ["2006-10-22", 0.3268], ["2006-10-29", 0.3284], ["2006-11-05", 0.3292], ["2006-11-12", 0.3341], ["2006-11-19", 0.3449], ["2006-11-26", 0.3493], ["2006-12-03", 0.3394], ["2006-12-10", 0.3386], ["2006-12-17", 0.3334], ["2006-12-24", 0.3287], ["2006-12-31", 0.3293], ["2007-01-07", 0.3328], ["2007-01-14", 0.3372], ["2007-01-21", 0.3193], ["2007-01-28", 0.3254], ["2007-02-04", 0.3221], ["2007-02-11", 0.3215], ["2007-02-18", 0.3245], ["2007-02-25", 0.3366], ["2007-03-04", 0.3326], ["2007-03-11", 0.3386], ["2007-03-18", 0.3403], ["2007-03-25", 0.3337], ["2007-04-01", 0.3277], ["2007-04-08", 0.3294], ["2007-04-15", 0.3251], ["2007-04-22", 0.3283], ["2007-04-29", 0.3338], ["2007-05-06", 0.3358], ["2007-05-13", 0.3353], ["2007-05-20", 0.3229], ["2007-05-27", 0.3171], ["2007-06-03", 0.3189], ["2007-06-10", 0.3239], ["2007-06-17", 0.3278], ["2007-06-24", 0.3359], ["2007-07-01", 0.3334], ["2007-07-08", 0.3363], ["2007-07-15", 0.3413], ["2007-07-22", 0.35], ["2007-07-29", 0.3443], ["2007-08-05", 0.3403], ["2007-08-12", 0.3469], ["2007-08-19", 0.3374], ["2007-08-26", 0.3351], ["2007-09-02", 0.3375], ["2007-09-09", 0.3391], ["2007-09-16", 0.3281], ["2007-09-23", 0.3284], ["2007-09-30", 0.3276], ["2007-10-07", 0.3203], ["2007-10-14", 0.3121], ["2007-10-21", 0.3165], ["2007-10-28", 0.2944], ["2007-11-04", 0.3033], ["2007-11-11", 0.3001], ["2007-11-18", 0.2922], ["2007-11-25", 0.287], ["2007-12-02", 0.2799], ["2007-12-09", 0.2852], ["2007-12-16", 0.2821], ["2007-12-23", 0.2803], ["2007-12-30", 0.2773], ["2008-01-06", 0.2641], ["2008-01-13", 0.2526], ["2008-01-20", 0.2704], ["2008-01-27", 0.2664], ["2008-02-03", 0.2721], ["2008-02-10", 0.2627], ["2008-02-17", 0.2575], ["2008-02-24", 0.2601], ["2008-03-02", 0.2616], ["2008-03-09", 0.2665], ["2008-03-16", 0.2628], ["2008-03-23", 0.2557], ["2008-03-30", 0.258], ["2008-04-06", 0.2693], ["2008-04-13", 0.2691], ["2008-04-20", 0.2714], ["2008-04-27", 0.2798], ["2008-05-04", 0.2828], ["2008-05-11", 0.287], ["2008-05-18", 0.2958], ["2008-05-25", 0.2908], ["2008-06-01", 0.2965], ["2008-06-08", 0.298], ["2008-06-15", 0.2896], ["2008-06-22", 0.2907], ["2008-06-29", 0.2887], ["2008-07-06", 0.2808], ["2008-07-13", 0.2797], ["2008-07-20", 0.2902], ["2008-07-27", 0.2684], ["2008-08-03", 0.2683], ["2008-08-10", 0.2833], ["2008-08-17", 0.29], ["2008-08-24", 0.2834], ["2008-08-31", 0.275], ["2008-09-07", 0.2667], ["2008-09-14", 0.2574], ["2008-09-21", 0.266], ["2008-09-28", 0.2651], ["2008-10-05", 0.259], ["2008-10-12", 0.2737], ["2008-10-19", 0.2542], ["2008-10-26", 0.2422], ["2008-11-02", 0.2472], ["2008-11-09", 0.2397], ["2008-11-16", 0.2306], ["2008-11-23", 0.2253], ["2008-11-30", 0.2212], ["2008-12-07", 0.2198], ["2008-12-14", 0.2421], ["2008-12-21", 0.2386], ["2008-12-28", 0.2314], ["2009-01-04", 0.2382], ["2009-01-11", 0.2418], ["2009-01-18", 0.2522], ["2009-01-25", 0.2504], ["2009-02-01", 0.2522], ["2009-02-08", 0.2638], ["2009-02-15", 0.2667], ["2009-02-22", 0.2562], ["2009-03-01", 0.2707], ["2009-03-08", 0.2854], ["2009-03-15", 0.2909], ["2009-03-22", 0.2846], ["2009-03-29", 0.2958], ["2009-04-05", 0.298], ["2009-04-12", 0.297], ["2009-04-19", 0.293], ["2009-04-26", 0.2928], ["2009-05-03", 0.2942], ["2009-05-10", 0.2687], ["2009-05-17", 0.2749], ["2009-05-24", 0.2824], ["2009-05-31", 0.2952], ["2009-06-07", 0.288], ["2009-06-14", 0.2904], ["2009-06-21", 0.2871], ["2009-06-28", 0.2863], ["2009-07-05", 0.2943], ["2009-07-12", 0.2947], ["2009-07-19", 0.3089], ["2009-07-26", 0.3073], ["2009-08-02", 0.3056], ["2009-08-09", 0.2954], ["2009-08-16", 0.2934], ["2009-08-23", 0.2936], ["2009-08-30", 0.3024], ["2009-09-06", 0.3047], ["2009-09-13", 0.3081], ["2009-09-20", 0.3056], ["2009-09-27", 0.3074], ["2009-10-04", 0.2991], ["2009-10-11", 0.3047], ["2009-10-18", 0.2968], ["2009-10-25", 0.2931], ["2009-11-01", 0.2863], ["2009-11-08", 0.2822], ["2009-11-15", 0.2904], ["2009-11-22", 0.2822], ["2009-11-29", 0.2839], ["2009-12-06", 0.3031], ["2009-12-13", 0.303], ["2009-12-20", 0.3128], ["2009-12-27", 0.3205], ["2010-01-03", 0.3228], ["2010-01-10", 0.3211], ["2010-01-17", 0.3034], ["2010-01-24", 0.3018], ["2010-01-31", 0.2943], ["2010-02-07", 0.3001], ["2010-02-14", 0.3095], ["2010-02-21", 0.3097], ["2010-02-28", 0.3068], ["2010-03-07", 0.3087], ["2010-03-14", 0.309], ["2010-03-21", 0.3066], ["2010-03-28", 0.3111], ["2010-04-04", 0.3115], ["2010-04-11", 0.3146], ["2010-04-18", 0.3303], ["2010-04-25", 0.3289], ["2010-05-02", 0.3169], ["2010-05-09", 0.3121], ["2010-05-16", 0.3116], ["2010-05-23", 0.321], ["2010-05-30", 0.3265], ["2010-06-06", 0.3272], ["2010-06-13", 0.3202], ["2010-06-20", 0.3322], ["2010-06-27", 0.327], ["2010-07-04", 0.3243], ["2010-07-11", 0.3259], ["2010-07-18", 0.3279], ["2010-07-25", 0.3306], ["2010-08-01", 0.3166], ["2010-08-08", 0.3136], ["2010-08-15", 0.299], ["2010-08-22", 0.3059], ["2010-08-29", 0.3022], ["2010-09-05", 0.2976], ["2010-09-12", 0.2853], ["2010-09-19", 0.297], ["2010-09-26", 0.3013], ["2010-10-03", 0.3037], ["2010-10-10", 0.3005], ["2010-10-17", 0.3036], ["2010-10-24", 0.3017], ["2010-10-31", 0.3149], ["2010-11-07", 0.3198], ["2010-11-14", 0.3191], ["2010-11-21", 0.3226], ["2010-11-28", 0.333], ["2010-12-05", 0.3368], ["2010-12-12", 0.3359], ["2010-12-19", 0.3308], ["2010-12-26", 0.3276], ["2011-01-02", 0.3275], ["2011-01-09", 0.3348], ["2011-01-16", 0.3492], ["2011-01-23", 0.3363], ["2011-01-30", 0.3436], ["2011-02-06", 0.3533], ["2011-02-13", 0.3482], ["2011-02-20", 0.351], ["2011-02-27", 0.3513], ["2011-03-06", 0.348], ["2011-03-13", 0.3281], ["2011-03-20", 0.3277], ["2011-03-27", 0.3321], ["2011-04-03", 0.3249], ["2011-04-10", 0.331], ["2011-04-17", 0.3268], ["2011-04-24", 0.3314], ["2011-05-01", 0.3297], ["2011-05-08", 0.331], ["2011-05-15", 0.3296], ["2011-05-22", 0.3244], ["2011-05-29", 0.3254], ["2011-06-05", 0.3219], ["2011-06-12", 0.3169], ["2011-06-19", 0.3053], ["2011-06-26", 0.3094], ["2011-07-03", 0.3128], ["2011-07-10", 0.3079], ["2011-07-17", 0.2964], ["2011-07-24", 0.3038], ["2011-07-31", 0.2994], ["2011-08-07", 0.292], ["2011-08-14", 0.3017], ["2011-08-21", 0.2904], ["2011-08-28", 0.2938], ["2011-09-04", 0.2909], ["2011-09-11", 0.3018], ["2011-09-18", 0.3141], ["2011-09-25", 0.3167], ["2011-10-02", 0.2995], ["2011-10-09", 0.3087], ["2011-10-16", 0.311], ["2011-10-23", 0.3005], ["2011-10-30", 0.3084], ["2011-11-06", 0.3124], ["2011-11-13", 0.3098], ["2011-11-20", 0.3054], ["2011-11-27", 0.297], ["2011-12-04", 0.301], ["2011-12-11", 0.2993], ["2011-12-18", 0.2893], ["2011-12-25", 0.2913], ["2012-01-01", 0.2898], ["2012-01-08", 0.2936], ["2012-01-15", 0.2975], ["2012-01-22", 0.315], ["2012-01-29", 0.314], ["2012-02-05", 0.3182], ["2012-02-12", 0.3129], ["2012-02-19", 0.3174], ["2012-02-26", 0.3103], ["2012-03-04", 0.3069], ["2012-03-11", 0.3085], ["2012-03-18", 0.3101], ["2012-03-25", 0.3118], ["2012-04-01", 0.3114], ["2012-04-08", 0.3027], ["2012-04-15", 0.3039], ["2012-04-22", 0.2939], ["2012-04-29", 0.2964], ["2012-05-06", 0.2907], ["2012-05-13", 0.2916], ["2012-05-20", 0.2814], ["2012-05-27", 0.2824], ["2012-06-03", 0.2763], ["2012-06-10", 0.2812], ["2012-06-17", 0.2794], ["2012-06-24", 0.2836], ["2012-07-01", 0.283], ["2012-07-08", 0.2776], ["2012-07-15", 0.2631], ["2012-07-22", 0.2679], ["2012-07-29", 0.2772], ["2012-08-05", 0.2804], ["2012-08-12", 0.2888], ["2012-08-19", 0.2857], ["2012-08-26", 0.2827], ["2012-09-02", 0.2817], ["2012-09-09", 0.279], ["2012-09-16", 0.2774], ["2012-09-23", 0.2706], ["2012-09-30", 0.2653], ["2012-10-07", 0.2624], ["2012-10-14", 0.2567], ["2012-10-21", 0.2546], ["2012-10-28", 0.2601], ["2012-11-04", 0.2633], ["2012-11-11", 0.2679], ["2012-11-18", 0.2618], ["2012-11-25", 0.262], ["2012-12-02", 0.2643], ["2012-12-09", 0.2676], ["2012-12-16", 0.2695], ["2012-12-23", 0.2696], ["2012-12-30", 0.2687], ["2013-01-06", 0.2712], ["2013-01-13", 0.2737], ["2013-01-20", 0.2763], ["2013-01-27", 0.2764], ["2013-02-03", 0.2779], ["2013-02-10", 0.2799], ["2013-02-17", 0.2819], ["2013-02-24", 0.2804], ["2013-03-03", 0.28], ["2013-03-10", 0.2806], ["2013-03-17", 0.2782], ["2013-03-24", 0.2762], ["2013-03-31", 0.2783], ["2013-04-07", 0.2697], ["2013-04-14", 0.2729], ["2013-04-21", 0.2681], ["2013-04-28", 0.2751], ["2013-05-05", 0.2793], ["2013-05-12", 0.2852], ["2013-05-19", 0.2822], ["2013-05-26", 0.2798], ["2013-06-02", 0.2874], ["2013-06-09", 0.2869], ["2013-06-16", 0.2862], ["2013-06-23", 0.2894], ["2013-06-30", 0.2916], ["2013-07-07", 0.2918], ["2013-07-14", 0.2914], ["2013-07-21", 0.2873], ["2013-07-28", 0.2797], ["2013-08-04", 0.2827], ["2013-08-11", 0.2789], ["2013-08-18", 0.2793], ["2013-08-25", 0.2788], ["2013-09-01", 0.2803], ["2013-09-08", 0.287], ["2013-09-15", 0.2892], ["2013-09-22", 0.2884], ["2013-09-29", 0.2901], ["2013-10-06", 0.2944], ["2013-10-13", 0.292], ["2013-10-20", 0.2903], ["2013-10-27", 0.282], ["2013-11-03", 0.2869], ["2013-11-10", 0.2829], ["2013-11-17", 0.283], ["2013-11-24", 0.2796], ["2013-12-01", 0.2826], ["2013-12-08", 0.2857], ["2013-12-15", 0.2847], ["2013-12-22", 0.2871], ["2013-12-29", 0.2878], ["2014-01-05", 0.2876], ["2014-01-12", 0.2897], ["2014-01-19", 0.2927], ["2014-01-26", 0.2954], ["2014-02-02", 0.2969], ["2014-02-09", 0.2979], ["2014-02-16", 0.3041], ["2014-02-23", 0.3056], ["2014-03-02", 0.3032], ["2014-03-09", 0.3058], ["2014-03-16", 0.3055], ["2014-03-23", 0.3121], ["2014-03-30", 0.3109], ["2014-04-06", 0.3105], ["2014-04-13", 0.3086], ["2014-04-20", 0.3102], ["2014-04-27", 0.3071], ["2014-05-04", 0.3059], ["2014-05-11", 0.3066], ["2014-05-18", 0.3067], ["2014-05-25", 0.3104], ["2014-06-01", 0.3117], ["2014-06-08", 0.3166], ["2014-06-15", 0.3241], ["2014-06-22", 0.3237], ["2014-06-29", 0.3209], ["2014-07-06", 0.3277], ["2014-07-13", 0.3272], ["2014-07-20", 0.3253], ["2014-07-27", 0.3117], ["2014-08-03", 0.3167], ["2014-08-10", 0.3139], ["2014-08-17", 0.3195], ["2014-08-24", 0.3217], ["2014-08-31", 0.3221], ["2014-09-07", 0.3244], ["2014-09-14", 0.3223], ["2014-09-21", 0.3231], ["2014-09-28", 0.3245], ["2014-10-05", 0.3166], ["2014-10-12", 0.2945], ["2014-10-19", 0.3049], ["2014-10-26", 0.3115], ["2014-11-02", 0.3176], ["2014-11-09", 0.3137], ["2014-11-16", 0.3165], ["2014-11-23", 0.3213], ["2014-11-30", 0.3317], ["2014-12-07", 0.3388], ["2014-12-14", 0.3353], ["2014-12-21", 0.3313], ["2014-12-28", 0.3337], ["2015-01-04", 0.3337], ["2015-01-11", 0.3352], ["2015-01-18", 0.3287], ["2015-01-25", 0.3317], ["2015-02-01", 0.3274], ["2015-02-08", 0.3269], ["2015-02-15", 0.3362], ["2015-02-22", 0.337], ["2015-03-01", 0.3396], ["2015-03-08", 0.344], ["2015-03-15", 0.3447], ["2015-03-22", 0.3467], ["2015-03-29", 0.3369], ["2015-04-05", 0.3334], ["2015-04-12", 0.3373], ["2015-04-19", 0.3345], ["2015-04-26", 0.3276], ["2015-05-03", 0.3346], ["2015-05-10", 0.3318], ["2015-05-17", 0.3342], ["2015-05-24", 0.3387], ["2015-05-31", 0.3537], ["2015-06-07", 0.347], ["2015-06-14", 0.341], ["2015-06-21", 0.3428], ["2015-06-28", 0.3323], ["2015-07-05", 0.3301], ["2015-07-12", 0.3173], ["2015-07-19", 0.3137], ["2015-07-26", 0.3089], ["2015-08-02", 0.3072], ["2015-08-09", 0.3065], ["2015-08-16", 0.3017], ["2015-08-23", 0.2936], ["2015-08-30", 0.3087], ["2015-09-06", 0.3111], ["2015-09-13", 0.314], ["2015-09-20", 0.3119], ["2015-09-27", 0.307], ["2015-10-04", 0.3118], ["2015-10-11", 0.3124], ["2015-10-18", 0.321], ["2015-10-25", 0.3295], ["2015-11-01", 0.3186], ["2015-11-08", 0.3223], ["2015-11-15", 0.3182], ["2015-11-22", 0.3187], ["2015-11-29", 0.3208], ["2015-12-06", 0.3306], ["2015-12-13", 0.3284], ["2015-12-20", 0.326], ["2015-12-27", 0.3272], ["2016-01-03", 0.3246], ["2016-01-10", 0.3124], ["2016-01-17", 0.3054], ["2016-01-24", 0.3138], ["2016-01-31", 0.3163], ["2016-02-07", 0.3118], ["2016-02-14", 0.3067], ["2016-02-21", 0.3157], ["2016-02-28", 0.3207], ["2016-03-06", 0.3253], ["2016-03-13", 0.326], ["2016-03-20", 0.3294], ["2016-03-27", 0.3272], ["2016-04-03", 0.3288], ["2016-04-10", 0.3279], ["2016-04-17", 0.3237], ["2016-04-24", 0.3199], ["2016-05-01", 0.3125], ["2016-05-08", 0.3099], ["2016-05-15", 0.3094], ["2016-05-22", 0.3241], ["2016-05-29", 0.3314], ["2016-06-05", 0.3361], ["2016-06-12", 0.3335], ["2016-06-19", 0.3327], ["2016-06-26", 0.3315], ["2016-07-03", 0.3257], ["2016-07-10", 0.3292], ["2016-07-17", 0.3347], ["2016-07-24", 0.3413], ["2016-07-31", 0.3528], ["2016-08-07", 0.3545], ["2016-08-14", 0.3571], ["2016-08-21", 0.365], ["2016-08-28", 0.3695], ["2016-09-04", 0.3702], ["2016-09-11", 0.3611], ["2016-09-18", 0.3747], ["2016-09-25", 0.3717], ["2016-10-02", 0.3854], ["2016-10-09", 0.3886], ["2016-10-16", 0.3795], ["2016-10-23", 0.3804], ["2016-10-30", 0.3851], ["2016-11-06", 0.385], ["2016-11-13", 0.3868], ["2016-11-20", 0.3999], ["2016-11-27", 0.4025], ["2016-12-04", 0.3867], ["2016-12-11", 0.395], ["2016-12-18", 0.3989], ["2016-12-25", 0.4099], ["2017-01-01", 0.4049], ["2017-01-08", 0.3991], ["2017-01-15", 0.4065], ["2017-01-22", 0.4095], ["2017-01-29", 0.4193], ["2017-02-05", 0.4196], ["2017-02-12", 0.4158], ["2017-02-19", 0.4155], ["2017-02-26", 0.4112], ["2017-03-05", 0.4087], ["2017-03-12", 0.4181], ["2017-03-19", 0.4224], ["2017-03-26", 0.4285], ["2017-04-02", 0.4281], ["2017-04-09", 0.4243], ["2017-04-16", 0.4122], ["2017-04-23", 0.4228], ["2017-04-30", 0.4217], ["2017-05-07", 0.4214], ["2017-05-14", 0.4372], ["2017-05-21", 0.4454], ["2017-05-28", 0.4491], ["2017-06-04", 0.4524], ["2017-06-11", 0.4483], ["2017-06-18", 0.4386], ["2017-06-25", 0.4464], ["2017-07-02", 0.427], ["2017-07-09", 0.435], ["2017-07-16", 0.449], ["2017-07-23", 0.4479], ["2017-07-30", 0.4421], ["2017-08-06", 0.4358], ["2017-08-13", 0.4367], ["2017-08-20", 0.4419], ["2017-08-27", 0.4423], ["2017-09-03", 0.452], ["2017-09-10", 0.4442], ["2017-09-17", 0.4586], ["2017-09-24", 0.4594], ["2017-10-01", 0.4651], ["2017-10-08", 0.4674], ["2017-10-15", 0.4775], ["2017-10-22", 0.4782], ["2017-10-29", 0.4895], ["2017-11-05", 0.5023], ["2017-11-12", 0.5046], ["2017-11-19", 0.5068], ["2017-11-26", 0.5156], ["2017-12-03", 0.4764], ["2017-12-10", 0.467], ["2017-12-17", 0.4675], ["2017-12-24", 0.4737], ["2017-12-31", 0.4687], ["2018-01-07", 0.4833], ["2018-01-14", 0.4745], ["2018-01-21", 0.4882], ["2018-01-28", 0.4808], ["2018-02-04", 0.4772], ["2018-02-11", 0.4794], ["2018-02-18", 0.4825], ["2018-02-25", 0.4918], ["2018-03-04", 0.5067], ["2018-03-11", 0.5136], ["2018-03-18", 0.5169], ["2018-03-25", 0.5115], ["2018-04-01", 0.5032], ["2018-04-08", 0.4858], ["2018-04-15", 0.5005], ["2018-04-22", 0.4759], ["2018-04-29", 0.4712], ["2018-05-06", 0.4869], ["2018-05-13", 0.4951], ["2018-05-20", 0.4958], ["2018-05-27", 0.5111], ["2018-06-03", 0.5161], ["2018-06-10", 0.5082], ["2018-06-17", 0.5116], ["2018-06-24", 0.4977], ["2018-07-01", 0.4833], ["2018-07-08", 0.4889], ["2018-07-15", 0.4786], ["2018-07-22", 0.4851], ["2018-07-29", 0.4868], ["2018-08-05", 0.4864], ["2018-08-12", 0.4782], ["2018-08-19", 0.4643], ["2018-08-26", 0.4786], ["2018-09-02", 0.4829], ["2018-09-09", 0.4739], ["2018-09-16", 0.4741], ["2018-09-23", 0.4721], ["2018-09-30", 0.469], ["2018-10-07", 0.456], ["2018-10-14", 0.453], ["2018-10-21", 0.4429], ["2018-10-28", 0.4337], ["2018-11-04", 0.4551], ["2018-11-11", 0.4419], ["2018-11-18", 0.4459], ["2018-11-25", 0.4479], ["2018-12-02", 0.4491], ["2018-12-09", 0.4397], ["2018-12-16", 0.4529], ["2018-12-23", 0.4557], ["2018-12-30", 0.4616], ["2019-01-06", 0.4518], ["2019-01-13", 0.4672], ["2019-01-20", 0.4599], ["2019-01-27", 0.4808], ["2019-02-03", 0.4757], ["2019-02-10", 0.481], ["2019-02-17", 0.4868], ["2019-02-24", 0.4887], ["2019-03-03", 0.4862], ["2019-03-10", 0.4806], ["2019-03-17", 0.4933], ["2019-03-24", 0.5], ["2019-03-31", 0.4923], ["2019-04-07", 0.5108], ["2019-04-14", 0.5149], ["2019-04-21", 0.5364], ["2019-04-28", 0.5263], ["2019-05-05", 0.5332], ["2019-05-12", 0.5132], ["2019-05-19", 0.4903], ["2019-05-26", 0.4642], ["2019-06-02", 0.471], ["2019-06-09", 0.4799], ["2019-06-16", 0.4699], ["2019-06-23", 0.4781], ["2019-06-30", 0.4959], ["2019-07-07", 0.4888], ["2019-07-14", 0.4991], ["2019-07-21", 0.512], ["2019-07-28", 0.5267], ["2019-08-04", 0.5076], ["2019-08-11", 0.5017], ["2019-08-18", 0.5121], ["2019-08-25", 0.508], ["2019-09-01", 0.5142], ["2019-09-08", 0.5265], ["2019-09-15", 0.5339], ["2019-09-22", 0.5224], ["2019-09-29", 0.5209], ["2019-10-06", 0.5333], ["2019-10-13", 0.5357], ["2019-10-20", 0.5325], ["2019-10-27", 0.5455], ["2019-11-03", 0.551], ["2019-11-10", 0.5615], ["2019-11-17", 0.5585], ["2019-11-24", 0.5436], ["2019-12-01", 0.5466], ["2019-12-08", 0.5481], ["2019-12-15", 0.5668], ["2019-12-22", 0.5755], ["2019-12-29", 0.5736], ["2020-01-05", 0.5731], ["2020-01-12", 0.5716], ["2020-01-19", 0.5756], ["2020-01-26", 0.5838], ["2020-02-02", 0.5549], ["2020-02-09", 0.5603], ["2020-02-16", 0.5788], ["2020-02-23", 0.5666], ["2020-03-01", 0.5773], ["2020-03-08", 0.5719], ["2020-03-15", 0.5696], ["2020-03-22", 0.5634], ["2020-03-29", 0.5858], ["2020-04-05", 0.5798], ["2020-04-12", 0.5741], ["2020-04-19", 0.5934], ["2020-04-26", 0.6002], ["2020-05-03", 0.5809], ["2020-05-10", 0.6061], ["2020-05-17", 0.5939], ["2020-05-24", 0.6098], ["2020-05-31", 0.6085], ["2020-06-07", 0.6274], ["2020-06-14", 0.626], ["2020-06-21", 0.6349], ["2020-06-28", 0.6387], ["2020-07-05", 0.6369], ["2020-07-12", 0.6498], ["2020-07-19", 0.6416], ["2020-07-26", 0.634], ["2020-08-02", 0.6531], ["2020-08-09", 0.6502], ["2020-08-16", 0.6525], ["2020-08-23", 0.6471], ["2020-08-30", 0.6454], ["2020-09-06", 0.6457], ["2020-09-13", 0.6394], ["2020-09-20", 0.651], ["2020-09-27", 0.6603], ["2020-10-04", 0.6633], ["2020-10-11", 0.6897], ["2020-10-18", 0.6888], ["2020-10-25", 0.6811], ["2020-11-01", 0.6869], ["2020-11-08", 0.7207], ["2020-11-15", 0.6998], ["2020-11-22", 0.7183], ["2020-11-29", 0.7233], ["2020-12-06", 0.7551], ["2020-12-13", 0.7381], ["2020-12-20", 0.7453], ["2020-12-27", 0.7427], ["2021-01-03", 0.7443], ["2021-01-10", 0.7678], ["2021-01-17", 0.7942], ["2021-01-24", 0.8003], ["2021-01-31", 0.7773], ["2021-02-07", 0.768], ["2021-02-14", 0.8183], ["2021-02-21", 0.8251], ["2021-02-28", 0.8049], ["2021-03-07", 0.7602], ["2021-03-14", 0.7519], ["2021-03-21", 0.7696], ["2021-03-28", 0.7815], ["2021-04-04", 0.806], ["2021-04-11", 0.7979], ["2021-04-18", 0.7772], ["2021-04-25", 0.7648], ["2021-05-02", 0.7436], ["2021-05-09", 0.7353], ["2021-05-16", 0.7143], ["2021-05-23", 0.7344], ["2021-05-30", 0.758], ["2021-06-06", 0.7599], ["2021-06-13", 0.7558], ["2021-06-20", 0.7567], ["2021-06-27", 0.7572], ["2021-07-04", 0.7618], ["2021-07-11", 0.7503], ["2021-07-18", 0.7269], ["2021-07-25", 0.7435], ["2021-08-01", 0.7637], ["2021-08-08", 0.7691], ["2021-08-15", 0.7464], ["2021-08-22", 0.7332], ["2021-08-29", 0.7621], ["2021-09-05", 0.7565], ["2021-09-12", 0.7663], ["2021-09-19", 0.7717], ["2021-09-26", 0.7752], ["2021-10-03", 0.7485], ["2021-10-10", 0.7392], ["2021-10-17", 0.7413], ["2021-10-24", 0.7416], ["2021-10-31", 0.7494], ["2021-11-07", 0.7997], ["2021-11-14", 0.8103], ["2021-11-21", 0.8327], ["2021-11-28", 0.8177], ["2021-12-05", 0.8383], ["2021-12-12", 0.8308], ["2021-12-19", 0.814], ["2021-12-26", 0.8321], ["2022-01-02", 0.828], ["2022-01-09", 0.8117], ["2022-01-16", 0.8365], ["2022-01-23", 0.781], ["2022-01-30", 0.7454], ["2022-02-06", 0.7673], ["2022-02-13", 0.7616], ["2022-02-20", 0.7782], ["2022-02-27", 0.7874], ["2022-03-06", 0.7528], ["2022-03-13", 0.7478], ["2022-03-20", 0.769], ["2022-03-27", 0.776], ["2022-04-03", 0.7406], ["2022-04-10", 0.6952], ["2022-04-17", 0.6894], ["2022-04-24", 0.6999], ["2022-05-01", 0.7066], ["2022-05-08", 0.7232], ["2022-05-15", 0.7382], ["2022-05-22", 0.7389], ["2022-05-29", 0.7492], ["2022-06-05", 0.7454], ["2022-06-12", 0.726], ["2022-06-19", 0.7017], ["2022-06-26", 0.695], ["2022-07-03", 0.6427], ["2022-07-10", 0.6714], ["2022-07-17", 0.6973], ["2022-07-24", 0.7175], ["2022-07-31", 0.7184], ["2022-08-07", 0.7366], ["2022-08-14", 0.7168], ["2022-08-21", 0.6984], ["2022-08-28", 0.6897], ["2022-09-04", 0.6624], ["2022-09-11", 0.6692], ["2022-09-18", 0.6617], ["2022-09-25", 0.6522], ["2022-10-02", 0.6433], ["2022-10-09", 0.6475], ["2022-10-16", 0.6035], ["2022-10-23", 0.6227], ["2022-10-30", 0.6238], ["2022-11-06", 0.636], ["2022-11-13", 0.6899], ["2022-11-20", 0.687], ["2022-11-27", 0.6834], ["2022-12-04", 0.6806], ["2022-12-11", 0.6916], ["2022-12-18", 0.6843], ["2022-12-25", 0.6595], ["2023-01-01", 0.6595], ["2023-01-08", 0.6768], ["2023-01-15", 0.7003], ["2023-01-22", 0.7035], ["2023-01-29", 0.7236], ["2023-02-05", 0.7451], ["2023-02-12", 0.7361], ["2023-02-19", 0.7369], ["2023-02-26", 0.7393], ["2023-03-05", 0.7485], ["2023-03-12", 0.7572], ["2023-03-19", 0.7873], ["2023-03-26", 0.786], ["2023-04-02", 0.7862], ["2023-04-09", 0.7483], ["2023-04-16", 0.7421], ["2023-04-23", 0.731], ["2023-04-30", 0.7183], ["2023-05-07", 0.7272], ["2023-05-14", 0.7209], ["2023-05-21", 0.7642], ["2023-05-28", 0.8431], ["2023-06-04", 0.8176], ["2023-06-11", 0.82], ["2023-06-18", 0.833], ["2023-06-25", 0.8064], ["2023-07-02", 0.8253], ["2023-07-09", 0.8133], ["2023-07-16", 0.8324], ["2023-07-23", 0.8154], ["2023-07-30", 0.8406], ["2023-08-06", 0.8261], ["2023-08-13", 0.7873], ["2023-08-20", 0.7924], ["2023-08-27", 0.7934], ["2023-09-03", 0.8156], ["2023-09-10", 0.8], ["2023-09-17", 0.7812], ["2023-09-24", 0.779], ["2023-10-01", 0.8009], ["2023-10-08", 0.8066], ["2023-10-15", 0.7979], ["2023-10-22", 0.785], ["2023-10-29", 0.7838], ["2023-11-05", 0.7926], ["2023-11-12", 0.8135], ["2023-11-19", 0.8304], ["2023-11-26", 0.822], ["2023-12-03", 0.8136], ["2023-12-10", 0.8197], ["2023-12-17", 0.8724], ["2023-12-24", 0.8692], ["2023-12-31", 0.8754], ["2024-01-07", 0.8374], ["2024-01-14", 0.8471], ["2024-01-21", 0.9041], ["2024-01-28", 0.8878], ["2024-02-04", 0.8746], ["2024-02-11", 0.9086], ["2024-02-18", 0.9045], ["2024-02-25", 0.9069], ["2024-03-03", 0.9596], ["2024-03-10", 0.9676], ["2024-03-17", 0.9298], ["2024-03-24", 0.9377], ["2024-03-31", 0.9336], ["2024-04-07", 0.926], ["2024-04-14", 0.9262], ["2024-04-21", 0.8671], ["2024-04-28", 0.9285], ["2024-05-05", 0.9197], ["2024-05-12", 0.9206], ["2024-05-19", 0.9396], ["2024-05-26", 0.9842], ["2024-06-02", 0.9708], ["2024-06-09", 0.9888], ["2024-06-16", 1.0307], ["2024-06-23", 1.0135], ["2024-06-30", 1.0022], ["2024-07-07", 1.016], ["2024-07-14", 1.0285], ["2024-07-21", 0.9568], ["2024-07-28", 0.9348], ["2024-08-04", 0.8618], ["2024-08-11", 0.8812], ["2024-08-18", 0.9309], ["2024-08-25", 0.928], ["2024-09-01", 0.9133], ["2024-09-08", 0.8373], ["2024-09-15", 0.8853], ["2024-09-22", 0.8768], ["2024-09-29", 0.9092], ["2024-10-06", 0.9054], ["2024-10-13", 0.9176], ["2024-10-20", 0.8881], ["2024-10-27", 0.8975], ["2024-11-03", 0.873], ["2024-11-10", 0.8824], ["2024-11-17", 0.8234], ["2024-11-24", 0.8302], ["2024-12-01", 0.8167], ["2024-12-08", 0.831], ["2024-12-15", 0.851], ["2024-12-22", 0.8371], ["2024-12-29", 0.858], ["2025-01-05", 0.8689], ["2025-01-12", 0.8645], ["2025-01-19", 0.8854], ["2025-01-26", 0.8755], ["2025-02-02", 0.8304], ["2025-02-09", 0.8313], ["2025-02-16", 0.844], ["2025-02-23", 0.8542], ["2025-03-02", 0.8005], ["2025-03-09", 0.8023], ["2025-03-16", 0.8155], ["2025-03-23", 0.8042], ["2025-03-30", 0.7678], ["2025-04-06", 0.709], ["2025-04-13", 0.7441], ["2025-04-20", 0.7255], ["2025-04-27", 0.7695], ["2025-05-04", 0.7732], ["2025-05-11", 0.7891], ["2025-05-18", 0.8261], ["2025-05-25", 0.8104], ["2025-06-01", 0.8049], ["2025-06-08", 0.8396], ["2025-06-15", 0.8553], ["2025-06-22", 0.8733], ["2025-06-29", 0.8983], ["2025-07-06", 0.8993], ["2025-07-13", 0.91], ["2025-07-20", 0.9104], ["2025-07-27", 0.8837], ["2025-08-03", 0.8861], ["2025-08-10", 0.8887], ["2025-08-17", 0.8919], ["2025-08-24", 0.8898], ["2025-08-31", 0.8775], ["2025-09-07", 0.8889], ["2025-09-14", 0.9115], ["2025-09-21", 0.9352], ["2025-09-28", 0.949], ["2025-10-05", 0.9803], ["2025-10-12", 0.9779], ["2025-10-19", 1.0171], ["2025-10-26", 1.0273], ["2025-11-02", 1.0568], ["2025-11-09", 1.0325], ["2025-11-16", 1.0114], ["2025-11-23", 0.9702], ["2025-11-30", 1.0257], ["2025-12-07", 1.0618], ["2025-12-14", 1.0302], ["2025-12-21", 1.0341], ["2025-12-28", 1.0401], ["2026-01-04", 1.0742], ["2026-01-11", 1.0965], ["2026-01-18", 1.1423], ["2026-01-25", 1.1507], ["2026-02-01", 1.1527], ["2026-02-08", 1.161], ["2026-02-15", 1.1904], ["2026-02-22", 1.1955], ["2026-03-01", 1.1773], ["2026-03-08", 1.1149], ["2026-03-15", 1.153], ["2026-03-22", 1.1789], ["2026-03-29", 1.171], ["2026-04-05", 1.19], ["2026-04-12", 1.3041], ["2026-04-19", 1.341], ["2026-04-26", 1.4673], ["2026-05-03", 1.4654], ["2026-05-10", 1.5915], ["2026-05-17", 1.5642], ["2026-05-24", 1.6328], ["2026-05-31", 1.6925], ["2026-06-07", 1.6551], ["2026-06-14", 1.7993], ["2026-06-21", 1.9121], ["2026-06-28", 1.7954], ["2026-07-05", 1.6873], ["2026-07-12", 1.7117], ["2026-07-19", 1.5653], ["2026-07-26", 1.5946], ["2026-08-02", 1.5102], ["2026-08-09", 1.5929], ["2026-08-16", 1.5655]], "ytd_excess": 57.92, "from_max": -20.1, "vs_peak2000": 63.9, "vs_min": 626.0, "start23": 0.654, "gain23": 139.0, "y0": 1.0347, "ma200": 1.3222, "vs_ma200": 18.4}, "valuation": {"pe_fy0": 29.0, "pe_fy1": 19.36, "cov_eps": 100.0, "ey_fy1": 5.17, "tnx": 4.68, "erp": 0.49, "pb": 11.51, "pb_cov": 95.4, "evs": 11.41, "evs_cov": 95.4, "pb_all": 12.07, "evs_all": 11.96, "q13": {"ret": 3.25, "pe0": 22.34, "pe1": 19.36, "pe_chg": -13.38, "eps_chg": 19.2, "from": "2026-05-12"}, "bucket": {"equip": {"pe": 30.7, "pb": 20.6}, "mem": {"pe": 5.8, "pb": 9.6}, "logic": {"pe": 22.6, "pb": 15.3}, "analog": {"pe": 22.2, "pb": 6.9}, "foundry": {"pe": 25.4, "pb": 7.7}}}, "earnings": {"fy0_1w": 1.64, "fy0_1w_up": 41.8, "fy0_4w": 3.8, "fy0_4w_up": 80.0, "fy0_8w": 8.22, "fy0_8w_up": 94.6, "fy0_13w": 11.63, "fy0_13w_up": 97.0, "fy1_1w": 1.67, "fy1_1w_up": 65.8, "fy1_4w": 4.83, "fy1_4w_up": 95.2, "fy1_8w": 13.84, "fy1_8w_up": 95.2, "fy1_13w": 21.28, "fy1_13w_up": 96.5, "n": 28, "bucket": {"equip": {"r13w": 19.27, "r4w": 10.8, "r1w": 2.13, "up13": 100.0, "n": 7}, "mem": {"r13w": 51.23, "r4w": 3.69, "r1w": -0.12, "up13": 100.0, "n": 2}, "logic": {"r13w": 10.8, "r4w": 1.86, "r1w": 1.5, "up13": 91.9, "n": 7}, "analog": {"r13w": 9.41, "r4w": 6.4, "r1w": 4.97, "up13": 97.6, "n": 9}, "foundry": {"r13w": 15.33, "r4w": 11.03, "r1w": 1.4, "up13": 100.0, "n": 3}}, "growth_fy0_fy1": 49.8, "rev_growth_fy1": 37.2, "rev_cov": 100.0, "rev_growth_fy0": 60.8}, "glob": {"ytd": {"费城半导体": 70.81, "纳斯达克100": 16.93, "标普500": 12.89, "台湾加权": 57.16, "韩国综合": 56.12, "日经225": 34.14}, "dates": ["2025-12-31", "2026-01-02", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-19", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-03", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11", "2026-08-12"], "lines": {"费城半导体": [100.0, 104.01, 105.13, 108.02, 106.94, 104.98, 107.84, 108.35, 109.39, 108.73, 110.65, 111.92, 111.92, 110.04, 113.54, 113.72, 112.35, 111.91, 114.6, 117.27, 117.47, 112.92, 114.84, 112.47, 107.57, 107.5, 113.63, 115.24, 114.46, 117.06, 114.14, 114.89, 114.89, 114.87, 115.97, 115.39, 116.62, 115.96, 117.64, 119.54, 115.73, 114.33, 114.88, 109.62, 111.74, 110.43, 106.09, 110.27, 111.04, 111.74, 107.91, 107.96, 110.07, 110.64, 110.05, 111.01, 108.29, 109.74, 111.15, 112.49, 107.1, 105.29, 100.84, 107.13, 110.15, 110.59, 110.59, 111.76, 113.0, 120.16, 122.68, 125.51, 127.62, 130.23, 130.44, 131.71, 134.91, 135.52, 136.2, 139.9, 142.29, 148.43, 146.94, 141.68, 145.01, 148.29, 149.59, 148.73, 155.02, 161.97, 157.57, 166.25, 170.56, 165.42, 169.67, 170.46, 163.61, 159.57, 159.61, 166.78, 168.91, 172.28, 172.28, 181.8, 179.33, 181.12, 181.13, 183.05, 193.79, 196.48, 192.25, 172.53, 182.22, 178.7, 172.33, 185.96, 188.78, 199.06, 187.69, 190.27, 202.48, 202.48, 206.61, 190.35, 190.0, 196.82, 186.41, 193.55, 201.14, 188.52, 178.26, 178.26, 182.12, 173.66, 177.53, 182.97, 183.07, 174.33, 178.76, 175.05, 167.55, 164.81, 165.8, 174.44, 175.21, 174.27, 166.86, 163.13, 155.8, 147.5, 159.58, 159.69, 161.37, 171.95, 169.54, 170.1, 174.45, 169.33, 170.81, 170.81], "纳斯达克100": [100.0, 99.83, 100.6, 101.54, 101.6, 101.02, 102.05, 102.13, 101.95, 100.86, 101.18, 101.11, 101.11, 98.96, 100.3, 101.06, 101.41, 101.84, 102.73, 103.06, 102.51, 101.2, 101.94, 100.35, 98.58, 97.22, 99.31, 100.07, 99.52, 99.81, 97.77, 97.95, 97.95, 97.83, 98.61, 98.21, 99.06, 97.86, 98.92, 100.31, 99.15, 98.85, 98.98, 97.9, 99.38, 99.09, 97.6, 98.88, 98.84, 98.87, 97.16, 96.56, 97.65, 98.14, 96.73, 96.46, 94.65, 95.8, 95.06, 95.7, 93.41, 91.62, 90.91, 94.02, 95.13, 95.23, 95.23, 95.81, 95.85, 98.63, 99.34, 99.47, 100.53, 102.35, 103.78, 104.29, 105.63, 105.31, 104.87, 106.68, 106.07, 108.13, 108.14, 107.05, 107.67, 108.72, 109.74, 109.51, 110.95, 113.26, 113.13, 115.78, 116.12, 115.11, 116.31, 117.15, 115.35, 114.83, 114.13, 116.03, 116.27, 116.76, 116.76, 118.82, 118.71, 119.7, 120.13, 120.85, 121.43, 121.07, 120.43, 114.68, 116.49, 115.19, 112.9, 116.62, 117.37, 120.97, 118.69, 117.51, 120.42, 120.42, 120.19, 116.23, 115.72, 116.6, 115.32, 117.92, 119.91, 118.06, 116.16, 116.16, 117.62, 115.54, 115.85, 117.73, 118.12, 115.9, 117.17, 116.84, 114.95, 113.24, 113.28, 115.47, 114.84, 112.69, 111.4, 111.05, 109.95, 107.69, 111.31, 111.98, 113.97, 117.76, 116.78, 116.33, 117.71, 117.31, 116.93, 116.93], "标普500": [100.0, 100.19, 100.83, 101.45, 101.1, 101.11, 101.76, 101.92, 101.73, 101.18, 101.45, 101.38, 101.38, 99.29, 100.44, 100.99, 101.02, 101.53, 101.94, 101.94, 101.8, 101.37, 101.91, 101.06, 100.54, 99.31, 101.27, 101.74, 101.41, 101.4, 99.81, 99.86, 99.86, 99.97, 100.52, 100.24, 100.94, 99.89, 100.65, 101.47, 100.93, 100.49, 100.53, 99.58, 100.35, 99.78, 98.46, 99.28, 99.06, 98.98, 97.47, 96.88, 97.87, 98.11, 96.77, 96.51, 95.05, 96.14, 95.78, 96.3, 94.62, 93.04, 92.67, 95.37, 96.05, 96.16, 96.16, 96.59, 96.66, 99.08, 99.7, 99.58, 100.6, 101.78, 102.59, 102.86, 104.1, 103.85, 103.19, 104.27, 103.84, 104.67, 104.8, 104.28, 104.24, 105.31, 105.62, 105.19, 106.04, 107.59, 107.18, 108.08, 108.29, 108.11, 108.75, 109.58, 108.22, 108.14, 107.42, 108.58, 108.77, 109.17, 109.17, 109.84, 109.86, 110.49, 110.73, 111.02, 111.16, 110.35, 110.79, 107.86, 108.18, 107.91, 106.16, 108.02, 108.56, 110.35, 109.73, 108.39, 109.57, 109.57, 109.16, 107.6, 107.49, 107.48, 107.43, 108.69, 109.55, 109.32, 109.32, 109.32, 110.11, 109.62, 109.31, 110.2, 110.66, 109.79, 110.2, 110.62, 110.05, 108.94, 108.73, 109.7, 109.55, 108.22, 108.28, 108.29, 108.52, 106.88, 108.65, 109.41, 111.03, 113.02, 112.83, 112.63, 113.32, 113.26, 112.89, 112.89], "台湾加权": [100.0, 101.33, 103.94, 105.57, 105.08, 104.82, 104.58, 105.54, 106.02, 106.83, 106.38, 108.44, 109.24, 109.65, 107.88, 109.61, 110.35, 110.71, 111.58, 113.26, 112.34, 110.7, 109.19, 111.16, 111.48, 109.8, 109.73, 111.88, 114.19, 116.03, 116.03, 116.03, 116.03, 116.03, 116.03, 116.03, 116.03, 116.61, 119.81, 122.27, 122.27, 122.27, 121.17, 118.51, 113.35, 116.26, 116.01, 110.86, 113.15, 117.78, 115.95, 115.32, 115.12, 116.82, 118.59, 116.32, 115.81, 112.98, 112.6, 115.45, 115.1, 114.32, 112.27, 109.53, 114.54, 112.46, 112.46, 112.46, 114.73, 120.02, 120.36, 122.28, 122.42, 125.32, 126.79, 128.2, 127.07, 127.6, 129.84, 130.78, 130.21, 134.42, 136.78, 136.45, 135.7, 134.4, 134.4, 140.54, 140.76, 142.04, 144.78, 143.64, 144.28, 144.66, 142.85, 144.15, 142.15, 141.18, 138.71, 138.18, 142.83, 145.93, 150.69, 150.28, 152.8, 150.66, 154.45, 156.53, 157.29, 160.41, 157.71, 155.61, 150.2, 154.35, 149.24, 148.98, 152.5, 156.74, 158.16, 158.4, 160.43, 160.43, 164.83, 162.62, 158.97, 159.7, 153.89, 155.37, 159.25, 162.34, 161.39, 161.52, 160.74, 157.02, 157.9, 156.59, 156.59, 156.68, 154.46, 157.55, 157.53, 147.33, 146.56, 152.72, 154.77, 154.85, 150.72, 150.65, 143.64, 138.24, 137.87, 148.88, 149.8, 149.71, 154.03, 153.28, 152.69, 155.12, 155.78, 157.16], "韩国综合": [null, 100.0, 103.43, 105.01, 105.6, 105.63, 106.42, 107.31, 108.89, 109.59, 111.32, 112.32, 113.81, 113.37, 113.93, 114.92, 115.79, 114.85, 117.99, 119.98, 121.15, 121.23, 114.85, 122.7, 124.63, 119.81, 118.09, 122.93, 123.02, 124.24, 128.14, 127.78, 127.78, 127.78, 127.78, 131.73, 134.78, 135.65, 138.52, 141.17, 146.35, 144.89, 144.89, 134.39, 118.19, 129.57, 129.59, 121.86, 128.38, 130.17, 129.55, 127.33, 128.78, 130.88, 137.48, 133.73, 134.15, 125.43, 128.87, 130.92, 126.7, 126.2, 122.45, 117.24, 127.13, 121.45, 124.77, 126.47, 127.5, 136.26, 134.07, 135.95, 134.78, 138.47, 141.34, 144.47, 143.68, 144.31, 148.24, 148.92, 150.26, 150.26, 153.49, 154.1, 155.25, 153.12, 153.12, 160.96, 160.96, 171.35, 173.8, 173.98, 181.51, 177.35, 182.01, 185.2, 173.87, 174.4, 168.73, 167.28, 181.35, 182.1, 182.1, 186.73, 190.94, 189.93, 196.68, 203.92, 204.23, 204.23, 200.47, 189.36, 173.67, 187.88, 179.38, 180.15, 188.5, 198.3, 202.49, 205.68, 210.32, 210.05, 211.49, 190.36, 196.56, 207.22, 195.17, 194.79, 196.69, 192.67, 177.47, 187.68, 186.82, 177.66, 168.15, 169.2, 173.47, 157.95, 159.1, 169.03, 158.26, 158.26, 151.2, 156.58, 157.73, 164.68, 155.25, 156.76, 139.77, 131.41, 129.79, 153.04, 145.2, 147.55, 153.11, 146.1, 145.23, 146.18, 147.24, 152.66], "日经225": [null, null, 100.0, 101.32, 100.25, 98.62, 100.21, 100.21, 103.31, 104.84, 104.39, 104.06, 103.38, 102.23, 101.82, 103.58, 103.89, 102.03, 102.9, 102.94, 102.98, 102.87, 101.59, 105.57, 104.75, 103.83, 104.67, 108.74, 111.22, 111.22, 111.2, 109.86, 109.6, 109.13, 110.25, 110.87, 109.63, 109.63, 110.59, 113.02, 113.35, 113.54, 112.01, 108.58, 104.65, 106.65, 107.31, 101.73, 104.66, 106.16, 105.06, 103.83, 103.7, 103.6, 106.57, 102.97, 102.97, 99.39, 100.81, 103.7, 103.42, 102.97, 100.1, 98.52, 103.68, 101.22, 102.49, 103.05, 103.08, 108.63, 107.84, 109.82, 109.01, 111.66, 112.16, 114.83, 112.82, 113.49, 114.5, 114.96, 114.1, 115.21, 116.79, 115.6, 115.6, 114.38, 114.82, 114.82, 114.82, 114.82, 121.22, 120.99, 120.42, 121.05, 122.07, 120.88, 118.48, 117.33, 116.82, 115.38, 119.01, 122.2, 125.71, 125.4, 125.4, 124.81, 127.97, 129.14, 128.75, 131.97, 130.17, 128.47, 123.52, 126.21, 123.82, 123.89, 127.37, 133.73, 133.9, 134.86, 137.08, 137.46, 139.59, 134.64, 133.46, 139.61, 133.82, 134.02, 135.17, 135.97, 132.61, 134.56, 134.54, 131.69, 128.91, 130.7, 132.27, 129.73, 130.7, 132.64, 128.94, 123.75, 123.75, 127.78, 127.56, 128.15, 124.65, 125.27, 120.32, 118.52, 119.36, 124.17, 123.0, 123.39, 127.91, 126.72, 126.57, 129.2, 129.2, 130.27]}, "corr": {"纳斯达克100": 0.9, "标普500": 0.74, "台湾加权": 0.22, "韩国综合": 0.3, "日经225": 0.29}, "corr3y": {"纳斯达克100": 0.89, "标普500": 0.79, "台湾加权": 0.1, "韩国综合": 0.19, "日经225": 0.13}, "corr3y_lag": {"纳斯达克100": {"lag": 0, "corr": 0.89}, "标普500": {"lag": 0, "corr": 0.79}, "台湾加权": {"lag": 1, "corr": 0.56}, "韩国综合": {"lag": 1, "corr": 0.42}, "日经225": {"lag": 1, "corr": 0.48}}}, "drawdowns": [{"start": "1995-09-26", "trough": "1996-07-24", "end": "1997-05-02", "dd": -52.3, "days_down": 302, "days_back": 282}, {"start": "1997-10-16", "trough": "1998-10-08", "end": "1999-01-13", "dd": -53.0, "days_down": 357, "days_back": 97}, {"start": "2000-03-21", "trough": "2008-11-20", "end": "2017-11-21", "dd": -87.1, "days_down": 3166, "days_back": 3288}, {"start": "2020-02-25", "trough": "2020-03-18", "end": "2020-06-05", "dd": -35.0, "days_down": 22, "days_back": 79}, {"start": "2022-01-19", "trough": "2022-10-14", "end": "2023-12-14", "dd": -46.5, "days_down": 268, "days_back": 426}, {"start": "2024-07-19", "trough": "2025-04-08", "end": "2025-09-10", "dd": -39.7, "days_down": 263, "days_back": 155}], "dd_from": "1994-05-04", "dd_n": 6, "dd_med_back": 218, "dd_max_back": 3288, "dd_med_dd": -49.4, "zz": [{"peak": "1995-09-11", "trough": "1996-01-15", "dd": -45.0, "days_down": 126, "days_back": 473, "back_dt": "1997-05-02"}, {"peak": "1996-05-14", "trough": "1996-07-24", "dd": -33.4, "days_down": 71, "days_back": 113, "back_dt": "1996-11-14"}, {"peak": "1997-08-20", "trough": "1997-12-12", "dd": -38.5, "days_down": 114, "days_back": 404, "back_dt": "1999-01-20"}, {"peak": "1998-02-26", "trough": "1998-10-08", "dd": -42.4, "days_down": 224, "days_back": 56, "back_dt": "1998-12-03"}, {"peak": "2000-03-10", "trough": "2000-04-14", "dd": -33.1, "days_down": 35, "days_back": 6430, "back_dt": "2017-11-21"}, {"peak": "2000-06-21", "trough": "2000-12-21", "dd": -57.8, "days_down": 183, "days_back": 6158, "back_dt": "2017-10-31"}, {"peak": "2001-01-31", "trough": "2001-04-04", "dd": -36.7, "days_down": 63, "days_back": 5080, "back_dt": "2015-03-02"}, {"peak": "2001-05-21", "trough": "2001-10-02", "dd": -49.8, "days_down": 134, "days_back": 4886, "back_dt": "2015-02-17"}, {"peak": "2002-03-08", "trough": "2002-10-09", "dd": -66.4, "days_down": 215, "days_back": 4283, "back_dt": "2014-07-01"}, {"peak": "2002-11-27", "trough": "2003-02-07", "dd": -31.6, "days_down": 72, "days_back": 112, "back_dt": "2003-05-30"}, {"peak": "2004-01-12", "trough": "2004-09-08", "dd": -37.2, "days_down": 240, "days_back": 3452, "back_dt": "2014-02-20"}, {"peak": "2006-01-27", "trough": "2006-07-21", "dd": -30.1, "days_down": 175, "days_back": 2764, "back_dt": "2014-02-13"}, {"peak": "2007-07-17", "trough": "2008-11-20", "dd": -68.7, "days_down": 492, "days_back": 1889, "back_dt": "2014-01-22"}, {"peak": "2011-02-17", "trough": "2011-08-19", "dd": -31.0, "days_down": 183, "days_back": 650, "back_dt": "2013-05-30"}, {"peak": "2020-02-19", "trough": "2020-03-18", "dd": -35.0, "days_down": 28, "days_back": 79, "back_dt": "2020-06-05"}, {"peak": "2021-12-27", "trough": "2022-10-14", "dd": -46.5, "days_down": 291, "days_back": 426, "back_dt": "2023-12-14"}, {"peak": "2024-07-10", "trough": "2025-04-08", "dd": -39.7, "days_down": 272, "days_back": 155, "back_dt": "2025-09-10"}], "zz_n": 17, "zz_med_back": 650, "zz_med_dd": -38.5, "zz_worst": {"peak": "2007-07-17", "trough": "2008-11-20", "dd": -68.7, "days_down": 492, "days_back": 1889, "back_dt": "2014-01-22"}, "zz_slowest": {"peak": "2000-03-10", "trough": "2000-04-14", "dd": -33.1, "days_down": 35, "days_back": 6430, "back_dt": "2017-11-21"}, "dd_spx_n": 3, "cycle": {"mem_13w": 51.23, "mem_4w": 3.69, "mem_1w": -0.12, "eq_13w": 19.27, "eq_4w": 10.8, "eq_1w": 2.13, "gap13": 31.96, "gap4": -7.11, "decay_equip": 15.83, "decay_mem": -39.24, "decay_logic": -4.76, "decay_analog": 11.39, "decay_foundry": 20.52, "lead_20d": 1.48, "small_20d": -5.42, "lead_60d": 0.16, "small_60d": -12.19, "mu_from_high": -28.4, "sox_from_high": -17.33, "mem_pe": 5.8, "mem_pb": 9.6}, "alt": [{"code": "501225", "name": "景顺长城全球半导体芯片股票A(QDII-LOF)", "kind": "场外 / LOF", "track": "主动管理，无跟踪指数（业绩比较基准含境外半导体）", "last": 3.0698, "ytd": 55.09, "corr": 0.93, "lag": 0, "n_obs": 466, "splitadj": [], "mv": null, "amt": null, "prem": null, "nf": false}, {"code": "016452", "name": "南方纳斯达克100指数发起(QDII)A", "kind": "场外 / LOF", "track": "纳斯达克100 指数", "last": 2.3016, "ytd": 12.36, "corr": 0.87, "lag": 0, "n_obs": 466, "splitadj": [], "mv": null, "amt": null, "prem": null, "nf": true}, {"code": "017653", "name": "创金合信全球芯片产业股票发起(QDII)A", "kind": "场外 / LOF", "track": "主动管理，无跟踪指数", "last": 2.2584, "ytd": 25.91, "corr": 0.59, "lag": 0, "n_obs": 467, "splitadj": [], "mv": null, "amt": null, "prem": null, "nf": false}, {"code": "513300", "name": "纳斯达克ETF华夏", "kind": "ETF（场内）", "track": "纳斯达克100 指数", "last": 2.693, "ytd": 16.58, "corr": 0.55, "lag": 1, "n_obs": 467, "splitadj": [], "mv": 142.8, "amt": 2.4, "prem": 9.07, "nf": false}, {"code": "513650", "name": "标普500ETF南方", "kind": "ETF（场内）", "track": "标准普尔500 指数", "last": 2.023, "ytd": 11.89, "corr": 0.55, "lag": 1, "n_obs": 467, "splitadj": [], "mv": 87.7, "amt": 2.17, "prem": 6.99, "nf": true}, {"code": "513310", "name": "中韩半导体ETF华泰柏瑞", "kind": "ETF（场内）", "track": "中韩半导体指数（境内+韩国上市半导体）", "last": 4.879, "ytd": 89.33, "corr": 0.39, "lag": 1, "n_obs": 467, "splitadj": [], "mv": 118.4, "amt": 97.93, "prem": 14.18, "nf": false}, {"code": "159325", "name": "半导体ETF南方", "kind": "ETF（场内）", "track": "中证半导体产业指数（A股）", "last": 2.204, "ytd": 47.52, "corr": 0.24, "lag": 0, "n_obs": 410, "splitadj": [], "mv": 11.4, "amt": 1.35, "prem": 0.11, "nf": true}, {"code": "159995", "name": "芯片ETF华夏", "kind": "ETF（场内）", "track": "国证半导体芯片指数（A股）", "last": 1.187, "ytd": 37.39, "corr": 0.23, "lag": 0, "n_obs": 467, "splitadj": [["2026-07-07", 0.4988]], "mv": 282.6, "amt": 6.81, "prem": 0.02, "nf": false}, {"code": "512480", "name": "半导体ETF国联安", "kind": "ETF（场内）", "track": "中证全指半导体产品与设备指数（A股）", "last": 1.07, "ytd": 48.26, "corr": 0.22, "lag": 0, "n_obs": 467, "splitadj": [["2021-03-29", 0.511], ["2026-07-03", 0.493]], "mv": 205.4, "amt": 12.46, "prem": 0.01, "nf": false}, {"code": "588890", "name": "科创芯片ETF南方", "kind": "ETF（场内）", "track": "上证科创板芯片指数（A股）", "last": 4.05, "ytd": 53.82, "corr": 0.19, "lag": 0, "n_obs": 467, "splitadj": [], "mv": 34.8, "amt": 1.56, "prem": -0.19, "nf": true}], "etf_snap_time": "2026-08-12 15:34:36+08:00", "cn_search": {"etf_total": 1573, "etf_hit": 0, "fund_total": 27495, "fund_hit": 0, "qdii_total": 373}, "cons": [{"t": "NVDA", "n": "英伟达", "b": "logic", "w": 13.35, "w0": 12.508, "biz": "GPU 与 AI 加速平台", "line": "AI·算力芯片", "hq": "美国", "px": 217.5, "d1": -0.02, "d5": 2.62, "ytd": 16.62, "ctr": 2.713, "pe": 16.9, "pb": 27.0, "rev13": 14.3, "mcap": 5268.1}, {"t": "AVGO", "n": "博通", "b": "logic", "w": 10.208, "w0": 8.496, "biz": "ASIC 定制与网络交换芯片", "line": "AI·算力芯片", "hq": "美国", "px": 416.08, "d1": -1.5, "d5": -0.5, "ytd": 20.22, "ctr": 2.914, "pe": 21.3, "pb": 22.6, "rev13": 7.9, "mcap": 1979.5}, {"t": "MU", "n": "美光", "b": "mem", "w": 7.66, "w0": 4.776, "biz": "DRAM 与 NAND 存储", "line": "AI·存储周期", "hq": "美国", "px": 868.52, "d1": 0.87, "d5": -2.71, "ytd": 204.31, "ctr": 14.013, "pe": 5.6, "pb": 9.7, "rev13": 52.1, "mcap": 980.9}, {"t": "AMAT", "n": "应用材料", "b": "equip", "w": 5.01, "w0": 4.032, "biz": "沉积刻蚀等前道设备", "line": "AI·半导体设备", "hq": "美国", "px": 525.61, "d1": 0.67, "d5": -3.84, "ytd": 104.53, "ctr": 3.265, "pe": 30.5, "pb": 17.5, "rev13": 20.1, "mcap": 417.3}, {"t": "ASML", "n": "阿斯麦", "b": "equip", "w": 4.648, "w0": 3.993, "biz": "光刻机", "line": "AI·半导体设备", "hq": "荷兰", "px": 1799.38, "d1": 3.8, "d5": 5.11, "ytd": 68.19, "ctr": 2.255, "pe": 35.0, "pb": null, "rev13": 25.9, "mcap": 691.1}, {"t": "MRVL", "n": "迈威尔", "b": "logic", "w": 4.395, "w0": 3.761, "biz": "定制 ASIC 与数据中心互连", "line": "AI·数据中心互连", "hq": "美国", "px": 212.31, "d1": 1.8, "d5": -2.87, "ytd": 149.84, "ctr": 9.04, "pe": 34.0, "pb": 10.2, "rev13": null, "mcap": 190.6}, {"t": "KLAC", "n": "科磊", "b": "equip", "w": 4.332, "w0": 4.09, "biz": "量测与缺陷检测设备", "line": "AI·半导体设备", "hq": "美国", "px": 200.47, "d1": 4.01, "d5": 2.57, "ytd": 64.99, "ctr": 1.983, "pe": 30.5, "pb": 44.9, "rev13": 13.2, "mcap": 261.9}, {"t": "TSM", "n": "台积电", "b": "foundry", "w": 4.32, "w0": 4.125, "biz": "晶圆代工", "line": "先进制程与代工产能", "hq": "中国台湾", "px": 422.06, "d1": 0.86, "d5": 1.17, "ytd": 38.89, "ctr": 1.26, "pe": 19.4, "pb": 88.0, "rev13": 12.8, "mcap": 2189.0}, {"t": "LRCX", "n": "泛林", "b": "equip", "w": 4.159, "w0": 4.342, "biz": "刻蚀与薄膜沉积设备", "line": "AI·半导体设备", "hq": "美国", "px": 311.41, "d1": 1.64, "d5": -1.99, "ytd": 81.92, "ctr": 2.796, "pe": 26.9, "pb": 36.8, "rev13": 21.0, "mcap": 389.7}, {"t": "ADI", "n": "亚德诺", "b": "analog", "w": 4.007, "w0": 4.044, "biz": "高性能模拟与混合信号", "line": "模拟·车规工业复苏", "hq": "美国", "px": 385.3, "d1": 0.36, "d5": 1.32, "ytd": 42.07, "ctr": 1.301, "pe": 25.6, "pb": 5.6, "rev13": 14.0, "mcap": 187.7}, {"t": "TXN", "n": "德州仪器", "b": "analog", "w": 3.983, "w0": 4.08, "biz": "通用模拟与嵌入式", "line": "模拟·车规工业复苏", "hq": "美国", "px": 281.24, "d1": 0.29, "d5": -0.84, "ytd": 62.11, "ctr": 2.241, "pe": 28.0, "pb": 14.3, "rev13": 13.5, "mcap": 256.8}, {"t": "AMD", "n": "AMD", "b": "logic", "w": 3.93, "w0": 7.791, "biz": "CPU/GPU 与自适应计算", "line": "AI·算力芯片", "hq": "美国", "px": 474.32, "d1": 1.01, "d5": -8.53, "ytd": 121.48, "ctr": 6.286, "pe": 30.7, "pb": 11.5, "rev13": null, "mcap": 774.3}, {"t": "INTC", "n": "英特尔", "b": "foundry", "w": 3.673, "w0": 3.6, "biz": "CPU 与晶圆代工（IDM）", "line": "先进制程与代工产能", "hq": "美国", "px": 97.71, "d1": 0.19, "d5": -3.12, "ytd": 164.8, "ctr": 7.367, "pe": 47.5, "pb": 5.6, "rev13": 34.3, "mcap": 492.8}, {"t": "QCOM", "n": "高通", "b": "logic", "w": 2.791, "w0": 4.026, "biz": "手机 SoC 与基带", "line": "手机与边缘 AI", "hq": "美国", "px": 162.68, "d1": 0.31, "d5": 0.01, "ytd": -4.89, "ctr": 0.262, "pe": 15.8, "pb": 6.2, "rev13": -3.5, "mcap": 170.8}, {"t": "MPWR", "n": "芯源系统", "b": "analog", "w": 2.786, "w0": 3.146, "biz": "电源管理芯片", "line": "模拟·车规工业复苏", "hq": "美国", "px": 1402.11, "d1": 1.52, "d5": 5.02, "ytd": 54.7, "ctr": 1.638, "pe": 40.3, "pb": 17.7, "rev13": 15.4, "mcap": 68.9}, {"t": "COHR", "n": "Coherent", "b": "logic", "w": 2.613, "w0": 2.102, "biz": "光模块与激光器件", "line": "AI·数据中心互连", "hq": "美国", "px": 328.57, "d1": 1.05, "d5": 1.5, "ytd": 78.02, "ctr": 1.661, "pe": 39.3, "pb": 6.0, "rev13": 7.5, "mcap": 64.3}, {"t": "NXPI", "n": "恩智浦", "b": "analog", "w": 2.421, "w0": 3.959, "biz": "车规与工业模拟", "line": "模拟·车规工业复苏", "hq": "荷兰", "px": 236.38, "d1": 1.26, "d5": -0.51, "ytd": 8.9, "ctr": 0.241, "pe": 13.1, "pb": 5.2, "rev13": 3.0, "mcap": 59.6}, {"t": "TER", "n": "泰瑞达", "b": "equip", "w": 2.346, "w0": 2.196, "biz": "测试设备", "line": "AI·半导体设备", "hq": "美国", "px": 379.56, "d1": 3.96, "d5": -5.95, "ytd": 96.09, "ctr": 2.009, "pe": 32.9, "pb": 18.9, "rev13": 22.2, "mcap": 59.3}, {"t": "ALAB", "n": "Astera Labs", "b": "logic", "w": 2.233, "w0": 2.036, "biz": "数据中心连接芯片", "line": "AI·数据中心互连", "hq": "美国", "px": 311.99, "d1": -1.65, "d5": -13.74, "ytd": 87.54, "ctr": 1.558, "pe": 48.8, "pb": 31.4, "rev13": 53.1, "mcap": 54.1}, {"t": "CRDO", "n": "Credo", "b": "logic", "w": 1.817, "w0": 1.803, "biz": "高速有线互连（AEC/SerDes）", "line": "AI·数据中心互连", "hq": "美国/开曼", "px": 247.69, "d1": 3.23, "d5": 4.11, "ytd": 72.14, "ctr": 1.132, "pe": 27.3, "pb": 22.3, "rev13": 20.8, "mcap": 46.2}, {"t": "MCHP", "n": "微芯科技", "b": "analog", "w": 1.812, "w0": 2.495, "biz": "微控制器与模拟", "line": "模拟·车规工业复苏", "hq": "美国", "px": 81.02, "d1": -0.45, "d5": 0.43, "ytd": 27.15, "ctr": 0.595, "pe": 17.8, "pb": 6.8, "rev13": 11.0, "mcap": 44.0}, {"t": "ARM", "n": "ARM", "b": "logic", "w": 1.556, "w0": 1.096, "biz": "CPU 架构 IP 授权", "line": "AI·算力芯片", "hq": "英国", "px": 268.93, "d1": 0.4, "d5": -4.15, "ytd": 146.03, "ctr": 1.423, "pe": 87.9, "pb": 33.3, "rev13": 1.3, "mcap": 287.2}, {"t": "ON", "n": "安森美", "b": "analog", "w": 1.284, "w0": 1.578, "biz": "功率与图像传感（车规）", "line": "模拟·车规工业复苏", "hq": "美国", "px": 81.11, "d1": 1.67, "d5": 0.41, "ytd": 49.79, "ctr": 0.688, "pe": 18.0, "pb": 4.4, "rev13": 5.9, "mcap": 31.6}, {"t": "GFS", "n": "格芯", "b": "foundry", "w": 1.128, "w0": 1.404, "biz": "成熟制程晶圆代工", "line": "先进制程与代工产能", "hq": "美国/新加坡", "px": 50.82, "d1": 1.54, "d5": -2.31, "ytd": 45.53, "ctr": 0.581, "pe": 19.3, "pb": 2.4, "rev13": 4.8, "mcap": 27.9}, {"t": "MTSI", "n": "MACOM", "b": "analog", "w": 0.93, "w0": 0.93, "biz": "射频微波与光通信半导体", "line": "AI·数据中心互连", "hq": "美国", "px": 299.93, "d1": 0.98, "d5": 9.74, "ytd": 75.11, "ctr": 0.639, "pe": 35.4, "pb": 16.1, "rev13": 23.9, "mcap": 22.9}, {"t": "ENTG", "n": "恩特格里斯", "b": "equip", "w": 0.904, "w0": 0.926, "biz": "半导体材料与过滤纯化", "line": "AI·半导体材料", "hq": "美国", "px": 150.21, "d1": 4.16, "d5": 3.91, "ytd": 78.29, "ctr": 0.683, "pe": 29.9, "pb": 5.6, "rev13": 8.9, "mcap": 23.0}, {"t": "NVMI", "n": "Nova", "b": "equip", "w": 0.504, "w0": 0.696, "biz": "过程控制量测设备", "line": "AI·半导体设备", "hq": "以色列", "px": 395.95, "d1": 2.9, "d5": -4.24, "ytd": 20.57, "ctr": 0.128, "pe": 29.0, "pb": 9.1, "rev13": 9.3, "mcap": 12.6}, {"t": "RMBS", "n": "Rambus", "b": "mem", "w": 0.426, "w0": 0.717, "biz": "内存接口芯片与 IP", "line": "AI·存储周期", "hq": "美国", "px": 96.42, "d1": 0.55, "d5": -4.11, "ytd": 4.93, "ctr": 0.019, "pe": 26.1, "pb": 7.1, "rev13": 1.9, "mcap": 10.5}, {"t": "SWKS", "n": "Skyworks", "b": "analog", "w": 0.425, "w0": 0.683, "biz": "射频前端", "line": "手机与边缘 AI", "hq": "美国", "px": 68.33, "d1": -0.67, "d5": 2.31, "ytd": 7.76, "ctr": 0.041, "pe": 13.7, "pb": 1.8, "rev13": -0.4, "mcap": 10.3}, {"t": "QRVO", "n": "Qorvo", "b": "analog", "w": 0.35, "w0": 0.567, "biz": "射频前端", "line": "手机与边缘 AI", "hq": "美国", "px": 96.68, "d1": -0.32, "d5": 1.73, "ytd": 14.4, "ctr": 0.073, "pe": 12.1, "pb": 2.5, "rev13": 0.5, "mcap": 8.5}], "sectors": {"equip": {"name": "设备与材料", "sub": "光刻 · 刻蚀沉积 · 量测 · 测试 · 材料", "color": "#0052D9", "weight": 21.9, "w0": 20.28, "n": 7, "score": 41, "r20": -2.01, "r5": 0.35, "volratio": -15.5, "volratio_abs": -36.8, "amt5d": 10.9, "amtshare": 9.2, "ytd": 64.69, "ytd_rebal": 79.34, "vol60": 77.5, "beta": 1.13, "chart": {"dates": ["2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11"], "basket": [100.0, 100.17, 97.63, 99.72, 100.52, 96.38, 93.11, 91.99, 97.26, 99.04, 100.82, 105.62, 103.48, 103.42, 103.23, 103.66, 109.65, 112.36, 112.29, 101.87, 109.41, 110.56, 108.57, 120.86, 123.7, 128.09, 121.44, 124.19, 131.02, 135.19, 123.54, 123.56, 133.6, 126.71, 137.47, 145.17, 130.96, 119.35, 119.65, 111.82, 114.24, 118.47, 118.9, 113.32, 117.5, 115.55, 111.84, 108.78, 107.74, 114.11, 112.91, 113.86, 109.09, 104.53, 98.03, 91.75, 102.2, 102.26, 103.2, 110.26, 107.8, 107.42, 109.55, 107.01, 109.91], "spx": [100.0, 102.59, 99.51, 102.06, 102.53, 98.41, 95.98, 96.01, 100.32, 101.6, 103.63, 109.35, 107.87, 108.95, 108.95, 110.11, 116.57, 118.19, 115.64, 103.78, 109.61, 107.49, 103.66, 111.85, 113.55, 119.74, 112.9, 114.45, 121.79, 124.28, 114.5, 114.29, 118.39, 112.13, 116.43, 120.99, 113.4, 107.22, 109.55, 104.46, 106.79, 110.06, 110.12, 104.86, 107.53, 105.29, 100.78, 99.14, 99.73, 104.93, 105.39, 104.83, 100.37, 98.13, 93.72, 88.72, 95.99, 96.06, 97.07, 103.43, 101.98, 102.32, 104.94, 101.85, 102.74]}, "ytd_bh": 79.56, "ytd_gap": -14.65}, "mem": {"name": "存储", "sub": "DRAM · NAND · HBM · 内存接口", "color": "#E34D59", "weight": 8.09, "w0": 5.49, "n": 2, "score": 21, "r20": -7.04, "r5": -2.12, "volratio": -13.6, "volratio_abs": -35.4, "amt5d": 28.65, "amtshare": 24.2, "ytd": 255.56, "ytd_rebal": 181.35, "vol60": 108.6, "beta": 1.47, "chart": {"dates": ["2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11"], "basket": [100.0, 106.37, 102.55, 107.43, 103.75, 97.1, 91.49, 93.61, 98.29, 102.44, 101.07, 120.05, 123.81, 123.16, 129.03, 137.24, 141.74, 143.87, 133.24, 115.52, 126.59, 124.67, 118.73, 132.12, 130.42, 143.6, 134.63, 137.3, 149.23, 158.81, 138.26, 137.64, 158.03, 147.41, 149.61, 151.27, 135.58, 127.89, 129.07, 122.87, 124.39, 129.98, 128.33, 122.53, 128.38, 118.46, 112.02, 111.5, 113.51, 126.88, 125.36, 129.11, 120.09, 117.55, 107.14, 96.73, 113.94, 107.65, 108.53, 116.87, 116.74, 115.31, 115.06, 112.66, 113.63], "spx": [100.0, 102.59, 99.51, 102.06, 102.53, 98.41, 95.98, 96.01, 100.32, 101.6, 103.63, 109.35, 107.87, 108.95, 108.95, 110.11, 116.57, 118.19, 115.64, 103.78, 109.61, 107.49, 103.66, 111.85, 113.55, 119.74, 112.9, 114.45, 121.79, 124.28, 114.5, 114.29, 118.39, 112.13, 116.43, 120.99, 113.4, 107.22, 109.55, 104.46, 106.79, 110.06, 110.12, 104.86, 107.53, 105.29, 100.78, 99.14, 99.73, 104.93, 105.39, 104.83, 100.37, 98.13, 93.72, 88.72, 95.99, 96.06, 97.07, 103.43, 101.98, 102.32, 104.94, 101.85, 102.74]}, "ytd_bh": 178.29, "ytd_gap": 74.21}, "logic": {"name": "逻辑·AI计算与互连", "sub": "GPU/ASIC · CPU · 网络互连 · IP", "color": "#7A4DFF", "weight": 42.89, "w0": 43.62, "n": 9, "score": 63, "r20": 4.09, "r5": -0.42, "volratio": 12.3, "volratio_abs": -16.0, "amt5d": 56.87, "amtshare": 48.1, "ytd": 61.88, "ytd_rebal": 54.28, "vol60": 56.3, "beta": 0.88, "chart": {"dates": ["2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11"], "basket": [100.0, 102.6, 100.36, 102.76, 105.56, 101.52, 99.35, 99.53, 103.69, 104.88, 106.48, 109.12, 107.47, 109.86, 110.87, 113.78, 120.61, 120.01, 116.76, 106.0, 110.15, 107.29, 102.83, 108.37, 109.45, 114.94, 109.22, 110.9, 116.37, 115.92, 108.97, 108.7, 108.69, 104.64, 107.58, 111.18, 106.81, 102.49, 105.55, 102.3, 105.24, 108.06, 108.79, 103.34, 105.04, 103.68, 98.41, 97.19, 98.6, 102.56, 104.4, 103.25, 99.06, 96.54, 93.04, 88.77, 94.71, 96.13, 98.75, 105.81, 104.67, 105.63, 108.6, 104.6, 104.66], "spx": [100.0, 102.59, 99.51, 102.06, 102.53, 98.41, 95.98, 96.01, 100.32, 101.6, 103.63, 109.35, 107.87, 108.95, 108.95, 110.11, 116.57, 118.19, 115.64, 103.78, 109.61, 107.49, 103.66, 111.85, 113.55, 119.74, 112.9, 114.45, 121.79, 124.28, 114.5, 114.29, 118.39, 112.13, 116.43, 120.99, 113.4, 107.22, 109.55, 104.46, 106.79, 110.06, 110.12, 104.86, 107.53, 105.29, 100.78, 99.14, 99.73, 104.93, 105.39, 104.83, 100.37, 98.13, 93.72, 88.72, 95.99, 96.06, 97.07, 103.43, 101.98, 102.32, 104.94, 101.85, 102.74]}, "ytd_bh": 57.37, "ytd_gap": 7.6}, "analog": {"name": "模拟·功率·射频·车规", "sub": "通用模拟 · MCU · 功率 · 射频前端", "color": "#E37318", "weight": 18.0, "w0": 21.48, "n": 9, "score": 52, "r20": -0.77, "r5": 2.11, "volratio": -15.5, "volratio_abs": -36.8, "amt5d": 6.92, "amtshare": 5.9, "ytd": 34.73, "ytd_rebal": 40.69, "vol60": 53.7, "beta": 0.72, "chart": {"dates": ["2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11"], "basket": [100.0, 102.72, 100.62, 103.87, 103.32, 100.95, 99.69, 99.23, 101.08, 99.08, 102.89, 108.4, 106.48, 106.51, 103.49, 100.62, 105.97, 107.84, 106.45, 97.9, 100.38, 99.45, 96.13, 101.6, 102.63, 106.65, 101.82, 100.09, 106.29, 108.94, 100.16, 100.02, 101.67, 92.84, 93.15, 96.01, 94.18, 91.17, 94.08, 90.64, 92.74, 95.47, 95.41, 91.52, 94.09, 92.96, 89.75, 88.7, 88.72, 91.63, 92.73, 90.95, 88.32, 88.45, 86.25, 82.6, 85.89, 85.9, 84.17, 87.91, 86.37, 86.89, 90.6, 88.6, 89.18], "spx": [100.0, 102.59, 99.51, 102.06, 102.53, 98.41, 95.98, 96.01, 100.32, 101.6, 103.63, 109.35, 107.87, 108.95, 108.95, 110.11, 116.57, 118.19, 115.64, 103.78, 109.61, 107.49, 103.66, 111.85, 113.55, 119.74, 112.9, 114.45, 121.79, 124.28, 114.5, 114.29, 118.39, 112.13, 116.43, 120.99, 113.4, 107.22, 109.55, 104.46, 106.79, 110.06, 110.12, 104.86, 107.53, 105.29, 100.78, 99.14, 99.73, 104.93, 105.39, 104.83, 100.37, 98.13, 93.72, 88.72, 95.99, 96.06, 97.07, 103.43, 101.98, 102.32, 104.94, 101.85, 102.74]}, "ytd_bh": 40.06, "ytd_gap": -5.96}, "foundry": {"name": "代工与 IDM", "sub": "晶圆代工 · 先进制程 · 成熟制程", "color": "#2BA471", "weight": 9.12, "w0": 9.13, "n": 3, "score": 45, "r20": -1.83, "r5": -0.35, "volratio": 11.7, "volratio_abs": -16.4, "amt5d": 14.82, "amtshare": 12.5, "ytd": 100.88, "ytd_rebal": 99.34, "vol60": 61.9, "beta": 0.95, "chart": {"dates": ["2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11"], "basket": [100.0, 100.75, 96.62, 97.27, 97.66, 93.28, 91.63, 91.96, 96.36, 98.51, 99.29, 102.04, 101.35, 101.22, 98.28, 98.26, 99.62, 100.49, 100.86, 91.7, 97.25, 96.2, 93.76, 99.59, 102.58, 106.07, 100.02, 102.23, 110.76, 114.3, 106.86, 107.24, 107.33, 104.54, 108.45, 113.83, 105.04, 100.41, 102.78, 96.11, 96.9, 98.01, 96.63, 92.04, 93.46, 91.32, 87.57, 85.57, 86.58, 92.34, 90.81, 89.08, 84.34, 83.6, 80.12, 76.37, 83.16, 82.93, 83.41, 88.48, 87.68, 87.86, 89.45, 87.0, 87.59], "spx": [100.0, 102.59, 99.51, 102.06, 102.53, 98.41, 95.98, 96.01, 100.32, 101.6, 103.63, 109.35, 107.87, 108.95, 108.95, 110.11, 116.57, 118.19, 115.64, 103.78, 109.61, 107.49, 103.66, 111.85, 113.55, 119.74, 112.9, 114.45, 121.79, 124.28, 114.5, 114.29, 118.39, 112.13, 116.43, 120.99, 113.4, 107.22, 109.55, 104.46, 106.79, 110.06, 110.12, 104.86, 107.53, 105.29, 100.78, 99.14, 99.73, 104.93, 105.39, 104.83, 100.37, 98.13, 93.72, 88.72, 95.99, 96.06, 97.07, 103.43, 101.98, 102.32, 104.94, 101.85, 102.74]}, "ytd_bh": 89.56, "ytd_gap": 1.54}}, "bk_order": ["logic", "equip", "analog", "foundry", "mem"], "lines": {"AI·存储周期": {"w": 8.09, "w0": 5.49, "ctr": 14.03, "n": 2, "ret_rebal": 181.35, "ret": 255.45, "ret_bh": 178.29, "rev13": 51.23, "pe": 5.8}, "AI·数据中心互连": {"w": 11.99, "w0": 10.63, "ctr": 14.03, "n": 5, "ret_rebal": 110.07, "ret": 131.96, "ret_bh": 104.0, "rev13": 22.02, "pe": 35.8}, "AI·算力芯片": {"w": 29.04, "w0": 29.89, "ctr": 13.34, "n": 4, "ret_rebal": 40.96, "ret": 44.62, "ret_bh": 49.72, "rev13": 11.67, "pe": 20.5}, "AI·半导体设备": {"w": 21.0, "w0": 19.35, "ctr": 12.44, "n": 6, "ret_rebal": 79.43, "ret": 64.27, "ret_bh": 79.62, "rev13": 19.78, "pe": 30.8}, "先进制程与代工产能": {"w": 9.12, "w0": 9.13, "ctr": 9.21, "n": 3, "ret_rebal": 99.34, "ret": 100.87, "ret_bh": 89.56, "rev13": 15.33, "pe": 25.4}, "模拟·车规工业复苏": {"w": 16.29, "w0": 19.3, "ctr": 6.7, "n": 6, "ret_rebal": 41.03, "ret": 34.73, "ret_bh": 40.26, "rev13": 9.79, "pe": 22.4}, "AI·半导体材料": {"w": 0.9, "w0": 0.93, "ctr": 0.68, "n": 1, "ret_rebal": 78.29, "ret": 73.76, "ret_bh": 78.29, "rev13": 8.91, "pe": 29.9}, "手机与边缘 AI": {"w": 3.57, "w0": 5.28, "ctr": 0.38, "n": 3, "ret_rebal": -0.7, "ret": 7.13, "ret_bh": -1.18, "rev13": -2.61, "pe": 15.1}}, "line_cov": 100.0, "ai_lines": {"names": ["AI·算力芯片", "AI·存储周期", "AI·半导体设备", "AI·数据中心互连", "AI·半导体材料"], "w": 71.02, "w0": 66.29, "ctr": 54.52, "share": 77.0}, "rates": {"tnx": 4.68, "tnx_date": "2026-08-11", "tnx_ytd": 0.52, "vix": 15.31}, "sox_series": [["2025-12-31", 7083.13], ["2026-01-02", 7367.47], ["2026-01-05", 7446.45], ["2026-01-06", 7650.93], ["2026-01-07", 7574.87], ["2026-01-08", 7436.1], ["2026-01-09", 7638.78], ["2026-01-12", 7674.84], ["2026-01-13", 7747.99], ["2026-01-14", 7701.47], ["2026-01-15", 7837.3], ["2026-01-16", 7927.41], ["2026-01-20", 7794.19], ["2026-01-21", 8042.07], ["2026-01-22", 8055.17], ["2026-01-23", 7957.93], ["2026-01-26", 7927.04], ["2026-01-27", 8117.18], ["2026-01-28", 8306.74], ["2026-01-29", 8320.39], ["2026-01-30", 7998.47], ["2026-02-02", 8134.49], ["2026-02-03", 7966.33], ["2026-02-04", 7619.16], ["2026-02-05", 7614.64], ["2026-02-06", 8048.62], ["2026-02-09", 8162.58], ["2026-02-10", 8107.13], ["2026-02-11", 8291.86], ["2026-02-12", 8084.7], ["2026-02-13", 8137.86], ["2026-02-17", 8136.05], ["2026-02-18", 8214.35], ["2026-02-19", 8173.3], ["2026-02-20", 8260.42], ["2026-02-23", 8213.46], ["2026-02-24", 8332.34], ["2026-02-25", 8467.43], ["2026-02-26", 8197.26], ["2026-02-27", 8098.37], ["2026-03-02", 8137.36], ["2026-03-03", 7764.88], ["2026-03-04", 7914.48], ["2026-03-05", 7821.76], ["2026-03-06", 7514.74], ["2026-03-09", 7810.4], ["2026-03-10", 7865.12], ["2026-03-11", 7914.57], ["2026-03-12", 7643.17], ["2026-03-13", 7646.64], ["2026-03-16", 7796.24], ["2026-03-17", 7836.83], ["2026-03-18", 7795.13], ["2026-03-19", 7863.3], ["2026-03-20", 7670.61], ["2026-03-23", 7773.13], ["2026-03-24", 7872.71], ["2026-03-25", 7967.75], ["2026-03-26", 7585.87], ["2026-03-27", 7457.67], ["2026-03-30", 7142.33], ["2026-03-31", 7588.2], ["2026-04-01", 7802.31], ["2026-04-02", 7833.39], ["2026-04-06", 7916.11], ["2026-04-07", 8003.87], ["2026-04-08", 8510.92], ["2026-04-09", 8689.53], ["2026-04-10", 8889.83], ["2026-04-13", 9039.52], ["2026-04-14", 9224.12], ["2026-04-15", 9239.29], ["2026-04-16", 9329.35], ["2026-04-17", 9555.88], ["2026-04-20", 9599.21], ["2026-04-21", 9647.21], ["2026-04-22", 9909.27], ["2026-04-23", 10078.57], ["2026-04-24", 10513.66], ["2026-04-27", 10408.04], ["2026-04-28", 10035.58], ["2026-04-29", 10271.3], ["2026-04-30", 10503.7], ["2026-05-01", 10595.34], ["2026-05-04", 10534.66], ["2026-05-05", 10980.58], ["2026-05-06", 11472.75], ["2026-05-07", 11160.99], ["2026-05-08", 11775.5], ["2026-05-11", 12081.04], ["2026-05-12", 11717.26], ["2026-05-13", 12017.98], ["2026-05-14", 12073.78], ["2026-05-15", 11588.46], ["2026-05-18", 11302.52], ["2026-05-19", 11305.5], ["2026-05-20", 11813.29], ["2026-05-21", 11964.08], ["2026-05-22", 12202.54], ["2026-05-26", 12876.91], ["2026-05-27", 12702.19], ["2026-05-28", 12829.14], ["2026-05-29", 12829.38], ["2026-06-01", 12965.65], ["2026-06-02", 13726.27], ["2026-06-03", 13916.96], ["2026-06-04", 13617.5], ["2026-06-05", 12220.76], ["2026-06-08", 12906.69], ["2026-06-09", 12657.81], ["2026-06-10", 12206.46], ["2026-06-11", 13171.44], ["2026-06-12", 13371.47], ["2026-06-15", 14099.62], ["2026-06-16", 13294.22], ["2026-06-17", 13477.07], ["2026-06-18", 14341.78], ["2026-06-22", 14634.72], ["2026-06-23", 13482.51], ["2026-06-24", 13458.2], ["2026-06-25", 13940.87], ["2026-06-26", 13203.57], ["2026-06-29", 13709.66], ["2026-06-30", 14246.96], ["2026-07-01", 13353.28], ["2026-07-02", 12626.22], ["2026-07-06", 12900.14], ["2026-07-07", 12300.52], ["2026-07-08", 12574.97], ["2026-07-09", 12960.0], ["2026-07-10", 12967.16], ["2026-07-13", 12347.78], ["2026-07-14", 12661.93], ["2026-07-15", 12398.89], ["2026-07-16", 11867.5], ["2026-07-17", 11673.89], ["2026-07-20", 11743.85], ["2026-07-21", 12356.16], ["2026-07-22", 12410.67], ["2026-07-23", 12343.84], ["2026-07-24", 11818.88], ["2026-07-27", 11554.88], ["2026-07-28", 11035.68], ["2026-07-29", 10447.49], ["2026-07-30", 11302.99], ["2026-07-31", 11311.08], ["2026-08-03", 11430.35], ["2026-08-04", 12179.26], ["2026-08-05", 12008.88], ["2026-08-06", 12048.69], ["2026-08-07", 12356.79], ["2026-08-10", 11993.86], ["2026-08-11", 12098.47]], "events": [{"kicker": "事件线一 · 今年最大的单一利润源", "status": "斜率已放缓", "stcls": "hot", "date": "合约价数据 TrendForce 2026-07 · 一致预期截至 2026-08-11", "title": "存储涨价周期：价格还在涨，但每一季的涨幅只有上一季的零头", "lead": "DRAM 合约价季度涨幅 +90~95% → +58~63% → +13~18%，存储端盈利上修同步归零", "summary": "存储端年初权重只有 <b>5.49%<\/b>，今年贡献指数 <b>14.03 个点<\/b>、占归因合计的 <b>20%<\/b>，是这轮行情的发动机。但现在要跟踪的已经不是\"涨价还在不在\"——<b>涨价还在，斜率在塌<\/b>。", "what": "<ul><li><b>价格斜率（TrendForce）<\/b>：DRAM 合约价 1Q26 环比 <span class=\"hl\">+90~95%<\/span>（史上最大单季涨幅），2Q26 <span class=\"hl\">+58~63%<\/span>，3Q26 收敛到 <span class=\"hl\">+13~18%<\/span>。1Q26 全球 DRAM 产业营收 970 亿美元、环比 +81%（TrendForce，2026-06-01）。<\/li><li><b>利润已经完全释放<\/b>：美光 FQ3'26（截至 2026-05-28，2026-06-24 披露）营收 <span class=\"hl\">415 亿美元<\/span>、毛利率 <span class=\"hl\">84.9%<\/span>；FQ4 指引营收 500±10 亿美元、毛利率约 86%、EPS 31.00 美元。SK 海力士 2Q26 营业利润率 <span class=\"hl\">76%<\/span>（2026-07-29）。<\/li><li><b>供给响应已经在\"宣布与开工\"阶段<\/b>：SK 海力士 2026-08-07 批准 <span class=\"hl\">54 万亿韩元<\/span>建两座新厂（龙仁 Y2 首个洁净室 2029-06、清州 M17 2028-12），2026 年资本开支上调至 40 万亿韩元高段（2025 年为 30.2 万亿）；三星平泽 P5 于 2026-07 提前约半年开工；美光 FY26 资本开支由 180 亿上调至 <span class=\"hl\">200 亿美元<\/span>，爱达荷首片计划 2027 年中。<\/li><li><b>但物理产出到不了 2026<\/b>：TrendForce 测算 2026 年 DRAM 供需充足率仍为 <span class=\"hl\">−1%~−2%<\/span>（供不应求），新增产能<b>要到 2028 年才有实质产出<\/b>，NAND 充足率 2027 年才转正。<\/li><li><b>需求破坏已经量化<\/b>：Gartner（2026-02-26）测算 DRAM 与 SSD 涨价约 130% 将推高 PC 售价 <span class=\"hl\">+17%<\/span>、手机 <span class=\"hl\">+13%<\/span>；并预测 2026 年 PC 出货 <span class=\"hl\">−10.4%<\/span>、手机 <span class=\"hl\">−8.4%<\/span>。<\/li><li><b>新供给方拿到了资本<\/b>：长鑫存储（CXMT）2026-07-27 科创板上市，募资 579.2 亿元，首日涨约 466%，市值约 3.3 万亿元。另有报道称苹果开始测试 CXMT 存储（semafor，2026-08-09，<b>单一来源，未获二次确认<\/b>）。<\/li><li><b>本页数据<\/b>：美光今年 <span class=\"hl\">+204.3%<\/span>、一只票贡献 <span class=\"hl\">14.01 个点<\/span>；FY1 一致预期近 13 周 <span class=\"hl\">+51.2%<\/span>、近 4 周 <span class=\"hl\">+3.69%<\/span>、近 1 周 <span class=\"hl\">-0.12%<\/span>。<\/li><li><b>【拿不到】<\/b>渠道库存天数、现货相对合约价的即时价差——未取得可核对的一手数据。<\/li><\/ul>", "mean": "<ul><li>三件事同时发生：<b>价格斜率塌了、产能审批激增、下游开始被压垮<\/b>。在周期框架里这是 S6（供给响应＋需求破坏）的完整特征组合，而不是 S4/S5（利润释放、稀缺反身性）。<\/li><li>但要把话说全：<b>供给是\"宣布\"了，不是\"到货\"了<\/b>。洁净室 2028-12 与 2029-06、美光爱达荷 2027 年中——按 TrendForce 的口径，2026 年 DRAM 依然是供不应求的。所以<b>产业周期没结束，结束的是\"涨价加速\"这一段<\/b>。<\/li><li>对指数的算术很直接：该端只有 8.1% 权重，贡献了归因合计的 20%。它的盈利上修停在高位，指数就要靠另外四端补，而那四端今年合计只贡献 56.8 个点。<\/li><li>该端 60 日年化波动 <span class=\"hl\">109%<\/span>、beta 1.47，两项都是五端第一；前瞻 PE 仅 5.8x 而 PB 达 9.6x——<b>峰值盈利低 PE，不是便宜<\/b>。<\/li><\/ul>", "check": "<ul><li><b>TrendForce 的 4Q26 合约价预测<\/b>（通常 9 月末至 10 月初出）：3Q26 已收敛到 +13~18%，4Q26 若转为个位数或环比持平，价格钟就走完了。<\/li><li><b>美光 FQ4'26 财报（市场预期日期 2026-09-29，以公司公告为准）<\/b>：看实现价、毛利率能否守住指引的约 86%、以及库存天数，不看营收。<\/li><li><b>本页每周可跟踪<\/b>：存储端 FY1 一致预期近 4 周读数（现 +3.69%）。转负即从 S6 进入 S7。<\/li><li><b>盯供给不盯需求<\/b>：要跟的是洁净室装机、设备进场、爬坡良率这些<b>物理节点<\/b>，不是\"宣布扩产\"的新闻。<\/li><\/ul>", "risk": "<ul><li>把\"斜率放缓\"讲成\"周期结束\"是错的。合约价<b>仍在环比上涨<\/b>，2026 年供需仍是缺口，卖方一致预期停在高位而不是掉头下修——这两件事之间通常还隔一到两个季度。<\/li><li>反过来，因为存储端 PE 只有 5.8x 就说它便宜，是这条线上代价最大的错误。美光已经从年内高点回落 <span class=\"hl\">-28.4%<\/span>，股票钟先于产业钟动，这就是它在动的样子。<\/li><li>CXMT 上市与苹果测试的消息只有单一来源，<b>不要当成\"国产替代已成\"的论据<\/b>；但它确实说明新供给方正在拿到便宜的资本，这是供给响应的一部分。<\/li><\/ul>", "chips": ["合约价 +90→+60→+15%", "SK海力士 54万亿韩元扩产", "PC出货 −10.4%/手机 −8.4%", "FY1近1周 -0.12%", "2026 充足率 −1~−2%", "!验证：TrendForce 4Q26 预测 + 美光 FQ4"]}, {"kicker": "事件线二 · 需求的唯一来源", "status": "已核实（分项）", "stcls": "live", "date": "各家 2026 指引 2026-07 更新 · 2027 指引待 10 月", "title": "AI 资本开支：合计数是真的，同比 +77% 这个说法不严谨", "lead": "四大云厂 2026 指引合计约 7,200–7,650 亿美元；2027 年金额四家都还没给", "summary": "SOX 今年的涨幅最终都指向同一个假设：超大规模云厂的资本开支继续增长。这个假设的分项数字是可以核实的——<b>但流传最广的那个同比增速不能照抄<\/b>。", "what": "<ul><li><b>【已核实 · 分项】<\/b>2026 年资本开支指引：亚马逊约 <span class=\"hl\">2,200 亿美元<\/span>（2026-07-30，较此前上调约 200 亿，Jassy 将上调归因于存储涨价，并称产能\"仍然不够\"）；Alphabet <span class=\"hl\">1,950–2,050 亿美元<\/span>（2026-07-22，Q2 单季 449 亿）；微软约 <span class=\"hl\">1,750 亿美元<\/span>（日历 2026 年，2026-07-29 按新会计口径重述；4 月口径为 1,900 亿、含约 250 亿零部件涨价）；Meta <span class=\"hl\">1,300–1,450 亿美元<\/span>（2026-07-29，Q2 单季 310.8 亿）。<b>合计约 7,200–7,650 亿美元，中值约 7,450 亿。<\/b><\/li><li><b>【需要更正的说法】<\/b>广为流传的\"合计 7,250 亿、同比 +77%\"：7,250 亿对应的是 <b>2026-04-30 的旧口径<\/b>，7 月各家更新后已升至约 7,450 亿；而 <span class=\"hl\">+77% 这个同比数取决于分母怎么取<\/span>（是否含融资租赁、是否按日历年还是财年），本页复核出的合理区间是 <b>+63%~+93%<\/b>——<b>区间太宽，本页不使用这个百分比<\/b>，只用金额。<\/li><li><b>【已核实】<\/b>四家 Q2 单季资本开支合计约 <span class=\"hl\">1,712 亿美元<\/span>，年化约 6,850 亿，低于全年指引中值——<b>下半年是加速的<\/b>。<\/li><li><b>【2027 年：四家都没给金额】<\/b>Meta 明确表示不提供 2027 年指引；Alphabet 只说会\"显著增长\"；微软只给了 FQ1'27 单季\"超过 500 亿美元\"。<b>这是这条线最大的信息空白，也是 10 月财报季唯一值得等的东西。<\/b><\/li><li><b>【已核实】<\/b>英伟达 FQ1'27（2026-05-20）总营收 <span class=\"hl\">816 亿美元<\/span>、同比 +85%，其中<b>对华 Hopper 出货为零<\/b>；FQ2'27 指引 910 亿美元 ±2%，同样<b>不含中国<\/b>。下次财报 <span class=\"hl\">2026-08-26<\/span>。<\/li><li><b>本页数据的反证<\/b>：英伟达今年只涨 +16.6%、博通 +20.2%；逻辑端 FY1 一致预期近 4 周只上修 +1.86%，是五端最慢。<b>资本开支创纪录，算力龙头却是涨得最少的一批。<\/b><\/li><\/ul>", "mean": "<ul><li>钱确实在花，但<b>钱先流向产能最紧的环节，不是流向算力龙头<\/b>。今年 AI·数据中心互连主线（迈威尔、Astera Labs、Credo、Coherent、MACOM）年初 10.6% 权重贡献 +14.03 个点，与存储并列第一——今年的新故事是<b>数据搬运<\/b>，不是数据计算。<\/li><li>AI 相关五条主线合计年初权重 <span class=\"hl\">66.3%<\/span>，贡献了归因合计的 <span class=\"hl\">77%<\/span>——<b>一个变量决定这个指数四分之三的方向<\/b>。<\/li><li>指数收入一致预期 FY1 增速 +37%、FY0 +61%——<b>收入增速在下台阶<\/b>；而 EPS 隐含增速 +50% 高于收入增速，说明明年的增长要更多靠价格与利润率，不是靠出货量。<\/li><\/ul>", "check": "<ul><li><b>2026-08-26 英伟达 FQ2'27 财报<\/b>：看数据中心收入环比与下季指引，以及中国是否重新进入指引。<\/li><li><b>10 月下旬三季报季<\/b>：四大云厂对 <b>2027 年<\/b>资本开支的首次金额指引。这是这条线唯一能给答案的时点。<\/li><li>同步看云厂的自由现金流与折旧假设——资本开支扩到什么程度会反过来压自己的估值，是今年买方最大的分歧。<\/li><li>本页代理变量：逻辑端 FY1 一致预期近 4 周（现 +1.86%）。指引下修会先反映在这里，早于财报本身。<\/li><\/ul>", "risk": "<ul><li>把\"+77%\"当成事实讲出去，是这条线最容易出的事故：<b>分项金额可核实，那个同比百分比不可核实<\/b>。要讲就讲金额区间。<\/li><li>另一面：即使 2027 指引全部上调，也不必然利好指数——今年的实证是<b>算力龙头涨得最少<\/b>。资本开支的绝对额和\"谁拿到利润\"是两个问题，后者由瓶颈在哪决定。<\/li><\/ul>", "chips": ["2026 合计 ~7,450 亿美元", "亚马逊 2,200 亿", "Alphabet 1,950–2,050 亿", "微软 ~1,750 亿", "Meta 1,300–1,450 亿", "+77%：口径不严谨", "!验证：8/26 英伟达 + 10 月 2027 指引"]}, {"kicker": "事件线三 · 供给瓶颈", "status": "进行中", "stcls": "live", "date": "台积电 2Q26（2026-07-16）· 英特尔 2Q26（2026-07-23）", "title": "先进制程：产能被重新定价，同时扩产也在加速", "lead": "台积电 2026 资本开支上调至 600–640 亿美元；代工端今年涨幅 +101%", "summary": "代工与 IDM 只有 3 只票、年初 <b>9.1%<\/b> 权重，今年贡献 <b>9.21 个点<\/b>，单位权重的产出是五端最高。这一段定价的不是\"谁的芯片好\"，是<b>谁的洁净室里有空位<\/b>——而空位正在被大规模地建出来。", "what": "<ul><li><b>台积电 2Q26（2026-07-16）<\/b>：营收 <span class=\"hl\">402 亿美元<\/span>、同比 +36.0%，毛利率 <span class=\"hl\">67.7%<\/span>，净利同比 +77.4%；HPC 占营收 66%，N2 已占晶圆收入 3%，≤7nm 占 77%。3Q26 指引 446–458 亿美元、毛利率 65–67%；全年美元营收增长\"略高于 40%\"。<\/li><li><b>扩产在加速<\/b>：2026 年资本开支上调至 <span class=\"hl\">600–640 亿美元<\/span>（原 520–560 亿），其中 10–20% 投向先进封装；2026-07-16 宣布亚利桑那追加 1,000 亿美元、累计 <span class=\"hl\">2,650 亿美元<\/span>，规划 10 座晶圆厂＋2 座先进封装＋1 座研发中心，新增至少 4 座 2nm 及以下（<b>未给时间表<\/b>）。N2/A16 产能 2026–2028 年 CAGR 约 70%；CoWoS＋SoIC 产能年增超 80%、延续到 2027 年。<\/li><li>7 月营收 <span class=\"hl\">4,675.8 亿新台币<\/span>，环比 +5.6%、同比 +44.7%（2026-08-10）。熊本二厂升级 3nm、月产 1.5 万片、2028 年装机（2026-03-31 核准）。<\/li><li><b>英特尔 2Q26（2026-07-23）<\/b>：营收 <span class=\"hl\">161 亿美元<\/span>、同比 +25%；代工业务营收 58 亿、同比 +31%，但仍<b>营业亏损 20.89 亿美元<\/b>；18A-P 进入风险试产。2026-08 增发股票融资 <span class=\"hl\">200 亿美元<\/span>（每股 95 美元），资本开支同步上调至 200 亿美元。<\/li><li><b>【单一来源 · 未获公司确认】<\/b>三星与博通签署超过 2,000 亿美元的 MOU；2027 年代工报价上调 5–10%、HPC 另加 10–15% 溢价、2027-01 生效（日经报道，非公告）。A16 的量产时间存在 <b>2H26 与 2027 年两种口径冲突<\/b>，本页不选边。<\/li><li><b>本页数据<\/b>：英特尔今年 <span class=\"hl\">+164.8%<\/span>、贡献 7.37 个点（全指数第三）；台积电 ADR +38.9%、格芯 +45.5%。注意台积电在 SOX 里<b>只按美国上市 ADR 部分计权<\/b>，仅 4.32%。<\/li><\/ul>", "mean": "<ul><li>在超级周期框架里代工是 <b>First Cash Receiver<\/b>：不管哪家设计公司最终卖得好，晶圆都从这里出。这解释了该端今年 +101% 高于算力芯片主线的 +45%。<\/li><li>但这条线自己就带着终结自己的机制：<b>台积电资本开支上调 15%、英特尔增发 200 亿美元扩产<\/b>——这些钱变成设备订单（利好设备端），装完开机就是下一轮供给。设备端 FY1 预期近 4 周还在 +10.8% 上修，正是这个链条的实时读数。<\/li><li>该端前瞻 PE 25.4x、PB 7.7x，五端里居中，没有被定价到极端；量能相对全指数 +12%，是五端里量能为正的两端之一。<\/li><\/ul>", "check": "<ul><li><b>台积电 3Q26 财报（10 月）<\/b>：毛利率能否守住 65–67% 指引、N2 收入占比爬升速度、2027 资本开支的首次口径。<\/li><li>亚利桑那新增 4 座 2nm 厂的<b>时间表<\/b>——目前未公布，公布之日就是供给侧的关键时点。<\/li><li>代工报价 2027 年上调能否落到公告层面（现在只有媒体报道），以及客户是否开始降规格、转成熟制程——后者是需求破坏的第一个信号。<\/li><li>本页可跟踪：代工端 FY1 近 4 周（现 +11.03%）与设备端的相对速度。<\/li><\/ul>", "risk": "<ul><li>把英特尔今年的涨幅解读成\"英特尔产品翻身了\"是危险的：<b>代工业务仍在亏 20.89 亿美元<\/b>，且刚增发 200 亿美元。本页数据能支持的说法只有：市场给\"有产能的公司\"重新定了价，并愿意为扩产买单。<\/li><li>反过来，因为\"产能终将过剩\"就完全回避这一端也不对——先进制程建设周期以年计，<b>从下单到出片之间的时间差，正是这一端维持定价权的窗口<\/b>。<\/li><li>三星–博通 2,000 亿美元 MOU 与 2027 涨价幅度都只有单一媒体来源，<b>不要当成已确认的产业事实转述给客户<\/b>。<\/li><\/ul>", "chips": ["台积电 capex 600–640 亿", "亚利桑那累计 2,650 亿", "英特尔 +165%/增发 200 亿", "代工仍亏 20.89 亿", "CoWoS 产能年增 >80%", "!验证：亚利桑那 2nm 时间表"]}, {"kicker": "事件线四 · 可售市场", "status": "已生效", "stcls": "neu", "date": "232 条款 2026-01-15 生效 · BIS 新规 2026-01-15 生效", "title": "25% 半导体关税已经生效，但它绕开了 AI 数据中心", "lead": "232 条款 25% 从价税，八类豁免含「美国数据中心用途」；Phase 2 含设备，尚未落地", "summary": "这条线今年真正的信息不是\"加了多少税\"，而是<b>加的税精准避开了这个指数的收入主体<\/b>。真正的尾部风险在还没落地的 Phase 2 上——它拟议覆盖半导体制造设备，而设备端占这个指数 <b>21.9%<\/b> 的权重。", "what": "<ul><li><b>232 条款半导体关税<\/b>：2026-01-14 签署，<span class=\"hl\">2026-01-15 12:01 EST 生效<\/span>，<span class=\"hl\">25% 从价税<\/span>，覆盖 HTSUS 8471.50/8471.80/8473.30 等税目。设八类豁免，其中包括<b>「美国数据中心用途」的完整豁免<\/b>——这意味着<b>它几乎不打美国 AI 资本开支<\/b>。Covington 的解读是：其法律实质更接近把对华销售的 25% 分成包装成进口关税。<\/li><li><b>Phase 2 尚未落地<\/b>：两个内部期限（2026-04-14、2026-07-01）均已过、无结论。拟议范围<b>包含半导体制造设备（SME）<\/b>——<span class=\"hl\">这是这条线上最大的单一变量<\/span>。<\/li><li><b>BIS 出口管制（最终规则 2026-01-13 发布、2026-01-15 生效）<\/b>：H200 / MI325X 等对华出口由\"推定拒绝\"改为<b>逐案审批<\/b>，门槛为 TPP < 21,000、带宽 < 6,500 GB/s；并设数量上限——<b>对华总 TPP 不得超过该企业美国客户总 TPP 的 50%<\/b>。另有 2025-12-08 起美国政府对 H200 对华销售<b>抽成 25%<\/b> 的安排。<\/li><li><b>但实际出货是零<\/b>：英伟达 FQ1'27 对华数据中心 Hopper 出货 <span class=\"hl\">为 0<\/span>，FQ2'27 指引同样不含中国。<b>政策松了，生意没回来<\/b>——中国市场目前在报表上是个期权，不是收入。<\/li><li><b>设备端的中国敞口（最新披露口径）<\/b>：东京电子 <span class=\"hl\">38.6%<\/span>、泛林 26%、科磊 26%、应用材料 24%、阿斯麦约 20%。同时东京电子与科磊将 2026 年 WFE 上调至 <span class=\"hl\">≥1,500 亿美元<\/span>、2027 年 ≥1,900 亿美元。<\/li><li><b>其他关税路径<\/b>：2026-02-20 最高法院 6–3 裁定 IEEPA 不授权加征关税；122 条款 10% 已于 2026-07-24 到期；同日 USTR 301 条款生效，对约 60 个经济体征 10%/12.5%，<b>但受 232 覆盖的半导体制品被排除在 301 之外<\/b>。对华成熟制程 301 关税（2025-12-29 联邦公报）初始税率 0%，<span class=\"hl\">2027-06-23 起上调<\/span>。<\/li><li><b>反向风险<\/b>：中国对美模拟芯片反倾销调查（40nm 及以上接口 IC 与栅极驱动 IC，波及德州仪器、亚德诺、安森美、博通）2025-09-13 立案，法定期限 <span class=\"hl\">2026-09-13<\/span>，目前无终裁。另：BIS Affiliates Rule 的一年暂停将于 <span class=\"hl\">2026-11-10<\/span> 到期自动恢复。<\/li><li><b>【拿不到】<\/b>2026 年 BIS 实体清单无批量加列；荷兰、日本无新的对齐管制公告——本页未检索到，如实留白。<\/li><\/ul>", "mean": "<ul><li>对指数的净影响今年是<b>中性偏正<\/b>：25% 关税避开数据中心，出口管制放松但中国收入尚未恢复——<b>坏消息已经定价、好消息还没兑现<\/b>，中国市场对英伟达一线是纯期权。<\/li><li>风险集中在两个日期上：<b>Phase 2 若把 SME 纳入<\/b>，直接改变设备端 21.9% 权重的收入结构；<b>2026-09-13 中国反倾销终裁<\/b>若成立，打的是模拟端 18.0% 权重里的美系厂商。两者相加是 39.9% 的权重。<\/li><li>政策类风险的特点是<b>阶跃式<\/b>：它不会提前反映在一致预期里，所以不能用本页的修正斜率去预警这条线。<\/li><\/ul>", "check": "<ul><li><b>Phase 2 的范围与生效日<\/b>——尤其是 SME 是否被纳入。跟一手来源：联邦公报（Federal Register）与商务部 BIS 公告，不看二手转述。<\/li><li><b>2026-09-13<\/b>：中国对美模拟芯片反倾销调查的法定期限。<\/li><li><b>2026-11-10<\/b>：BIS Affiliates Rule 暂停到期、自动恢复。<\/li><li><b>2027-06-23<\/b>：对华成熟制程 301 关税由 0% 上调的生效日。<\/li><li>各设备商季报里\"受管制地区收入占比\"的口径变化，以及英伟达指引里中国是否重新出现。<\/li><\/ul>", "risk": "<ul><li>把\"关税 25% 已生效\"直接讲成利空，会讲错方向：<b>数据中心用途完整豁免<\/b>，这个指数今年的收入主体基本没被打到。<\/li><li>反过来，因为今年没出事就认为政策风险消失，也不对：<b>Phase 2 覆盖设备、中国反倾销 9 月到期、Affiliates Rule 11 月恢复<\/b>，三个日期都在未来 4 个月内。<\/li><li>政策细节最容易被二手转述扭曲。客户问到具体条款，正确回答是\"我核对一手文本再回复\"。<\/li><\/ul>", "chips": ["232 关税 25% 已生效", "数据中心用途豁免", "Phase 2 含设备·未落地", "对华 Hopper 出货 = 0", "TEL 中国敞口 38.6%", "!验证：Phase 2 / 9-13 反倾销 / 11-10 Affiliates"]}, {"kicker": "事件线五 · 非 AI 的另一半", "status": "复苏确认中", "stcls": "live", "date": "各家 2Q26 财报 2026-07/08 · SIA 2026-08-06", "title": "车规与工业：去库存结束了，但复苏是工业先于汽车", "lead": "微芯称\"渠道库存修正已完成\"；工业普遍 +24~56%，汽车只有个位到中双位数", "summary": "模拟·功率·射频·车规端占指数 <b>18.0%<\/b>，需求来自汽车、工业和手机，<b>与 AI 基本无关<\/b>。今年它是涨得最少的一端，但它的一致预期修正<b>近 1 周已经变成五端第一<\/b>，而且这次有财报数字直接支持。", "what": "<ul><li><b>德州仪器 2Q26（2026-07-22）<\/b>：营收 <span class=\"hl\">54.63 亿美元<\/span>、同比 +23%，工业约 +30%、汽车中双位数；库存天数 196 天（−13 天）。Q3 指引 56.5–61.5 亿。CEO 表述：\"we are in the start of a cycle that is very broad\"。<\/li><li><b>恩智浦 2Q26（2026-07-28）<\/b>：35.0 亿美元、同比 +19%，<span class=\"hl\">汽车 +12%、工业 +38%<\/span>。<\/li><li><b>微芯 FQ1'27（2026-08-06）<\/b>：14.847 亿美元、同比 <span class=\"hl\">+38.0%<\/span>，汽车 +29.3%、工业 +24.3%；自有库存 175 天（−10），渠道库存 25 天（−1，接近历史低位），book-to-bill \"well above 1\"。CEO：<b>\"distribution inventory correction is complete\"<\/b>。<\/li><li><b>亚德诺 FQ2'26（2026-05-20）<\/b>：36.2 亿美元、同比 +37%，<span class=\"hl\">工业 +56%、汽车仅 +2%<\/span>；渠道库存 6–7 周、DOI 168 天。下次财报 <span class=\"hl\">2026-08-19<\/span>。<\/li><li><b>安森美 2Q26（2026-08-03）<\/b>：16.04 亿美元、同比 +9%，汽车 +7%（环比 −2%）、工业 +4%；渠道库存 10.1 周（自 10.8 周下降），总库存 192 天（−9），产能利用率由 77% 升至 83%，交期由 27 周拉长到 32 周。值得注意：<b>该季把产能优先给了 AI 数据中心，挤压了汽车与工业<\/b>。<\/li><li><b>意法半导体 2Q26（2026-07-23）<\/b>：34.9 亿美元、同比 +26.0%，汽车 +16%、工业 +34%，DSI 126 天，<b>book-to-bill 接近 2<\/b>，渠道库存低于自设目标。英飞凌（2026-08-05）、瑞萨（2026-07-31，DOI < 100 天、渠道 WOI < 8 周）方向一致。<\/li><li><b>行业总量<\/b>：SIA（2026-08-06）2026 年 Q2 全球半导体销售 <span class=\"hl\">4,033 亿美元<\/span>、环比 +35.1%；6 月单月 1,345 亿、同比 +123.6%。但 WSTS 春季预测（2026-06-02）显示结构极不均衡：全市场 +90%（1.51 万亿美元）、<b>存储 +250%，而模拟只有 +10%、分立 +8%、传感器与光电 +3%<\/b>。<\/li><li><b>供给侧扰动<\/b>：2026-07-28 16:27 JST 熊本 7.1 级地震，瑞萨川尻与锦町车规厂停产（8/5 起分阶段复产其中一座）；台积电 JASM、索尼 CIS、东京电子九州、三菱功率同步停产，截至 8/3 东京电子与索尼已复产，JASM Fab1 仍在检查。<\/li><li><b>本页数据<\/b>：该端 FY1 一致预期近 13 周 +9.41%（五端最低）、近 4 周 +6.40%、<b>近 1 周 <span class=\"hl\">+4.97%<\/span>（五端第一）<\/b>。个股：德州仪器 +62.1%、安森美 +49.8%、亚德诺 +42.1%、微芯 +27.1%，但恩智浦只有 +8.9%。<\/li><li><b>手机链是唯一在下修的<\/b>：高通 <span class=\"hl\">-4.9%<\/span>（30 只里唯一全年下跌）、Skyworks +7.8%、Qorvo +14.4%；该主线 FY1 一致预期近 13 周 <span class=\"hl\">-2.6%<\/span>。<\/li><\/ul>", "mean": "<ul><li>复苏是<b>真的<\/b>，但结构是<b>工业先于汽车<\/b>：工业普遍 +24~56%，汽车只有 +2%~+29%，安森美的汽车甚至环比转负。\"车规复苏\"这四个字现在只有部分成立。<\/li><li>这一端在组合里的角色是<b>周期错位<\/b>：它 2023–2025 年已经走完一轮去库存（渠道库存回到历史低位、book-to-bill > 1），现在预期刚转正；而 AI 那条链的存储端已经停止上修。<b>两条腿真的错开，指数周期会被拉长而不是缩短。<\/b><\/li><li>但要看清量级：该端只有 18.0% 权重、今年贡献 7.46 个点，即使完全复苏也<b>接不住<\/b>存储端 14.0 个点的缺口。年初它有 21.5% 权重、现在只剩 18.0%——<b>它正在被指数稀释<\/b>。<\/li><li>安森美那条\"产能优先给 AI 数据中心\"值得单独记：<b>AI 已经开始从内部挤压车规工业的产能<\/b>，这是同一家公司里的资源再配置，不是外部需求问题。<\/li><\/ul>", "check": "<ul><li><b>2026-08-19 亚德诺 FQ3 财报<\/b>：汽车能否从 +2% 抬起来，是\"工业单腿复苏\"还是\"车规也起来了\"的分水岭。<\/li><li>季报里看 <b>book-to-bill 与渠道库存周数<\/b>，不看营收同比——模拟芯片的营收同比滞后订单约两个季度。<\/li><li>本页可跟踪：模拟端 FY1 近 1 周与近 4 周（现 +4.97% / +6.40%），需要连续 4–6 周维持正数才算确认。<\/li><li>手机链（高通、Skyworks、Qorvo）的一致预期能否止跌。<\/li><li>熊本地震后瑞萨剩余产线的复产进度与 JASM Fab1 的检查结论。<\/li><\/ul>", "risk": "<ul><li>把近 1 周的 +4.97% 当成复苏确认，是最容易犯的错——一周的数噪声大于信号，必须看连续性。同样，把\"工业 +56%\"当成\"车规复苏\"也是错的。<\/li><li>反过来，因为这一端今年涨得最少就忽略它，会漏掉这个指数唯一一条<b>不依赖 AI 假设<\/b>的线索。如果第一条线（存储）和第二条线（资本开支）同时出问题，这 18.0% 是仅有的缓冲。<\/li><li>WSTS 的结构数字要一起讲：2026 全市场 +90% 里，模拟只有 +10%。<b>\"半导体大年\"和\"模拟大年\"完全不是一回事。<\/b><\/li><\/ul>", "chips": ["微芯：渠道修正已完成", "工业 +24~56% / 汽车 +2~29%", "ST book-to-bill 接近 2", "WSTS：存储+250% vs 模拟+10%", "FY1近1周 +4.97% 五端第一", "!验证：8/19 亚德诺汽车分部"]}], "sm": {"state": "S6", "state_cn": "供给响应与需求破坏（刚进入，前段）", "prev": "S5", "conf": 70, "p_cycle": 70, "p_stock": 45}, "products": [{"tag": "事实 · 必须先说的一句", "name": "境内没有跟踪费城半导体指数的产品", "code": "0 只", "desc": "已逐只核查全市场 1,573 只场内 ETF 与 27,495 只公募基金（含 373 只 QDII），按\"费城 / 费半 / SOX / PHLX\"检索<b>命中 0 只<\/b>。任何把某只产品说成\"境内的费半\"的表述都是不准确的。", "fee": "核查口径与时点见本节第一张卡片；核查于 2026-08-11"}, {"tag": "南方基金 · 相关但不等同", "name": "南方纳斯达克100指数发起(QDII)", "code": "016452 A / 016453 C / 021000 I", "desc": "南方基金目前<b>没有半导体主题的跨境产品<\/b>。在美股工具里，纳斯达克100 与 SOX 的日收益相关系数为 <b>0.87<\/b>（近 2 年，当日口径），但今年纳指100 +12.4%、SOX +70.8%——<b>节奏像，幅度完全不同<\/b>。南方的半导体产品（半导体ETF南方 159325、科创芯片ETF南方 588890、南方中证半导体产业指数 020839/020840）跟踪的都是 <b>A 股<\/b>指数，与 SOX 的相关系数只有 0.19–0.24。", "fee": "跟踪标的：纳斯达克100 指数（非半导体指数）　·　产品要素以基金合同与最新招募说明书为准"}, {"tag": "风险提示 · 必须主动告知", "name": "QDII 与行业指数的特有风险", "code": "—", "desc": "① <b>行业集中风险<\/b>：SOX 只有 30 只成分股，前十大合计 62.1%，8 只即占一半权重；60 日年化波动 65%、对标普500 的 beta 2.59。② <b>回撤与持有期<\/b>：1994 年以来 30% 以上回撤 17 次，中位收复期 650 天；最长的一次高点用了 17.6 年才收复。③ <b>QDII 特有风险<\/b>：汇率风险、额度限制导致的申购受限与二级市场溢价、境内外交易日不一致带来的净值披露时滞。当前跨境 ETF 溢价普遍在 7–14% 之间。", "fee": "以上三项在销售环节须主动、完整告知，不得因客户未问而省略。"}], "text": {"sub": "四个问题决定这个指数：<b>钱在产业链哪个环节<\/b>（景气度）· <b>这轮涨幅是谁涨出来的<\/b>（归因）· <b>周期走到哪一段<\/b>（状态机）· <b>境内根本买不到它，那买什么<\/b>（相关性）。", "prosNote": "<b>本期最值得说的一件事：今年涨最多的一端，现在是资金最冷的一端。<\/b>存储端今年 +256%（五端第一），景气度却只有 <b>21<\/b> 分垫底，近 20 日相对指数 <b>-7.04%<\/b>；设备与材料端景气度 <b>41<\/b> 分排倒数第二，但它的一致预期上修在五端里排第二档（近 13 周 +19.27%、近 4 周 +10.80%，两项都仅次于榜首）。拿到最高分的是逻辑·AI计算与互连端（<b>63<\/b> 分），近 20 日 +4.09%、量能相对全指数 +12%。<div class=\"note grey\" style=\"margin-top:10px;\"><b>怎么读这五个分数：<\/b>指数距 6/22 高点已经 -17.3%，在这种回撤里资金从高 beta（存储 beta 1.47、波动 109%）往低 beta 的权重股缩，是<b>降风险<\/b>而不是<b>看好<\/b>。这个分数只反映最近 20 天钱在哪，不构成对方向的判断——而且它和盈利预期是完全脱钩的两件事：设备端景气度倒数第二，一致预期上修却排在五端第二档；代工端景气度 45 分居中，近 4 周上修 +11.03% 反而是五端第一。<\/div>", "prosFormula": "评分＝40%×（近 20 日相对 SOX 超额）＋35%×（近 5 日超额）＋25%×（近 5 日成交额环比，已除以全指数同口径量能比）。为本页自建的资金温度计，<b>非官方指标<\/b>；五端合计＝指数 100% 权重（30 只成分股全覆盖，无遗漏）。", "attNote": "<b>这张图最反直觉的一点：今年 SOX 的涨幅，不是英伟达涨出来的。<\/b>英伟达权重 13.35%（全指数第一），今年只涨 <b>+16.6%<\/b>、贡献 <b>2.71 个点<\/b>；博通 10.21% 权重、涨 +20.2%、贡献 2.91 个点。两只加起来 23.6% 的权重，只贡献了 5.63 个点，占归因合计的 8%。真正的发动机是<b>美光一只<\/b>——年初权重 4.78%，今年 +204.3%，贡献 <b>14.01 个点<\/b>，一只票就占了归因合计的 20%。其次是迈威尔（+149.8%，9.04 个点）和英特尔（+164.8%，7.37 个点）。<div class=\"note grey\" style=\"margin-top:10px;\"><b>两个必须一起讲的补充：<\/b>① 今年 30 只成分股 <b>29 涨 1 跌<\/b>、中位数涨幅 +63.5%，这一轮是<b>普涨<\/b>，不是少数股票拉指数；② 但涨幅高度集中在时间上——今年 +70.8% 的涨幅里，<b>2026-03-20 到 2026-06-18 这三个月一段就涨了 87.0%<\/b>，之前的一季度只有 8.3%，之后到今天已经跌了 <b>15.6%<\/b>。跟客户讲\"今年半导体涨了 71%\"而不讲这三段，等于什么都没讲。<\/div>", "valNote": "<b>先说这张卡片最容易被误读的地方：半导体的 PE 在周期高点是最低的，不是最高的。<\/b>指数前瞻 PE（FY1，成分股自下而上、覆盖 100% 权重）<b>19.4x<\/b>，本财年 FY0 口径 29.0x——前瞻口径比本财年低 33%，差的就是市场预期的 <b>+50%<\/b> 盈利增长。但看分端：存储端前瞻 PE 只有 <b>5.8x<\/b>（五端最低），市净率却有 <b>9.6x<\/b>（五端第二高）。<b>PE 最低的一端，恰恰是盈利最可能已经见顶的一端。<\/b>这就是本页同时给 PB 与 EV/Sales 的原因：指数整体 PB <b>11.5x<\/b>、EV/Sales <b>11.4x<\/b>，这两个口径不受盈利周期摆动的影响，在周期股上比 PE 可靠。", "valNote2": "<b>右边这件事更重要：过去 13 周，盈利预期涨了，指数没涨。<\/b>从 2026-05-12 到现在，SOX 只涨了 <b>+3.2%<\/b>，但同期自下而上的 FY1 一致预期上修了 <b>+19.2%<\/b>——差额全部被估值收缩吃掉：前瞻 PE 从 <b>22.3x 压到 19.4x<\/b>（-13.4%）。在周期框架里这叫 <b>good-news-down<\/b>：好消息不再被支付，是股票端领先产业端见顶的典型信号。<br>一致预期本身也在减速：FY1 近 13 周 <b>+21.28%<\/b>、近 8 周 +13.84%、近 4 周 +4.83%、<b>近 1 周只剩 +1.67%<\/b>。同期收入一致预期 FY1 增速 +37%、FY0 +61%——<b>收入增速在下台阶，说明\"量\"的故事已经讲完，剩下的全是\"价\"。<\/b>股权风险溢价只剩 +0.49 个百分点（FY1 盈利收益率 5.17% − 10Y 4.68%），估值不会自己引发下跌，但它决定了坏消息来的时候缓冲有多薄。", "globNote": "<b>今年 SOX 是全球最强的主流指数，没有之一。<\/b>费城半导体 <b>+70.8%<\/b>，台湾加权 +57.2%、韩国综合 +56.1%、日经225 +34.1%、纳斯达克100 +16.9%、标普500 +12.9%。台湾和韩国跟得最近不是巧合——那是同一条产业链的另一端。<div class=\"note grey\" style=\"margin-top:10px;\"><b>相关性要看对口径。<\/b>近 3 年日收益：纳斯达克100 <b>0.89<\/b>（当日）、标普500 0.79（当日）；台湾加权 <b>0.56<\/b>、日经 0.48、韩国 0.42——这三个都要用<b>滞后一日<\/b>的口径才算得准，因为亚洲收盘比美股早约 9 小时；用当日口径算，台湾加权与 SOX 的相关只有 0.1，会得出完全错误的结论。<b>已经持有纳指的客户，再加半导体增加的是集中度，不是分散度<\/b>——0.89 的相关系数意味着 79% 的日波动是同一个东西。<\/div>", "corrNote": "<b>境内 1,573 只 ETF、27,495 只公募基金（含 373 只 QDII）里，跟踪费城半导体指数的产品数量是 <span style=\"font-size:15px;\">0<\/span>。<\/b>相关性最高的是主动管理的景顺长城全球半导体芯片（QDII-LOF，0.93）——<b>它高不是因为它跟踪 SOX，是因为它买的是同一批股票<\/b>，而主动产品的持仓随时可以变。A 股的半导体 ETF 与 SOX 的相关系数只有 0.19–0.24，<b>它们跟 SOX 是两个资产，不是同一个资产的两种买法。<\/b>详见第 5 节。", "s3desc": "半导体是强周期资产，问\"是不是 2000 年\"没有意义——SOX 自 1994 年以来跌过 <b>17<\/b> 次 30% 以上，中位跌幅 -38.5%，\"泡沫\"在这个指数上是常态而不是特例。更有用的问题是：<b>这一轮产业周期走到哪一段了。<\/b>下面用四组能算出来的东西回答——状态机定位、存储与设备的预期修正速度差、相对强弱分位、历次回撤的收复期，最后落到三个每周能跟踪的证伪条件。", "smWhy": "<p style=\"font-size:12.5px;color:var(--ink2);margin-bottom:8px;\">框架里 S6 的特征清单共 7 条，本页逐条核对，<b>命中 6 条<\/b>：<\/p><ul><li>✓ <b>价格仍涨但斜率放缓（退出信号①）。<\/b>DRAM 合约价环比：1Q26 <span class=\"hl\">+90~95%<\/span> → 2Q26 <span class=\"hl\">+58~63%<\/span> → 3Q26 <span class=\"hl\">+13~18%<\/span>（TrendForce）。两个季度削掉了六分之五的斜率。<\/li><li>✓ <b>盈利仍上修但幅度收窄（退出信号②）。<\/b>存储端 FY1 一致预期近 13 周 <span class=\"hl\">+51.2%<\/span>，近 4 周只剩 <span class=\"hl\">+3.69%<\/span>，近 1 周 <span class=\"hl\">-0.12%<\/span>——上修实质上已经停了。<\/li><li>✓ <b>新产能宣布激增、capex 猛升。<\/b>SK 海力士 2026-08-07 批准 <span class=\"hl\">54 万亿韩元<\/span>建两座新厂、2026 capex 上调至 40 万亿韩元（2025 为 30.2 万亿）；三星平泽 P5 提前约半年开工；美光 FY26 capex 180→<span class=\"hl\">200 亿美元<\/span>；台积电 2026 capex 上调至 600–640 亿美元；长鑫存储 2026-07-27 科创板上市募资 579.2 亿元。<\/li><li>✓ <b>客户承受不起、开始找替代（退出信号④）。<\/b>Gartner（2026-02-26）测算存储涨价推高 PC 售价 +17%、手机 +13%，并预测 2026 年 <span class=\"hl\">PC 出货 −10.4%、手机 −8.4%<\/span>。安森美 2Q26 把产能优先给 AI 数据中心、挤压汽车与工业，是同一件事的另一面。<\/li><li>✓ <b>利好钝化 / good-news-down（退出信号⑤）。<\/b>近 13 周 FY1 预期上修 +19.2%，指数只涨 +3.2%，前瞻 PE 从 22.3x 压到 19.4x。<\/li><li>✓ <b>低 PE 陷阱（退出信号⑦）。<\/b>存储端前瞻 PE 5.8x 五端最低、PB 9.6x 五端第二高——峰值盈利处的最低 PE。<\/li><li>✓ <b>席位迁移（Seat3 → Seat5）。<\/b>设备端近 4 周修正 +10.8%，<b>已反超存储端的 +3.7%<\/b>；利润池从\"卖内存的\"迁到\"卖机器的\"。东京电子与科磊已把 2026 年 WFE 上调至 ≥1,500 亿美元、2027 年 ≥1,900 亿美元。<\/li><li>✗ <b>唯一没命中：龙头转弱＋二线补涨。<\/b>见右栏反证。<\/li><\/ul><p style=\"font-size:12.5px;color:var(--ink2);margin-top:8px;\">价格端也已经在反应：指数距 2026-06-22 高点 -17.3%，美光距年内高点 -28.4%——股票钟领先产业钟 6–12 个月，这个回撤本身就是证据的一部分。<\/p>", "smAgainst": "<ul><li><b>最强反证一：供给只\"宣布\"了，没\"到货\"。<\/b>框架里的退出信号③要的是<b>扩产密集落地<\/b>（设备进场、投产、爬坡、认证完成），不是宣布。而 SK 海力士的洁净室要到 <span class=\"hl\">2028-12 / 2029-06<\/span>、美光爱达荷首片 2027 年中；TrendForce 测算 <b>2026 年 DRAM 供需充足率仍是 <span class=\"hl\">−1%~−2%<\/span>（供不应求）<\/b>，新增产能<b>要到 2028 年才有实质产出<\/b>，NAND 要到 2027 年才转正。<b>这是把 S6 判在\"前段\"而不是\"后段\"的主要依据。<\/b><\/li><li><b>最强反证二：没有出现\"龙头转弱 + 二线补涨\"。<\/b>权重前五近 60 日 <span class=\"hl\">+0.2%<\/span>，权重最小的 10 只 <span class=\"hl\">-12.2%<\/span>；近 20 日是 +1.5% vs -5.4%。S6 后段的典型形态是资金向小票扩散，现在是<b>反过来的<\/b>——资金在向龙头收缩。这更像一次 Attention 去杠杆，不是分布式的顶。<\/li><li><b>设备端的修正还在加速。<\/b>近 13 周 +19.3%、近 4 周 +10.8%、近 1 周 +2.1%，上调权重占比 100%。扩产真进尾声时，设备端预期会先掉头——现在没有。<\/li><li><b>模拟·车规端的预期刚开始转好，而且有财报支持。<\/b>近 1 周 +5.0%，五端第一；微芯 2026-08-06 明确表示\"渠道库存修正已完成\"、渠道库存 25 天接近历史低位、book-to-bill 显著大于 1；意法半导体 book-to-bill 接近 2。非 AI 需求独立复苏会<b>拉长<\/b>整条链的周期，不是缩短。<\/li><li><b>口径提醒：<\/b>状态机定位的是<b>产业周期<\/b>。即使定位正确，股票端可以早半年见顶、也可以再冲一波——所以下面两个概率必须分开报，不能合成一个\"看多/看空\"。<\/li><\/ul>", "smNote": "<b>框架出处与边界。<\/b>S0–S7 状态机来自本机既有的「商品超级周期」诊断框架（原型是内存周期，适用于高固定成本、慢供给、可压库存的品种），本页把它整体借来给 SOX 定位，<b>只用它的状态定义、证据栈与退出信号，没有改动口径<\/b>。需要说清楚三件事：① 半导体指数里只有<b>存储与代工<\/b>严格符合\"内存式商品\"的假设，逻辑芯片与 IP（英伟达、博通、ARM）更接近技术垄断资产，框架对它们的解释力弱；② 状态判定用的是<b>方向<\/b>不是水平——库存方向优于库存水平、价格斜率优于价格水平，本页能拿到的方向变量是一致预期修正的斜率，拿不到现货价与库存天数，<b>这是本页最大的数据缺口<\/b>；③ 上面两个概率是<b>本页基于可得证据的主观判断<\/b>，不是模型输出，也不构成预测。", "revNote": "<b>这张图是本页最重要的一张。<\/b>存储端（红线）近 13 周上修 +51.2%，到近 4 周只剩 +3.69%、近 1 周 -0.12%——<b>坡度已经压平<\/b>。设备端（蓝线）13 周 +19.3%、4 周 +10.8%、1 周 +2.1%，坡度还在。两端的 13 周差是 <b>+32.0 个百分点<\/b>（存储领先），但 4 周差已经变成 <b>-7.1 个百分点<\/b>（设备反超）。<div class=\"note grey\" style=\"margin-top:10px;\"><b>为什么这个顺序有信息量：<\/b>存储是产能驱动品种，价格先动、利润先兑现；设备的订单是产品端赚到钱之后才下的，天然滞后 1–2 个季度。所以正常的周期顺序是<b>存储先加速→存储先减速→设备后加速→设备后减速<\/b>。现在处在第三步。第四步（设备端的近 4 周修正也掉头）才是整条链走完的确认信号——<b>那还没有发生<\/b>。口径说明：9 只逻辑端成分股中有 2 只缺 90 天前的一致预期（新上市或覆盖不足），该端 13 周读数只覆盖 7/9 只。<\/div>", "rsNote": "<b>相对强弱在历史极值上，而且刚从极值回落。<\/b>SOX ÷ 标普500 现在 <b>1.565<\/b>，处 1994 年以来 <b>99.4%<\/b> 分位、近 10 年 97.9% 分位；历史峰值 1.958 出现在 <b>2026-06-22<\/b>（也就是今年 6 月），现在距那个峰值 <b>-20.1%<\/b>。作为对照，2000 年 3 月那一轮的峰值只有 0.955——<b>今天的相对强弱比 2000 年高 64%<\/b>；而 2008 年 12 月的低点是 0.216，从那里到今天涨了 626%。<div class=\"note grey\" style=\"margin-top:10px;\"><b>这条曲线的用法不是择时，是给持有期定预期。<\/b>比值从 2023 年初的 0.654 涨到今天，三年半 139%；年初还是 1.035，今年一年就跑赢标普500 <b>57.9 个百分点<\/b>。当前值比 200 日均线（1.322）还高 18.4%。<b>相对强弱在高位不预测拐点，但它决定了均值回归时要还回去多少<\/b>——2000 年 3 月之后，这条比值用了 8 年跌到 0.216。<\/div>", "zzNote": "<b>这张表是本页最该给客户看的一张，因为它决定持有期。<\/b>1994 年以来 SOX 有 <b>17<\/b> 次 30% 以上的下跌，中位跌幅 <b>-38.5%<\/b>、中位收复期 <b>650 天（约 1.8 年）<\/b>。最惨的一次是 2007-07-17 起跌 <b>-68.7%<\/b>，用了 1,889 天才回到原点；而 <b>2000-03-10 那个高点，一直到 2017-11-21 才被收复——17.6 年<\/b>。<div class=\"note grey\" style=\"margin-top:10px;\"><b>两句必须说的话：<\/b>① 同期标普500 只出现过 3 次 30% 以上的回撤，SOX 是 17 次——<b>这不是\"波动大一点\"，是两个量级<\/b>；② 最近三次（2020、2022、2024–25）的收复期分别是 79 / 426 / 155 天，客户很容易把\"一年内涨回来\"当成规律。但样本里真正伤人的两次（2000、2007）都发生在<b>产业景气最好、盈利创纪录<\/b>的时候，收复期是以<b>年<\/b>计的。跟客户讲持有期，用 2000 和 2007 的数字。<br>口径：本表用 30% 摆动（ZigZag）法识别独立的下跌段，与\"回到历史新高\"口径不同——后者会把 2000–2017 合成一整段（SOX 从 2000 年 3 月高点到 2017 年 11 月才创新高，历时 17 年 8 个月）。<\/div>", "lineNote": "<b>把 AI 相关的五条主线加起来：年初权重 66.3%（现 71.0%），今年贡献 +54.52 个点，占归因合计的 77%。<\/b>剩下 23% 来自模拟·车规工业与手机——<b>这个指数今年约四分之三是 AI，但不全是 AI。<\/b><div class=\"note grey\" style=\"margin-top:10px;\"><b>三条要单独讲的：<\/b>① <b>AI·存储周期<\/b>年初只有 5.49% 权重（美光、Rambus 两只），贡献 +14.03 个点，主线涨幅 <b>+255%<\/b>、一致预期近 13 周上修 <b>+51%<\/b>，两项都是全表极值。但它的前瞻 PE 只有 5.8x——<b>低 PE 在这里是风险不是安全边际<\/b>。② <b>AI·数据中心互连<\/b>（迈威尔、Astera Labs、Credo、Coherent、MACOM）年初权重 10.6%，贡献 +14.03 个点，与存储并列第一——<b>今年真正的新故事是\"数据搬运\"，不是\"数据计算\"<\/b>。它的前瞻 PE 35.8x 是全表最贵。③ <b>手机与边缘 AI<\/b>（高通、Skyworks、Qorvo）是全表唯一一致预期<b>下修<\/b>的一条（-2.6%），也是唯一静态持有为负的一条（-1.2%，其中高通全年 -4.9%、是 30 只里唯一下跌的股票）；年初 5.28% 权重现在只剩 3.57%，被指数稀释掉近三分之一。<b>\"半导体全面景气\"这句话在这条线上不成立。<\/b><div style=\"margin-top:8px;\"><b>怎么读这张表的两列涨幅：<\/b>\"今年涨幅\"＝<b>对指数贡献 ÷ 起点权重<\/b>，这个定义保证\"起点权重×涨幅\"加总回指数的 70.81%；\"参照：静态持有\"＝同一批股票按起点权重全程不动的真实收益率。两者不等，差的是<b>指数自己每季再平衡带来的复利效应<\/b>（全指数口径：静态持有 67.73% vs 指数 70.81%，再平衡贡献 +3.08pct）。差得最多的是存储端（+255% vs +178%），因为它的涨幅集中在指数本身涨得最猛的那一段。<b>要讲\"这一端替指数出了多少力\"用第一列，要讲\"客户拿着能赚多少\"用第二列。<\/b><\/div><br>主线归类覆盖 100% 权重，30 只全部有归属，无\"未归入\"项。<\/div>", "cstFoot": "按指数权重降序<b>全部列出<\/b>（当前筛选 {{n}} 只，未截断）。权重来自 Invesco PHLX Semiconductor ETF（SOXQ）2026-08-10 持仓、剔除 0.075% 现金后归一到 100%；<b>年初权重是用 ^SOX 自身日线反解出来的<\/b>（方法见页脚）。\"贡献\"＝该股对指数今年涨幅的百分点贡献（逐季再平衡链式口径），30 只相加＝70.81，与指数实际涨幅 70.81 完全相等。FY1 PE 与预期修正为自下而上一致预期，覆盖 100% 权重。阿斯麦（ASML）的 PB 在数据源里是欧元报表口径、与美元股价不可比，本页一律显示为\"—\"并剔除出汇总。", "s5desc": "<b>结论先给：境内没有任何一只公募产品跟踪费城半导体指数，一只也没有。<\/b>本节先给核查过程（查了什么、查了多少只、结果是什么），再给替代方案对照表，并用<b>日收益相关系数<\/b>量化\"它们到底有多不像 SOX\"。本节<b>不会<\/b>推荐任何一只产品作为 SOX 的替代——因为按数据它们都不是。", "chkBox": "<div class=\"ev-block\"><h5>查了什么<\/h5><ul><li><b>全市场场内 ETF<\/b>：1,573 只（东方财富实时快照，2026-08-12 15:34），按名称检索\"费城 / 费半 / SOX / PHLX\"，命中 <span class=\"hl\">0 只<\/span>。<\/li><li><b>全市场公募基金名录<\/b>：27,495 只，其中 QDII 373 只，同样按上述关键词检索，命中 <span class=\"hl\">0 只<\/span>。<\/li><li>再按\"半导体 / 芯片\"逐只人工过一遍 QDII 名单，确认<b>没有一只以费城半导体指数为跟踪标的或业绩比较基准<\/b>。<\/li><\/ul><\/div><div class=\"ev-block\" style=\"margin-top:10px;\"><h5>为什么会这样<\/h5><ul><li>SOX 的 30 只成分里有阿斯麦、台积电、ARM、恩智浦、Nova 等<b>非美国公司<\/b>，其中台积电与 ARM 在指数里只按<b>美国上市 ADR<\/b>部分计权——这套编制规则的授权与复制成本，都高于跟踪纳指100 或标普500。<\/li><li>境内跨境产品受 QDII 额度约束，已有额度基本都给了宽基（纳指100、标普500）和港股，行业型跨境指数产品数量本来就少。<\/li><li>结果是：想在境内表达\"美国半导体\"这个观点，<b>只能通过主动管理的全球半导体 QDII，或者用 A 股半导体 ETF 做一个相关性很低的近似<\/b>。<\/li><\/ul><\/div>", "altNote": "<b>这张表要读的是相关系数那一列，不是收益率那一列。<\/b>① 相关性最高的是<b>景顺长城全球半导体芯片（QDII-LOF）0.93<\/b>，但它是<b>主动管理产品，没有跟踪指数<\/b>——相关性高是因为它当前买的是同一批股票，不是因为它有义务跟住 SOX。基金经理换仓，相关性就会变。② 纳指100 类产品（0.87）看起来也不低，但纳指100 里半导体只占一部分，今年它 +12.4%，SOX +70.8%——<b>相关性描述的是同涨同跌的节奏，不是幅度<\/b>。③ <b>A 股半导体 ETF 与 SOX 的相关系数只有 0.19–0.24<\/b>，意味着只有 6% 上下的日波动是共同的。今年 A 股半导体涨得也不少（半导体ETF南方 +47.5%、科创芯片ETF南方 +53.8%），但那是<b>另一条独立的产业链逻辑<\/b>（国产替代、设备自主），不是 SOX 的映射。<div class=\"note grey\" style=\"margin-top:10px;\"><b>两个口径提醒：<\/b>① 表里的\"口径\"列标出相关性用的是当日还是滞后一日。A 股与港股收盘早于美股约 9 小时，QDII 净值日期对应的又是上一美股交易日，本页对每只产品分别测了 0/1/2 日滞后并取相关性最高的一档，<b>不做这个处理会系统性低估相关性、得出更极端的结论<\/b>。② 芯片ETF华夏（159995）与半导体ETF国联安（512480）在 2026 年 7 月做过份额折算，未复权价上有 −50% 的断点，本页已做前复权修正后再计算收益与相关性。<\/div>", "altCalc": "<div class=\"ev-block\"><h5>相关系数 0.24 到底意味着什么<\/h5>相关系数的平方才是\"能被解释的方差比例\"：<ul><li>景顺长城全球半导体 0.93 → <span class=\"hl\">86%<\/span> 的日波动与 SOX 同源；<\/li><li>南方纳斯达克100 0.87 → <span class=\"hl\">76%<\/span>；<\/li><li>半导体ETF南方 0.24 → <span class=\"hl\">6%<\/span>；<\/li><li>科创芯片ETF南方 0.19 → <span class=\"hl\">4%<\/span>。<\/li><\/ul>也就是说，用 A 股半导体 ETF 表达\"看好美国半导体\"这个观点，<b>九成以上的涨跌来自跟这个观点无关的东西<\/b>。<\/div><div class=\"ev-block\" style=\"margin-top:10px;\"><h5>所以正确的说法是<\/h5><ul><li><span class=\"hl\">\"境内买不到费城半导体\"<\/span>——这是事实，先说清楚；<\/li><li>如果客户要的是<b>美国半导体产业的贝塔<\/b>，境内最接近的是全球半导体主题 QDII，但要同时讲明它是<b>主动管理<\/b>、持仓会变、且有 QDII 额度带来的申购限制与溢价；<\/li><li>如果客户要的是<b>半导体产业景气<\/b>这个更宽的观点，A 股半导体 ETF 是一个<b>不同的<\/b>表达，不是打折版的 SOX；<\/li><li>场内跨境 ETF 当前溢价普遍不低（中韩半导体 +14.18%、纳斯达克ETF华夏 +9.07%、标普500ETF南方 +6.99%），<b>溢价是一次性成本，先看溢价再看费率<\/b>。<\/li><\/ul><\/div>", "altCalcNote": "相关系数为近 2 年（约 410–467 个交易日）日对数收益的皮尔逊相关，已按各产品最优滞后阶对齐时区。<b>历史相关性不代表未来相关性<\/b>，尤其在市场压力期，跨市场相关性通常会同时上升——也就是说，<b>分散作用最需要的时候，往往正是它最弱的时候<\/b>。本节所有产品仅为口径对照，不构成任何推荐。", "like": [{"n": "+13~18%", "t": "涨价斜率两个季度削掉了六分之五", "b": "DRAM 合约价环比涨幅：1Q26 <b>+90~95%<\/b>（史上最大单季）→ 2Q26 <b>+58~63%<\/b> → 3Q26 <b>+13~18%<\/b>（TrendForce）。同期存储端 FY1 一致预期近 13 周上修 +51.2%、近 4 周只剩 +3.69%、<b>近 1 周 -0.12%<\/b>。框架里的退出信号①与②同时触发：价格仍在涨，但斜率和盈利上修都已经压平。存储端贡献了归因合计的 20%，这条腿停下来，指数少了最强的一个来源。"}, {"n": "−10.4%", "t": "需求破坏已经被量化，不再是假设", "b": "Gartner（2026-02-26）测算存储涨价约 130% 将推高 PC 售价 <b>+17%<\/b>、手机 <b>+13%<\/b>，并预测 2026 年 <b>PC 出货 −10.4%、手机 −8.4%<\/b>。这是框架里的退出信号④——\"客户承受不起（降规格 / 推迟 / 替代）\"。同一件事的产业内证据：安森美 2Q26 把产能优先给 AI 数据中心、挤压汽车与工业；另有单一来源报道称苹果开始测试长鑫存储（semafor，2026-08-09，未获二次确认）。"}, {"n": "-13.4%", "t": "好消息不再被支付（good-news-down）", "b": "过去 13 周 FY1 一致预期上修 <b>+19.2%<\/b>，指数只涨 +3.2%，前瞻 PE 从 22.3x 压到 19.4x（<b>-13.4%<\/b>）。盈利在变好、价格不给了，这是股票端领先产业端见顶最常见的形态（退出信号⑤）。配合看：存储端前瞻 PE 只有 5.8x（五端最低）、PB 却有 9.6x（五端第二高）——<b>峰值盈利处的最低 PE，是分母风险不是安全边际<\/b>（退出信号⑦）。"}], "unlike": [{"n": "−1~−2%", "t": "产能只宣布了，2026 年依然供不应求", "b": "框架里的退出信号③要的是扩产<b>落地<\/b>（设备进场、投产、爬坡），不是宣布。而 SK 海力士新厂洁净室要到 <b>2028-12 / 2029-06<\/b>、美光爱达荷首片 2027 年中；TrendForce 测算 <b>2026 年 DRAM 供需充足率仍为 −1%~−2%<\/b>（供不应求），新增产能<b>要到 2028 年才有实质产出<\/b>，NAND 要到 2027 年才转正。<b>这是把 S6 判在\"前段\"而不是\"后段\"的主要依据<\/b>——价格钟在减速，物理供给钟还没到。"}, {"n": "-12.2%", "t": "没有出现\"龙头转弱 + 二线补涨\"", "b": "权重前五近 60 日 <b>+0.2%<\/b>，权重最小的 10 只 <b>-12.2%<\/b>；近 20 日是 +1.5% vs -5.4%。S6 后段的标志性形态是资金向二线和小票扩散，现在方向完全相反——资金在向龙头收缩。这更像一次 Attention 去杠杆，不是分布式的顶。"}, {"n": "+10.8%", "t": "设备端还在加速，非 AI 端刚开始复苏", "b": "设备与材料端 FY1 一致预期近 13 周 +19.3%、近 4 周 <b>+10.8%<\/b>、近 1 周 +2.1%，上调权重占比 100%；东京电子与科磊已把 2026 年 WFE 上调至 ≥1,500 亿美元、2027 年 ≥1,900 亿美元。同时模拟·车规端 FY1 近 1 周 <b>+5.0%<\/b> 是五端第一，并有财报直接支持：微芯 2026-08-06 称\"渠道库存修正已完成\"、渠道库存 25 天接近历史低位，意法半导体 book-to-bill 接近 2。<b>利润池还在链条上迁移，而且出现了一条与 AI 无关的独立腿。<\/b>"}], "falsify": [{"k": "证伪条件 一", "t": "存储端 FY1 一致预期近 4 周转负", "now": "+3.69%", "b": "这是最先会变、也最容易跟踪的一个数。现在近 4 周 <b>+3.69%<\/b>、近 1 周 -0.12%，已经贴着零。<b>一旦近 4 周读数转负，就意味着周期从 S6 走到 S7（反转再累积）<\/b>——那时不要因为存储端 PE 只有 5.8x 就继续持有，框架里明确点名这是\"低 PE 陷阱\"。两个可交叉验证的产业节点：<b>TrendForce 的 4Q26 合约价预测<\/b>（通常 9 月末至 10 月初发布，3Q26 已收敛到 +13~18%），以及<b>美光 FQ4'26 财报<\/b>（市场预期 2026-09-29，以公司公告为准；指引为营收 500±10 亿美元、毛利率约 86%）。"}, {"k": "证伪条件 二", "t": "设备端 FY1 近 4 周修正跌破 +5%", "now": "+10.8%", "b": "设备端是这条链的\"扩产收费站\"，现在近 4 周 <b>+10.8%<\/b>，已经反超存储端的 +3.7%。只要它还在加速，说明产品端赚到的钱正在变成设备订单，产业周期就还没走完。<b>如果它跌破 +5%，意味着连收费站也关了<\/b>——那才是整条链的确认信号。交叉验证用两个产业口径：东京电子与科磊给的 <b>WFE 总额<\/b>（2026 年 ≥1,500 亿美元、2027 年 ≥1,900 亿美元）是否被下修，以及台积电亚利桑那新增 4 座 2nm 厂的<b>时间表<\/b>（目前未公布）。另一个已知的日期风险：232 条款 Phase 2 拟议覆盖半导体制造设备，两个内部期限（2026-04-14、2026-07-01）已过、仍无结论，一旦落地会直接改变这 21.9% 权重的收入结构。"}, {"k": "证伪条件 三", "t": "SOX ÷ 标普500 跌破 200 日均线", "now": "1.565（均线 1.322）", "b": "相对强弱比值现在 <b>1.565<\/b>，处 1994 年以来 99.4% 分位，高于 200 日均线 <b>18.4%<\/b>，已从 2026-06-22 的历史峰值 1.958 回落 -20.1%。<b>跌破 200 日均线（约 1.32）意味着这一轮相对跑赢的趋势被破坏<\/b>，历史上这条比值一旦转向，回归的幅度和时间都远超直觉：2000 年 3 月见顶后用了 8 年跌到 0.216。这个信号滞后，但它不会给假信号。"}], "stamp": "数据截至 2026-08-11（^SOX 指数与 30 只成分股收盘价，Yahoo Finance）；成分名单来自 Nasdaq 官方指数页（indexes.nasdaqomx.com，2026-08-11，30 只）；当前权重来自 Invesco PHLX Semiconductor ETF（SOXQ）2026-08-10 持仓；一致预期为 30 只成分股自下而上汇总，覆盖 100% 权重；境内产品数据为 2026-08-12 15:34 东方财富快照与新浪/东方财富历史行情", "foot": "<p><b>① 成分与权重的口径——这是本页最需要交代清楚的一件事。<\/b>SOX 是<b>修正市值加权 + 权重上限<\/b>的指数，公开渠道拿不到官方权重表。本页的处理是：<b>成分名单<\/b>取自 Nasdaq 官方指数页面（indexes.nasdaqomx.com/Index/Weighting/SOX，2026-08-11 查询，30 只）；<b>当前权重<\/b>取自 <b>Invesco PHLX Semiconductor ETF（SOXQ，CUSIP 46138G615）<\/b>的每日持仓——SOXQ 是<b>完全复制费城半导体指数本身<\/b>的 ETF（不是 SOXX，也不是 SMH：iShares SOXX 自 2021 年起跟踪 ICE Semiconductor Index，VanEck SMH 跟踪 MVIS 指数，两者都不是 SOX），因此其持仓权重可视为指数权重。该持仓日期 2026-08-10，30 只股票合计 99.925%，剩余为现金与证券出借，本页剔除现金后归一到 100%。<b>官方名单与 SOXQ 持仓逐只比对，30/30 完全一致。<\/b><\/p><p><b>② 起点权重是反解出来的，不是估的。<\/b>\"当前权重 ÷（1＋涨幅）\"这种朴素还原方式对<b>带上限的指数会系统性出错<\/b>：用它算今年的归因得到 56.23%，而指数实际涨了 70.81%，差 -14.6 个百分点——因为它假设权重自由漂移，而指数每季度会把权重重置回上限。本页改用一个恒等式：在<b>两次再平衡之间<\/b>，指数是买入持有的，所以 Index(t)/Index(t₀) ＝ Σ wᵢ(t₀)·Pᵢ(t)/Pᵢ(t₀) 严格成立，于是可以用<b>带约束的最小二乘<\/b>（wᵢ≥0、Σw＝1）从 ^SOX 自身的日线里把 t₀ 时点的权重解出来。区间边界经数据检测确定为 2026-03-20、2026-06-18（每季第三个周五，即再平衡生效日），三段拟合的<b>最大残差分别为 0.0001%、0.0001%、0.0%<\/b>，即反解出的权重能把指数走势还原到小数点后四位。交叉验证：把权重回推到定权基准日 2026-05-29，得到前三大 NVDA 12.10%、AVGO 10.23%、MU 8.00%、另有 9 只精确落在 4.00%——<b>这正是\"前三大 12%/10%/8%、其余上限 4%\"的封顶规则<\/b>，与反解结果互相印证。<\/p><p><b>③ 跟踪对账与归因差额（这一节的结论请直接用）。<\/b>用上述分段权重做链式归因，30 只个股贡献合计 <b>70.807%<\/b>，^SOX 今年实际 <b>70.807%<\/b>，<b>差额 -0.000 个百分点（相对差 -0.000%）<\/b>。差额之所以是零，有两个原因，都要说清楚：① <b>权重本身就是从指数日线里解出来的<\/b>，所以复原指数是方法的内生结果，不是独立验证；② 真正的独立验证是<b>拟合质量<\/b>——在只允许这 30 只当前成分、权重非负且合计为 1 的约束下，三段拟合的最大残差是 0.0001%，日度重构误差<b>中位 3.38 个基点、最大 25.28 个基点<\/b>（152 个交易日）。如果年内发生过成分调整（调出的股票在调出前的涨跌由指数承担、却不在当前 30 只里），这个残差会显著放大而不可能停在 0.0001% 的量级。<b>所以本页把\"差额为零\"当作年内无成分调整的证据，而不是当作精度的自夸<\/b>——费城半导体的年度成分调整在 9 月，最近一次是 2025 年 9 月（新增 ALAB / ARM / CRDO / MTSI / NVMI，剔除 ALGM / AMKR / ACLS / LSCC / WOLF），发生在本页归因起点 2025-12-31 之前。日频口径下重构组合与 ^SOX 的日收益相关系数 <b>0.99994<\/b>、年化跟踪误差 <b>0.57%<\/b>。另一个外部对账：SOXQ 的含息净值今年 +71.00%、^SOX 价格指数 +70.81%，差的 0.19 个百分点是股息——<b>SOX 是价格指数、不含股息<\/b>，本页所有涨幅口径与之一致。页面上所有比例一律表述为「占归因合计」，不表述为「占指数涨幅」，即使本期两者数值相同。<\/p><p><b>③补 「该端今年涨幅」的定义，以及为什么不用篮子净值。<\/b>本页所有端级 / 主线级的\"今年涨幅\"一律定义为 <b>对指数贡献 ÷ 起点权重<\/b>。这个定义的唯一目的是<b>内部一致<\/b>：只有它能保证\"起点权重 × 涨幅\"逐端加总回指数的 70.81%，不会出现\"贡献为正、涨幅为负\"这种自相矛盾。<b>不用「按权重重构的篮子净值」是因为它会凭空产生再平衡收益<\/b>——半导体成分的波动极高（存储端 60 日年化波动 109%），本期实测：如果用逐季再平衡的篮子，存储端会显示 181.3%，而与归因一致的口径是 255.6%，设备端则会从 64.7% 被抬到 79.3%，两者与贡献直接打架。<b>代价是：这个\"涨幅\"不是一个你能买到的收益率。<\/b>所以主线表与各端卡片都同时给出<b>「参照：静态持有」<\/b>——同一批股票按起点权重全程不动的真实收益率。全指数口径下，30 只静态持有今年 <b>67.73%<\/b>、指数实际 <b>70.81%<\/b>，差的 <b>+3.08 个百分点<\/b>就是指数自己每季再平衡与封顶带来的收益。<b>要讲\"这一端替指数出了多少力\"看第一列，要讲\"客户拿着能赚多少\"看第二列。<\/b>需要注意，逐日再平衡的篮子净值本页只用于两处、且都是短窗口（差异可忽略）：1a 卡片的近 20 日 / 近 5 日景气度评分，以及各端详情里的近 3 个月走势图。<\/p><p><b>④ 五端划分<\/b>为本页自建的<b>产业链<\/b>切法，30 只成分股每只只落一个端，五端合计 100%：设备与材料（AMAT/LRCX/KLAC/ASML/TER/ENTG/NVMI）、存储（MU/RMBS）、逻辑·AI计算与互连（NVDA/AVGO/AMD/MRVL/QCOM/ALAB/CRDO/ARM/COHR）、模拟·功率·射频·车规（TXN/ADI/NXPI/MCHP/ON/MPWR/SWKS/QRVO/MTSI）、代工与 IDM（TSM/INTC/GFS）。其中两个归类是判断而非行业标准：<b>Rambus 计入存储端<\/b>（主营内存接口芯片与相关 IP，业绩与 DRAM 周期同步），<b>MACOM 计入模拟端<\/b>（主营射频微波，但其增长来自数据中心光通信，所以在\"交易主线\"里被归入 AI·数据中心互连）。读数时请注意这两处。<b>业务标签<\/b>为各公司主营产品线的中文对照；<b>交易主线<\/b>是本页自建归类，30 只全部有归属；主线与五端是<b>交叉<\/b>关系而非层级关系。<\/p><p><b>⑤ 归因、景气度与估值口径。<\/b>归因用<b>未复权收盘价<\/b>（与价格指数口径一致），景气度与篮子净值用<b>复权价<\/b>，两套数据分别存储。需要注意一个反直觉的结果：<b>今年 30 只成分股的贡献全部为正，包括全年下跌的高通<\/b>——因为指数每季度再平衡，个股在不同区间的权重不同，链式贡献是三段加权之和，与\"全年涨幅×年初权重\"不是一回事。<b>景气度评分<\/b>为本页自建指标、非官方数据，公式见 1a 卡片下方。<b>估值<\/b>全部为成分股自下而上重算：前瞻 PE ＝ 1/Σ(wᵢ×Eᵢ/Pᵢ)，PB 与 EV/Sales 用市值加权的调和平均。<b>本页不提供 SOX 的长历史估值分位<\/b>——免费渠道没有该指数的长历史 PE/PB 序列，本页不画长历史分位图，也不用其他指数的序列代替。<b>一致预期<\/b>为各成分股卖方一致预期（Yahoo Finance eps_trend），指数级修正＝Σw·(E/P) 之比、<b>分子分母用同一天价格<\/b>，覆盖权重 100%；各公司财年终点不同，\"下一财年\"并非严格的未来 12 个月。逻辑端 9 只中有 2 只缺 90 天前的预期数据（<b>迈威尔 MRVL（权重 4.39%）与 AMD（3.93%）<\/b>，数据源无 90 天前记录），该端 13 周修正只覆盖 7/9 只、合计权重 34.6%；这两只在成分股表的\"FY1 预期13周\"列显示为\"—\"。<b>阿斯麦（ASML）<\/b>的 PB 与 EV/Sales 在数据源里是欧元报表口径、与美元股价不可比，已从这两项汇总中剔除（剔除后覆盖 95% 权重）。<\/p><p><b>⑥ 周期定位的框架来源。<\/b>第 3 节的 S0–S7 状态机、六层涨价证据栈与七个退出信号，沿用本机既有的<b>「商品超级周期」诊断框架<\/b>（面向内存、铜、铀等高固定成本、慢供给、可压库存品种），本页未改动其口径。框架适配性说明：存储与代工严格符合该框架的假设，逻辑芯片与 IP 更接近技术垄断资产，框架对它们解释力较弱。<b>本页拿不到现货价、合约价与库存天数<\/b>，状态判定的方向变量只用了一致预期修正的斜率与价格行为，这是本页最大的数据缺口；两个概率是基于可得证据的主观判断，不是模型输出，也不构成预测。<\/p><p><b>⑦ 数据完整性自检。<\/b>30 只成分股行情全部拉取成功、无缺票、无末行滞后（yfinance 批量下载会丢最后一根 K 线，本页已逐只用单票接口校验并补齐，本次补齐 ALAB）；一致预期 30/30 只全部取到，覆盖权重 100%，无失败。境内产品部分：芯片ETF华夏（159995）与半导体ETF国联安（512480）在 2026 年 7 月做过份额折算，本页已做前复权修正；东方财富历史行情接口在本机被代理拦截，已回退到新浪接口。<\/p><p><b>风险提示。<\/b>本页所有数据来自公开信息，不构成投资建议，也不构成对任何产品未来业绩的承诺或暗示。费城半导体指数为价格指数、不含股息，历史表现不代表未来；景气度评分、周期状态定位与一致预期均为对当前状态的描述，不具有预测效力。半导体是强周期、高集中度资产：本指数仅 30 只成分股、前十大占 62.1%、60 日年化波动 65%、对标普500 的 beta 2.59，1994 年以来发生过 17 次 30% 以上回撤、中位收复期 650 天。<b>境内目前没有跟踪该指数的公募产品，本页第 5 节列出的替代工具与本指数并非同一资产，不应被理解为该指数的替代或近似。<\/b>QDII 产品面临境外市场风险、汇率风险与额度限制风险，二级市场溢价可能因回归而产生与指数涨跌无关的损失。基金有风险，投资须谨慎，请在购买前认真阅读基金合同与招募说明书。<\/p>", "sectors": {"logic": {"role": "<ul><li>权重 <span class=\"hl\">42.9%<\/span>，是指数里最大的一端，英伟达 13.35% ＋ 博通 10.21% 两只就占了 23.6%。<\/li><li>今年贡献 <span class=\"hl\">+26.99 个点<\/span>，占归因合计的 38%——但这是靠 43.6% 的年初权重换来的，<b>单位权重的产出是五端里最低的<\/b>。<\/li><li>成交额占全指数 <span class=\"hl\">48.1%<\/span>，与其 42.9% 的权重基本相当，是这个指数的\"重心\"而不是\"热点\"。<\/li><\/ul>", "now": "<ul><li>景气度 <span class=\"hl\">63<\/span> 分，五端第一：近 20 日相对 SOX <span class=\"hl\">+4.09%<\/span>，量能相对全指数 +12%。<b>指数在跌的时候，钱是往这一端缩的。<\/b><\/li><li>但盈利端最钝：FY1 一致预期近 13 周只上修 +10.80%，近 4 周 +1.86%，是五端里最慢的一档。<\/li><li>下一步验证：英伟达与博通的季报里，<b>数据中心收入的环比增速<\/b>与下季度指引——这一端 42.9% 的权重没有第二个变量。<\/li><\/ul>", "note": "<b>这一端内部是两批完全不同的资产，平均数会骗人。<\/b>英伟达今年 +16.6%、博通 +20.2%，两只加起来 23.6% 的权重只贡献了 5.63 个点；而迈威尔 +149.8%、Astera Labs +87.5%、Credo +72.1% 这批做数据中心互连的，合计权重 8.4% 却贡献了 11.73 个点。<b>今年被定价的不是\"谁的算力芯片强\"，是\"谁卡在数据搬运的瓶颈上\"<\/b>——这是利润池从计算向互连迁移的直接证据，也是本页把互连单列为一条主线的原因。", "warn": false}, "equip": {"role": "<ul><li>权重 <span class=\"hl\">21.9%<\/span>（年初 20.3%），7 只：应用材料、泛林、科磊、阿斯麦、泰瑞达、恩特格里斯、Nova。<\/li><li>今年贡献 <span class=\"hl\">+13.12 个点<\/span>，该端涨幅 +64.7%。<b>在超级周期框架里，它是\"扩产收费站\"<\/b>——涨价刺激扩产之后，利润池会从产品端迁到设备端。<\/li><li>60 日年化波动 78%、beta 1.13，波动仅次于存储端。<\/li><\/ul>", "now": "<ul><li>景气度 <span class=\"hl\">41<\/span> 分，五端倒数第二：近 20 日 -2.01%、量能 -16%，价量都在退。<\/li><li><b>但盈利端在提速<\/b>：FY1 一致预期近 13 周 <span class=\"hl\">+19.27%<\/span>（五端第二，仅次于存储端）、近 4 周 <span class=\"hl\">+10.80%<\/span>（五端第二，仅次于代工端的 +11.03%），<b>近 4 周已经反超存储端的 +3.69%<\/b>。<\/li><li>下一步验证：设备商季报里的<b>在手订单与出货指引<\/b>，以及新厂设备进场的实际节点——\"宣布扩产\"不是供给，\"设备搬进洁净室\"才是。<\/li><\/ul>", "note": "<b>这一端是判断周期位置最关键的一端，因为它同时是受益者和终结者。<\/b>设备订单进来，说明产品端赚到钱了、开始扩产——这对设备商是收入；但同一批设备装完开机，就是<b>下一轮供给过剩的起点<\/b>。本页看到的是：存储端的预期上修已经从近 13 周的 +51% 掉到近 1 周的 -0.1%，而设备端还在 +10.8%（近 4 周）。<b>利润池正在从\"卖内存的\"迁到\"卖机器的\"<\/b>——这是超级周期里的席位迁移，也意味着产业已经走过了价格弹性最好的那一段。", "warn": true}, "analog": {"role": "<ul><li>权重 <span class=\"hl\">18.0%<\/span>，9 只：德州仪器、亚德诺、恩智浦、微芯、安森美、芯源系统、Skyworks、Qorvo、MACOM。<\/li><li><b>这是指数里唯一和 AI 基本无关的一端<\/b>，需求来自汽车、工业、手机。<\/li><li>60 日波动 <span class=\"hl\">54%<\/span>、beta 0.72，是五端里最低的一档——它是这个高波动指数里的减震器。<\/li><\/ul>", "now": "<ul><li>景气度 52 分居中，但<b>近 5 日 <span class=\"hl\">+2.11%<\/span> 是五端第一<\/b>。<\/li><li>FY1 一致预期近 13 周 +9.41%，近 4 周 +6.40%、<b>近 1 周 <span class=\"hl\">+4.97%<\/span> 是五端里最高的<\/b>——短周期动能刚刚转正。<\/li><li>下一步验证：模拟厂商季报里的<b>订单出货比与渠道库存周数<\/b>，以及汽车客户的提货节奏。<\/li><\/ul>", "note": "<b>这一端今年涨得最少，恰恰是它现在最值得单独看的原因。<\/b>该端今年 +34.7%、贡献 +7.46 个点，年初权重 21.5% 掉到现在 18.0%——它是被指数\"稀释\"掉的那一端。但从周期位置看，模拟与车规在 2023–2025 年已经完整走过一轮去库存，现在预期修正的<b>近 1 周读数（+4.97%）是五端第一<\/b>，而存储端已经归零。<b>如果 AI 那条腿开始休息，这一端是指数里唯一有独立周期的部分<\/b>——但它只有 18% 权重，接不住整个指数。", "warn": false}, "foundry": {"role": "<ul><li>权重 <span class=\"hl\">9.1%<\/span>，只有 3 只：台积电（ADR）、英特尔、格芯。<\/li><li>今年贡献 <span class=\"hl\">+9.21 个点<\/span>，该端涨幅 <span class=\"hl\">+100.9%<\/span>——<b>单位权重的产出是五端里最高的<\/b>（年初 9.1% 权重换来 9.21 个点）。<\/li><li>需要说明：台积电在 SOX 里只按<b>美国上市 ADR 部分<\/b>计权，所以它在这个指数里只有 4.32% 权重，远低于它在全球半导体市值中的地位。<\/li><\/ul>", "now": "<ul><li>景气度 45 分居中；近 20 日 -1.83%，但量能相对全指数 <span class=\"hl\">+12%<\/span>，是五端里仅有的两端量能为正之一（另一端是逻辑端 +12%）。<\/li><li>FY1 一致预期近 13 周 +15.33%（五端第三），<b>近 4 周 +11.03% 是五端第一<\/b>。<\/li><li>下一步验证：先进制程产能的实际释放节点，以及代工报价能不能继续上调。<\/li><\/ul>", "note": "<b>英特尔今年 +164.8%、贡献 7.37 个点，是这个指数今年的第三大功臣。<\/b>这件事需要单独讲清楚：它不是\"英特尔的产品赢了\"，而是<b>先进制程产能变成了稀缺资源<\/b>，任何一家有产能的公司都被重新定价。在超级周期框架里，代工是典型的 <b>First Cash Receiver<\/b>——不管最终谁的芯片卖得好，晶圆都要从这里出。风险在另一面：产能稀缺是<b>可以被资本开支解决的<\/b>，而这一端今年的涨幅已经把\"产能持续紧张\"定价进去了。", "warn": false}, "mem": {"role": "<ul><li>权重只有 <span class=\"hl\">8.1%<\/span>（年初 <span class=\"hl\">5.5%<\/span>），只有美光和 Rambus 两只。<\/li><li>却贡献了 <span class=\"hl\">+14.03 个点<\/span>，占归因合计的 <span class=\"hl\">20%<\/span>。<b>用 5.5% 的年初权重，撬动了指数五分之一的涨幅。<\/b><\/li><li>60 日年化波动 <span class=\"hl\">109%<\/span>、beta 1.47，两项都是五端第一。成交额占全指数 24.2%，是权重的 3.0 倍。<\/li><\/ul>", "now": "<ul><li>景气度 <span class=\"hl\">21<\/span> 分，五端垫底：近 20 日相对 SOX <span class=\"hl\">-7.04%<\/span>，美光距年内高点 <span class=\"hl\">-28.4%<\/span>。<b>今年涨最多的一端，现在是最弱的一端。<\/b><\/li><li>关键读数在这里：FY1 一致预期近 13 周 <span class=\"hl\">+51%<\/span>，近 4 周只剩 <span class=\"hl\">+3.7%<\/span>，<b>近 1 周 <span class=\"hl\">-0.12%<\/span>——上修已经停了。<\/b><\/li><li>下一步验证：<b>盯供给不盯需求<\/b>——三大厂新增产能的投产与爬坡时点、现货价相对合约价的走向、渠道库存周数。<\/li><\/ul>", "note": "<b>存储是典型的\"内存式商品\"：产能驱动、高固定成本、利润对价格极度敏感。<\/b>该端前瞻 PE 只有 <span class=\"hl\">5.8x<\/span>，是五端里最低的；但市净率 <span class=\"hl\">9.6x<\/span> 是第二高的。这个组合在周期框架里有个专门的名字叫<b>\"峰值盈利低 PE 陷阱\"<\/b>——PE 低不是因为便宜，是因为分母（盈利）已经在周期最高点。<b>这一端的转折点不会来自 AI 需求消失，只会来自新产能开出来。<\/b>所以要盯的是三大厂的资本开支与产能投放节奏，不是数据中心还要不要买内存。", "warn": true}}}};
+var B = DATA, T = DATA.text;
+var UP = '#E34D59', DN = '#2BA471', BRAND = '#0052D9';
+var BK = B.bk_order;
+
+function jump(id) {
+  var el = document.getElementById(id);
+  window.scrollTo({ top: el.offsetTop - 70, behavior: 'smooth' });
+}
+function sg(x, d) { d = (d === undefined ? 2 : d); return (x >= 0 ? '+' : '') + Number(x).toFixed(d); }
+function cls(x) { return x >= 0 ? 'pos' : 'neg'; }
+function tcls(x) { return x > 0 ? 'tag-up' : (x < 0 ? 'tag-dn' : 'tag-n'); }
+function col(x) { return x >= 0 ? UP : DN; }
+function nfmt(x, d) { d = (d === undefined ? 0 : d); return Number(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+function nz(x, d, suf) { return (x === null || x === undefined) ? '—' : sg(x, d === undefined ? 1 : d) + (suf || '%'); }
+
+var CHARTS = [];
+function mk(id, opt) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  function go() {
+    if (el.clientWidth < 30) { setTimeout(go, 120); return; }
+    var c = echarts.init(el); c.setOption(opt); CHARTS.push(c);
+  }
+  go();
+}
+window.addEventListener('resize', function () { CHARTS.forEach(function (c) { c.resize(); }); });
+
+var AX = {
+  axisLine: { lineStyle: { color: '#E5EAF3' } }, axisTick: { show: false },
+  axisLabel: { color: '#8A94AC', fontSize: 10 },
+  splitLine: { lineStyle: { color: '#F0F3F9' } }
+};
+function grad(c1, c2) {
+  return { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] };
+}
+function gradH(c1, c2) {
+  return { type: 'linear', x: 0, y: 0, x2: 1, y2: 0, colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] };
+}
+function gradStr(c) { return 'linear-gradient(90deg,' + c + 'BB,' + c + ')'; }
+
+/* ============ HERO ============ */
+(function () {
+  var h = B.hero, sg2 = B.segs[1];
+  document.getElementById('asofTop').textContent = B.asof;
+  document.getElementById('ncons').textContent = B.n_cons;
+  document.getElementById('covw').textContent = B.cov_w.toFixed(1);
+  document.getElementById('covw2').textContent = B.cov_w.toFixed(1);
+  document.getElementById('hiDt').textContent = h.y26_high_dt;
+  document.getElementById('hiGap').textContent = h.from_high.toFixed(1) + '%';
+  document.getElementById('ytdHead2').textContent = sg(h.ytd, 1) + '%';
+  document.getElementById('segBig').textContent = sg2.ret.toFixed(0);
+  document.getElementById('segWin').textContent = sg2.t0 + ' → ' + sg2.t1;
+  document.getElementById('heroSub').innerHTML = T.sub;
+  document.getElementById('heroPx').innerHTML = nfmt(h.close, 2) +
+    '<small class="' + cls(h.chg1d) + '">' + sg(h.chg1d) + '%</small>';
+  document.getElementById('heroMeta').innerHTML =
+    '前收 ' + nfmt(h.close / (1 + h.chg1d / 100), 2) + '　·　年内高点 ' + nfmt(h.y26_high, 0) +
+    '（' + h.y26_high_dt + '）　·　VIX ' + h.vix + '　·　美债 10Y ' + h.tnx + '%';
+  var st = [
+    ['年初至今', sg(h.ytd, 1) + '%', '标普500 ' + sg(h.ytd_spx, 1) + '%｜纳指100 ' + sg(h.ytd_ndx, 1) + '%', h.ytd],
+    ['距年内高点', h.from_high.toFixed(1) + '%', h.y26_high_dt + ' 见高 ' + nfmt(h.y26_high, 0), h.from_high],
+    ['年内最大回撤', h.dd26.toFixed(1) + '%', '低点 ' + nfmt(h.y26_low, 0) + '（' + h.y26_low_dt + '）', h.dd26],
+    ['自年内低点反弹', sg(h.from_low, 1) + '%', h.y26_low_dt + ' 至今', h.from_low],
+    ['近 20 个交易日', sg(h.chg20d, 1) + '%', '近 5 日 ' + sg(h.chg5d, 1) + '%｜近 60 日 ' + sg(h.chg60d, 1) + '%', h.chg20d],
+    ['60 日年化波动', h.vol60.toFixed(1) + '%', '250 日 ' + h.vol250.toFixed(1) + '%｜VIX ' + h.vix, 0],
+    ['对标普500 的 beta', h.beta_spx.toFixed(2), '250 日回归｜指数跌 1%，SOX 约跌 ' + h.beta_spx.toFixed(1) + '%', 0]
+  ];
+  document.getElementById('heroStats').innerHTML = st.map(function (s) {
+    return '<div class="hstat"><div class="l">' + s[0] + '</div>' +
+      '<div class="v' + (s[3] ? ' ' + cls(s[3]) : '') + '">' + s[1] + '</div>' +
+      '<div class="s">' + s[2] + '</div></div>';
+  }).join('');
+})();
+
+/* ============ a 景气度 ============ */
+(function () {
+  var S = B.sectors;
+  document.getElementById('prosDate').textContent = '截至 ' + B.asof;
+  var arr = BK.map(function (k) { return [k, S[k]]; }).sort(function (a, b) { return b[1].score - a[1].score; });
+  document.getElementById('prosBars').innerHTML = arr.map(function (x) {
+    var k = x[0], v = x[1];
+    return '<div class="pbar" onclick="switchSector(\'' + k + '\');jump(\'s4\')">' +
+      '<span class="dot" style="background:' + v.color + '"></span>' +
+      '<div class="nm"><b>' + v.name + '</b><span>权重 ' + v.weight.toFixed(1) + '%｜' + v.n + ' 只</span></div>' +
+      '<div class="barwrap"><div class="fill" style="width:' + v.score + '%;background:' +
+      gradStr(v.color) + '">' + v.score + '</div></div>' +
+      '<div class="mt"><span class="tag ' + tcls(v.r20) + '">20日 ' + sg(v.r20, 1) + '%</span>' +
+      '<span class="tag ' + tcls(v.r5) + '">5日 ' + sg(v.r5, 1) + '%</span>' +
+      '<span class="tag ' + tcls(v.volratio) + '">量能 ' + sg(v.volratio, 0) + '%</span></div></div>';
+  }).join('');
+  document.getElementById('prosLegend').innerHTML =
+    '<span>20日/5日＝该端市值加权篮子相对 SOX 的超额</span>' +
+    '<span>量能＝近5日成交额环比，已剔除全指数共同项</span>' +
+    '<span>点任意一行跳到该端详情</span>';
+  document.getElementById('prosNote').innerHTML = T.prosNote;
+  document.getElementById('prosFormula').innerHTML = T.prosFormula;
+})();
+
+/* ============ b 归因 ============ */
+(function () {
+  var a = B.attrib, S = B.sectors;
+  document.getElementById('ytdHead').textContent = sg(B.hero.ytd, 1) + '%';
+  document.getElementById('attDate').textContent = '2025-12-31 → ' + B.asof;
+  var rows = BK.map(function (k) { return { k: k, n: S[k].name, v: a.bucket[k].contrib, c: S[k].color, w: a.bucket[k].w0, r: a.bucket[k].ret }; })
+    .sort(function (x, y) { return x.v - y.v; });
+  mk('chartAttr', {
+    grid: { left: 128, right: 58, top: 8, bottom: 20 },
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: function (p) {
+        var r = rows[p[0].dataIndex];
+        return r.n + '<br/>对指数贡献 <b>' + sg(r.v) + ' pct</b><br/>年初权重 ' + r.w.toFixed(2) +
+          '%（现 ' + a.bucket[r.k].w1.toFixed(2) + '%）<br/>该端涨幅（贡献÷起点权重）<b>' + sg(r.r, 1) +
+          '%</b><br/>参照：同批股票静态持有 ' + sg(B.sectors[r.k].ytd_bh, 1) + '%';
+      }
+    },
+    xAxis: Object.assign({ type: 'value', axisLabel: { color: '#8A94AC', fontSize: 10, formatter: '{value} pct' } }, AX),
+    yAxis: Object.assign({ type: 'category', data: rows.map(function (r) { return r.n; }), axisLabel: { color: '#48546F', fontSize: 11 } }, AX, { splitLine: { show: false } }),
+    series: [{
+      type: 'bar', barWidth: '58%', data: rows.map(function (r) { return { value: r.v, itemStyle: { color: gradH(r.c + '99', r.c), borderRadius: [0, 4, 4, 0] } }; }),
+      label: { show: true, position: 'right', fontSize: 11, fontWeight: 600, color: '#48546F', formatter: function (p) { return sg(p.value) + ' pct'; } }
+    }]
+  });
+  var k = [
+    ['存储端一端贡献', sg(a.bucket.mem.contrib) + ' pct', '年初权重只有 ' + a.bucket.mem.w0.toFixed(2) + '%，占归因合计 ' + (a.bucket.mem.contrib / a.total * 100).toFixed(0) + '%'],
+    ['前五大合计贡献', sg(a.top5) + ' pct', '权重 ' + a.top5_w.toFixed(1) + '%，占归因合计 ' + (a.top5 / a.total * 100).toFixed(0) + '%'],
+    ['30 只个股中位数', sg(a.median_ret, 1) + '%', a.n_up + ' 涨 / ' + a.n_dn + ' 跌｜等权 ' + sg(a.eq_ytd, 1) + '%']
+  ];
+  document.getElementById('attKpis').innerHTML = k.map(function (x) {
+    return '<div class="kpi"><div class="l">' + x[0] + '</div><div class="v">' + x[1] + '</div><div class="s">' + x[2] + '</div></div>';
+  }).join('');
+  var m = B.conc.bk_line;
+  mk('chartBk', {
+    grid: { left: 42, right: 14, top: 30, bottom: 22 },
+    legend: { top: 0, itemWidth: 12, itemHeight: 3, textStyle: { fontSize: 10, color: '#48546F' } },
+    tooltip: { trigger: 'axis', valueFormatter: function (v) { return v === null ? '-' : Number(v).toFixed(1); } },
+    xAxis: Object.assign({ type: 'category', data: m.dates, axisLabel: { color: '#8A94AC', fontSize: 9.5, formatter: function (v) { return v.slice(5); } } }, AX),
+    yAxis: Object.assign({ type: 'value', scale: true, axisLabel: { color: '#8A94AC', fontSize: 10 } }, AX),
+    series: BK.map(function (k2) {
+      return { name: B.sectors[k2].name, type: 'line', data: m[k2], showSymbol: false, lineStyle: { width: 1.7, color: B.sectors[k2].color }, itemStyle: { color: B.sectors[k2].color } };
+    }).concat([{ name: 'SOX', type: 'line', data: m.sox, showSymbol: false, lineStyle: { width: 2.6, color: '#1F2733' }, itemStyle: { color: '#1F2733' } }])
+  });
+  document.getElementById('bkFoot').innerHTML = '2025-12-31 = 100，各端为市值加权篮子（权重固定为当前权重，仅用于看形态；归因数字用的是逐季还原的真实指数权重）。';
+  document.getElementById('attNote').innerHTML = T.attNote;
+})();
+
+/* ============ c 估值与盈利 ============ */
+(function () {
+  var v = B.valuation, e = B.earnings;
+  document.getElementById('valDate').textContent = '一致预期与价格截至 ' + B.asof;
+  var cats = ['近 1 周', '近 4 周', '近 8 周', '近 13 周'];
+  var f0 = [e.fy0_1w, e.fy0_4w, e.fy0_8w, e.fy0_13w], f1 = [e.fy1_1w, e.fy1_4w, e.fy1_8w, e.fy1_13w];
+  mk('chartEPS', {
+    grid: { left: 42, right: 46, top: 30, bottom: 22 },
+    legend: { top: 0, itemWidth: 11, itemHeight: 8, textStyle: { fontSize: 10.5, color: '#48546F' } },
+    tooltip: { trigger: 'axis', valueFormatter: function (x) { return x === null ? '-' : sg(x) + '%'; } },
+    xAxis: Object.assign({ type: 'category', data: cats, axisLabel: { color: '#48546F', fontSize: 10.5 } }, AX),
+    yAxis: [Object.assign({ type: 'value', axisLabel: { color: '#8A94AC', fontSize: 10, formatter: '{value}%' } }, AX),
+    { type: 'value', min: 0, max: 100, axisLabel: { color: '#B4BCCD', fontSize: 9.5, formatter: '{value}%' }, splitLine: { show: false }, axisLine: { show: false }, axisTick: { show: false } }],
+    series: [
+      { name: '本财年（FY0）', type: 'bar', data: f0, barWidth: '26%', itemStyle: { color: grad('#9AB8FF', '#3A7BFF'), borderRadius: [3, 3, 0, 0] } },
+      { name: '下一财年（FY1）', type: 'bar', data: f1, barWidth: '26%', itemStyle: { color: grad('#0052D9', '#00307F'), borderRadius: [3, 3, 0, 0] } },
+      {
+        name: '上调权重占比（右轴）', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 6,
+        data: [e.fy1_1w_up, e.fy1_4w_up, e.fy1_8w_up, e.fy1_13w_up],
+        lineStyle: { width: 2, color: '#F5A524' }, itemStyle: { color: '#F5A524' }
+      }
+    ]
+  });
+  mk('chartVal', {
+    grid: { left: 46, right: 20, top: 24, bottom: 34 },
+    tooltip: {
+      trigger: 'item', formatter: function (p) {
+        return p.data[3] + '<br/>前瞻 PE <b>' + p.data[0] + 'x</b><br/>市净率 <b>' + p.data[1] + 'x</b><br/>权重 ' + p.data[2].toFixed(1) + '%';
+      }
+    },
+    xAxis: Object.assign({ type: 'value', name: '前瞻 PE（FY1）', nameLocation: 'middle', nameGap: 22, nameTextStyle: { fontSize: 10, color: '#8A94AC' }, scale: true, axisLabel: { color: '#8A94AC', fontSize: 10, formatter: '{value}x' } }, AX),
+    yAxis: Object.assign({ type: 'value', name: 'PB', nameTextStyle: { fontSize: 10, color: '#8A94AC' }, scale: true, axisLabel: { color: '#8A94AC', fontSize: 10, formatter: '{value}x' } }, AX),
+    series: [{
+      type: 'scatter',
+      symbolSize: function (d) { return Math.max(14, Math.sqrt(d[2]) * 7); },
+      data: BK.map(function (k) {
+        var b = v.bucket[k];
+        return { value: [b.pe, b.pb, B.sectors[k].weight, B.sectors[k].name], itemStyle: { color: B.sectors[k].color, opacity: .78 } };
+      }),
+      label: { show: true, formatter: function (p) { return p.data.value[3]; }, fontSize: 10, color: '#48546F', position: 'top' }
+    }]
+  });
+  var kk = [
+    ['前瞻 PE（FY1）', v.pe_fy1.toFixed(1) + 'x', '本财年 FY0 ' + v.pe_fy0.toFixed(1) + 'x｜自下而上，覆盖 ' + v.cov_eps.toFixed(0) + '% 权重'],
+    ['市净率 PB', v.pb.toFixed(1) + 'x', '周期底部 PE 会失真，PB 更抗扰｜覆盖 ' + v.pb_cov.toFixed(0) + '% 权重'],
+    ['EV / Sales', v.evs.toFixed(1) + 'x', '收入口径，不受盈利周期摆动影响'],
+    ['隐含盈利增速 FY0→FY1', sg(e.growth_fy0_fy1, 0) + '%', '同期收入一致预期 ' + sg(e.rev_growth_fy1, 0) + '%'],
+    ['股权风险溢价', sg(v.erp) + ' pct', 'FY1 盈利收益率 ' + v.ey_fy1.toFixed(2) + '% − 10Y ' + v.tnx.toFixed(2) + '%']
+  ];
+  document.getElementById('valKpis').innerHTML = kk.map(function (x) {
+    return '<div class="kpi"><div class="l">' + x[0] + '</div><div class="v">' + x[1] + '</div><div class="s">' + x[2] + '</div></div>';
+  }).join('');
+  document.getElementById('valNote').innerHTML = T.valNote;
+  document.getElementById('valNote2').innerHTML = T.valNote2;
+})();
+
+/* ============ d 全球 + 境内相关性 ============ */
+(function () {
+  var g = B.glob;
+  document.getElementById('globDate').textContent = '2025-12-31 → ' + B.asof;
+  var keys = Object.keys(g.ytd);
+  document.getElementById('globKpis').innerHTML = keys.map(function (k) {
+    var c3 = g.corr3y_lag[k];
+    return '<div class="kpi"><div class="l">' + k + '</div><div class="v ' + cls(g.ytd[k]) + '">' + sg(g.ytd[k], 1) + '%</div>' +
+      '<div class="s">' + (k === '费城半导体' ? '基准' : '3年相关 ' + c3.corr + (c3.lag ? '（滞后1日）' : '')) + '</div></div>';
+  }).join('');
+  var CO = { '费城半导体': '#7A4DFF', '纳斯达克100': '#0052D9', '标普500': '#8A94AC', '台湾加权': '#E37318', '韩国综合': '#2BA471', '日经225': '#E34D59' };
+  mk('chartGlob', {
+    grid: { left: 42, right: 16, top: 30, bottom: 24 },
+    legend: { top: 0, itemWidth: 12, itemHeight: 3, textStyle: { fontSize: 10.5, color: '#48546F' } },
+    tooltip: { trigger: 'axis', valueFormatter: function (v) { return v === null ? '-' : Number(v).toFixed(1); } },
+    xAxis: Object.assign({ type: 'category', data: g.dates, axisLabel: { color: '#8A94AC', fontSize: 9.5, formatter: function (v) { return v.slice(5); } } }, AX),
+    yAxis: Object.assign({ type: 'value', scale: true, axisLabel: { color: '#8A94AC', fontSize: 10 } }, AX),
+    series: keys.map(function (k) {
+      return {
+        name: k, type: 'line', data: g.lines[k], showSymbol: false, connectNulls: true,
+        lineStyle: { width: k === '费城半导体' ? 2.8 : 1.5, color: CO[k] }, itemStyle: { color: CO[k] }
+      };
+    })
+  });
+  document.getElementById('globFoot').textContent = '各指数以 2025-12-31 = 100，本币计价、价格指数（不含股息）。';
+  document.getElementById('globNote').innerHTML = T.globNote;
+
+  var A = B.alt.slice(0, 7);
+  document.getElementById('etfDate').textContent = '近 2 年日收益';
+  document.getElementById('corrBars').innerHTML = A.map(function (v) {
+    var w = Math.max(2, v.corr * 100);
+    return '<div class="feebar"><div class="fn"' + (v.nf ? ' style="font-weight:700"' : '') + '>' + v.name.replace(/\(QDII.*$/, '') +
+      '<br><span style="font-size:10.5px;color:var(--ink3)">' + v.code + '｜' + (v.track.length > 16 ? v.track.slice(0, 15) + '…' : v.track) + '</span></div>' +
+      '<div class="fw"><div class="ff" style="width:' + w.toFixed(0) + '%;background:' +
+      (v.corr >= 0.8 ? 'linear-gradient(90deg,#0052D9,#3A7BFF)' : (v.corr >= 0.4 ? 'linear-gradient(90deg,#F5A524,#FFC978)' : 'linear-gradient(90deg,#C9D2E0,#9AA7BC)')) + '">' +
+      v.corr.toFixed(2) + '</div></div>' +
+      '<div class="fv">今年 ' + (v.ytd === null ? '—' : sg(v.ytd, 1) + '%') + '</div></div>';
+  }).join('');
+  document.getElementById('corrNote').innerHTML = T.corrNote;
+})();
+
+/* ============ S2 事件 ============ */
+(function () {
+  var ev = B.events;
+  document.getElementById('evList').innerHTML = ev.map(function (e, i) {
+    return '<div class="ev-item' + (i === 0 ? ' active' : '') + '" onclick="switchEv(' + i + ')" id="evi' + i + '">' +
+      '<div class="k">' + e.kicker + '<span class="st st-' + e.stcls + '">' + e.status + '</span></div>' +
+      '<div class="t">' + e.title + '</div><div class="d">' + e.lead + '</div></div>';
+  }).join('');
+  document.getElementById('evPanels').innerHTML = ev.map(function (e, i) {
+    return '<div class="ev-panel' + (i === 0 ? ' active' : '') + '" id="evp' + i + '">' +
+      '<div class="card-h"><h3>' + e.title + '</h3><span class="badge">' + e.kicker + '</span>' +
+      '<span class="right">' + e.date + '</span></div>' +
+      '<div class="card-sub">' + e.summary + '</div>' +
+      '<div class="ev-body">' +
+      '<div class="ev-block"><h5>发生了什么</h5>' + e.what + '</div>' +
+      '<div class="ev-block"><h5>对指数意味着什么</h5>' + e.mean + '</div>' +
+      '<div class="ev-block"><h5>验证点 · 什么时候能看到答案</h5>' + e.check + '</div>' +
+      '<div class="ev-block"><h5>说错了会怎样（反面情形）</h5>' + e.risk + '</div>' +
+      '</div><div class="chips">' + e.chips.map(function (c) { return '<span class="chip' + (c[0] === '!' ? ' g' : '') + '">' + c.replace(/^!/, '') + '</span>'; }).join('') + '</div></div>';
+  }).join('');
+})();
+function switchEv(i) {
+  document.querySelectorAll('.ev-item').forEach(function (x, j) { x.classList.toggle('active', i === j); });
+  document.querySelectorAll('.ev-panel').forEach(function (x, j) { x.classList.toggle('active', i === j); });
+}
+
+/* ============ S3 周期定位 ============ */
+(function () {
+  var c = B.cycle, sm = B.sm, e = B.earnings;
+  document.getElementById('s3desc').innerHTML = T.s3desc;
+  document.getElementById('smDate').textContent = '截至 ' + B.asof;
+  var STATES = [['S0', '过剩崩溃'], ['S1', '供给破坏'], ['S2', '库存拐点'], ['S3', '价格拐点'],
+  ['S4', '利润释放'], ['S5', '稀缺反身性'], ['S6', '供给响应+需求破坏'], ['S7', '反转再累积']];
+  document.getElementById('smBar').innerHTML =
+    '<div style="display:flex;gap:5px;margin:6px 0 4px;">' + STATES.map(function (s) {
+      var on = sm.state.indexOf(s[0]) >= 0, hi = sm.prev === s[0];
+      return '<div style="flex:1;text-align:center;padding:9px 3px;border-radius:8px;font-size:11px;line-height:1.5;' +
+        (on ? 'background:linear-gradient(180deg,#E34D59,#C0303C);color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(227,77,89,.28);'
+          : (hi ? 'background:#FFF1F1;color:#C0303C;border:1px dashed #E9A2A8;' : 'background:#F5F7FB;color:#8A94AC;')) +
+        '"><b style="font-size:13px;">' + s[0] + '</b><br>' + s[1] + '</div>';
+    }).join('') + '</div>' +
+    '<div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">' +
+    [['当前定位', sm.state, sm.state_cn], ['置信度', sm.conf + '%', '按证据栈打分'],
+    ['P（产业周期仍持续）', sm.p_cycle + '%', '未来 12 个月'],
+    ['P（SOX 未来 6 个月正收益）', sm.p_stock + '%', '两者不等价，差在拥挤度与预期']].map(function (x) {
+      return '<div class="kpi" style="flex:1;min-width:150px;"><div class="l">' + x[0] + '</div><div class="v">' + x[1] + '</div><div class="s">' + x[2] + '</div></div>';
+    }).join('') + '</div>';
+  document.getElementById('smWhy').innerHTML = T.smWhy;
+  document.getElementById('smAgainst').innerHTML = T.smAgainst;
+  document.getElementById('smNote').innerHTML = T.smNote;
+
+  /* 存储 vs 设备 修正速度 */
+  document.getElementById('revDate').textContent = '截至 ' + B.asof;
+  var cats = ['近 13 周', '近 8 周', '近 4 周', '近 1 周'];
+  function bser(k) { var b = B.earnings.bucket[k]; return [b.r13w, null, b.r4w, b.r1w]; }
+  var eb = B.earnings.bucket;
+  mk('chartRev', {
+    grid: { left: 44, right: 16, top: 32, bottom: 24 },
+    legend: { top: 0, itemWidth: 12, itemHeight: 8, textStyle: { fontSize: 10.5, color: '#48546F' } },
+    tooltip: { trigger: 'axis', valueFormatter: function (x) { return x === null ? '-' : sg(x) + '%'; } },
+    xAxis: Object.assign({ type: 'category', data: ['近 13 周', '近 4 周', '近 1 周'], axisLabel: { color: '#48546F', fontSize: 10.5 } }, AX),
+    yAxis: Object.assign({ type: 'value', axisLabel: { color: '#8A94AC', fontSize: 10, formatter: '{value}%' } }, AX),
+    series: BK.map(function (k) {
+      return {
+        name: B.sectors[k].name, type: 'line', symbol: 'circle', symbolSize: 7,
+        data: [eb[k].r13w, eb[k].r4w, eb[k].r1w],
+        lineStyle: { width: (k === 'mem' || k === 'equip') ? 2.8 : 1.4, color: B.sectors[k].color, type: (k === 'mem' || k === 'equip') ? 'solid' : 'dashed' },
+        itemStyle: { color: B.sectors[k].color }
+      };
+    })
+  });
+  document.getElementById('revFoot').innerHTML = '纵轴＝下一财年（FY1）一致预期相对 N 周前的累计修正幅度，指数层面市值加权、分子分母用同一天价格。' +
+    '注意横轴是<b>累计</b>口径：13 周的数不可能小于 4 周的数除非中途下修——所以要看的是<b>三点连线的坡度</b>。';
+  document.getElementById('revNote').innerHTML = T.revNote;
+
+  /* SOX / SPX */
+  var rs = B.rs;
+  document.getElementById('rsDate').textContent = '1994-05 → ' + B.asof;
+  var s = rs.series.filter(function (x, i) { return i % 2 === 0 || i > rs.series.length - 30; });
+  mk('chartRS', {
+    grid: { left: 44, right: 16, top: 24, bottom: 24 },
+    tooltip: { trigger: 'axis', valueFormatter: function (v) { return v === null ? '-' : Number(v).toFixed(3); } },
+    xAxis: Object.assign({ type: 'category', data: s.map(function (x) { return x[0]; }), axisLabel: { color: '#8A94AC', fontSize: 9.5, formatter: function (v) { return v.slice(0, 4); } } }, AX),
+    yAxis: Object.assign({ type: 'value', scale: true, axisLabel: { color: '#8A94AC', fontSize: 10 } }, AX),
+    series: [{
+      type: 'line', data: s.map(function (x) { return x[1]; }), showSymbol: false,
+      lineStyle: { width: 1.7, color: '#7A4DFF' }, areaStyle: { color: grad('rgba(122,77,255,.20)', 'rgba(122,77,255,.01)') },
+      markLine: {
+        symbol: 'none', silent: true, label: { fontSize: 10 },
+        data: [
+          { yAxis: rs.peak2000, lineStyle: { color: '#F5A524', type: 'dashed' }, label: { formatter: '2000年3月峰值 ' + rs.peak2000.toFixed(2), position: 'insideStartTop', color: '#B67A00' } },
+          { yAxis: rs.now, lineStyle: { color: UP }, label: { formatter: '当前 ' + rs.now.toFixed(2), position: 'insideEndBottom', color: UP, fontWeight: 600 } },
+          { yAxis: rs.max, lineStyle: { color: '#8A94AC', type: 'dotted' }, label: { formatter: '历史峰值 ' + rs.max.toFixed(2) + '（' + rs.max_dt + '）', position: 'insideEndTop', color: '#8A94AC' } }
+        ]
+      }
+    }]
+  });
+  document.getElementById('rsFoot').innerHTML = 'SOX 收盘 ÷ 标普500 收盘，周频。曲线上行＝半导体跑赢大盘。';
+  document.getElementById('rsNote').innerHTML = T.rsNote;
+
+  /* 回撤表 */
+  document.getElementById('zzN').textContent = B.zz_n;
+  document.getElementById('zzFrom').textContent = B.dd_from.slice(0, 4) + ' 年以来';
+  document.getElementById('zzMed').textContent = B.zz_med_dd.toFixed(1) + '%';
+  document.getElementById('zzBack').textContent = B.zz_med_back;
+  document.getElementById('zzTable').innerHTML =
+    '<thead><tr><th>见顶</th><th>见底</th><th>跌幅</th><th>下跌天数</th><th>收复天数</th><th>收复日期</th><th>合计</th></tr></thead><tbody>' +
+    B.zz.slice().reverse().map(function (x) {
+      return '<tr><td class="tname">' + x.peak + '</td><td>' + x.trough + '</td>' +
+        '<td style="color:' + DN + ';font-weight:700">' + x.dd.toFixed(1) + '%</td>' +
+        '<td>' + x.days_down + '</td><td>' + (x.days_back === null ? '未收复' : nfmt(x.days_back)) + '</td>' +
+        '<td>' + (x.back_dt || '—') + '</td>' +
+        '<td>' + (x.days_back === null ? '—' : nfmt(x.days_down + x.days_back)) + '</td></tr>';
+    }).join('') + '</tbody>';
+  document.getElementById('zzNote').innerHTML = T.zzNote;
+
+  function blk(items, kind) {
+    return items.map(function (x) {
+      return '<div class="ddrow ' + (kind === 'like' ? 'dd-red' : 'dd-blue') + '">' +
+        '<div class="ddhead"><span class="ddamp" style="color:' + (kind === 'like' ? UP : DN) + '">' + x.n + '</span>' +
+        '<span class="ddwhat">' + x.t + '</span></div>' +
+        '<div style="font-size:12.5px;line-height:1.8;color:var(--ink2)">' + x.b + '</div></div>';
+    }).join('');
+  }
+  document.getElementById('like').innerHTML = blk(T.like, 'like');
+  document.getElementById('unlike').innerHTML = blk(T.unlike, 'unlike');
+  document.getElementById('falsify').innerHTML = T.falsify.map(function (x) {
+    return '<div class="ddrow dd-amber"><div class="ddhead"><span class="ddk">' + x.k + '</span>' +
+      '<span class="ddwhat">' + x.t + '</span><span class="ddp" style="margin-left:auto">当前：' + x.now + '</span></div>' +
+      '<div style="font-size:12.5px;line-height:1.8;color:var(--ink2)">' + x.b + '</div></div>';
+  }).join('');
+})();
+
+/* ============ 交易主线聚合 ============ */
+(function () {
+  var L = B.lines, al = B.ai_lines;
+  document.getElementById('lineDate').textContent = '2025-12-31 → ' + B.asof;
+  var keys = Object.keys(L);
+  var mx = Math.max.apply(null, keys.map(function (k) { return Math.abs(L[k].ctr); }));
+  document.getElementById('lineTable').innerHTML =
+    '<thead><tr><th>交易主线</th><th>只数</th><th>年初权重</th><th>当前权重</th>' +
+    '<th>今年涨幅<br><span style="font-weight:400;font-size:10px;color:var(--ink3)">贡献÷起点权重</span></th>' +
+    '<th>参照：静态持有</th><th>对指数贡献</th><th></th><th>前瞻 PE</th><th>FY1 预期近13周</th></tr></thead><tbody>' +
+    keys.map(function (k) {
+      var v = L[k], isAI = al.names.indexOf(k) >= 0;
+      var w = Math.abs(v.ctr) / mx * 100;
+      return '<tr' + (isAI ? ' style="background:#F7F4FF"' : '') + '>' +
+        '<td><span class="tname">' + k + '</span></td>' +
+        '<td>' + v.n + '</td><td>' + v.w0.toFixed(2) + '%</td><td>' + v.w.toFixed(2) + '%</td>' +
+        '<td style="color:' + col(v.ret) + ';font-weight:600">' + sg(v.ret, 1) + '%</td>' +
+        '<td style="color:' + col(v.ret_bh) + ';font-size:11.5px">' + sg(v.ret_bh, 1) + '%</td>' +
+        '<td style="color:' + col(v.ctr) + ';font-weight:700">' + sg(v.ctr) + ' pct</td>' +
+        '<td style="width:120px"><div style="height:9px;border-radius:5px;background:' +
+        (v.ctr >= 0 ? '#7A4DFF' : '#E34D59') + ';width:' + w.toFixed(0) + '%;opacity:.75"></div></td>' +
+        '<td>' + (v.pe === null ? '—' : v.pe.toFixed(1) + 'x') + '</td>' +
+        '<td style="color:' + (v.rev13 === null ? '#8A94AC' : col(v.rev13)) + '">' +
+        (v.rev13 === null ? '—' : sg(v.rev13, 1) + '%') + '</td></tr>';
+    }).join('') + '</tbody>';
+  document.getElementById('lineNote').innerHTML = T.lineNote;
+})();
+
+/* ============ S4 五端详情 ============ */
+(function () {
+  var S = B.sectors, a = B.attrib, e = B.earnings, v = B.valuation;
+  document.getElementById('stabs').innerHTML = BK.map(function (k, i) {
+    var s = S[k];
+    return '<div class="stab' + (i === 0 ? ' active' : '') + '" id="stab-' + k + '" onclick="switchSector(\'' + k + '\')" ' +
+      'data-c="' + s.color + '"><span class="sc">' + s.score + '</span>' +
+      '<div class="n">' + s.name + '</div><div class="w">权重 ' + s.weight.toFixed(1) + '%｜' + s.n + ' 只</div></div>';
+  }).join('');
+  document.getElementById('sdetails').innerHTML = BK.map(function (k, i) {
+    var s = S[k], t = T.sectors[k], ab = a.bucket[k], eb = e.bucket[k], vb = v.bucket[k];
+    var kp = [
+      ['指数权重', s.weight.toFixed(1) + '%', '年初 ' + s.w0.toFixed(1) + '%｜' + s.n + ' 只成分股'],
+      ['今年对指数贡献', sg(ab.contrib) + ' pct', '占归因合计 ' + (ab.contrib / a.total * 100).toFixed(0) + '%'],
+      ['该端今年涨幅', sg(s.ytd, 1) + '%', '贡献÷起点权重｜同批股票静态持有 ' + sg(s.ytd_bh, 1) + '%'],
+      ['beta / 60日波动', s.beta.toFixed(2) + ' / ' + s.vol60.toFixed(0) + '%', '对 SOX 的 250 日 beta'],
+      ['前瞻 PE / PB', vb.pe.toFixed(1) + 'x / ' + vb.pb.toFixed(1) + 'x', 'FY1 一致预期自下而上'],
+      ['FY1 预期 13周 / 4周', sg(eb.r13w) + '% / ' + sg(eb.r4w) + '%', '近 1 周 ' + sg(eb.r1w) + '%']
+    ];
+    return '<div class="sdetail' + (i === 0 ? ' active' : '') + '" id="sd-' + k + '">' +
+      '<div class="card"><div class="card-h"><h3>' + s.name + '</h3><span class="badge">' + s.sub + '</span>' +
+      '<span class="right">景气度 ' + s.score + ' 分</span></div>' +
+      '<div class="kpis" style="grid-template-columns:repeat(6,1fr);margin:10px 0 14px;">' +
+      kp.map(function (x) { return '<div class="kpi"><div class="l">' + x[0] + '</div><div class="v">' + x[1] + '</div><div class="s">' + x[2] + '</div></div>'; }).join('') +
+      '</div><div class="grid-12">' +
+      '<div><div class="chart-sm" id="sc-' + k + '" style="height:236px;"></div>' +
+      '<div class="cfoot">近 3 个月，' + s.name + '（市值加权篮子）vs SOX，起点 = 100</div></div>' +
+      '<div><div class="ev-block" style="margin-bottom:10px;"><h5>它在指数里是什么角色</h5>' + t.role + '</div>' +
+      '<div class="ev-block"><h5>现在走到哪一步 · 下一步验证什么</h5>' + t.now + '</div></div>' +
+      '</div><div class="note ' + (t.warn ? 'amber' : '') + '">' + t.note + '</div>' +
+      '<div style="margin-top:12px;overflow:auto;"><table id="stop-' + k + '"></table></div></div></div>';
+  }).join('');
+  BK.forEach(function (k) {
+    var s = S[k], ch = s.chart;
+    mk('sc-' + k, {
+      grid: { left: 40, right: 14, top: 26, bottom: 22 },
+      legend: { top: 0, itemWidth: 12, itemHeight: 3, textStyle: { fontSize: 10.5, color: '#48546F' } },
+      tooltip: { trigger: 'axis', valueFormatter: function (x) { return x === null ? '-' : Number(x).toFixed(1); } },
+      xAxis: Object.assign({ type: 'category', data: ch.dates, axisLabel: { color: '#8A94AC', fontSize: 9.5, formatter: function (x) { return x.slice(5); } } }, AX),
+      yAxis: Object.assign({ type: 'value', scale: true, axisLabel: { color: '#8A94AC', fontSize: 10 } }, AX),
+      series: [
+        { name: s.name, type: 'line', data: ch.basket, showSymbol: false, lineStyle: { width: 2.2, color: s.color }, itemStyle: { color: s.color }, areaStyle: { color: grad(s.color + '2E', s.color + '02') } },
+        { name: 'SOX', type: 'line', data: ch.spx, showSymbol: false, lineStyle: { width: 1.6, color: '#B4BCCD' }, itemStyle: { color: '#B4BCCD' } }
+      ]
+    });
+    var rows = B.cons.filter(function (c) { return c.b === k; });
+    document.getElementById('stop-' + k).innerHTML =
+      '<thead><tr><th>该端成分股（全部 ' + rows.length + ' 只）</th><th>业务标签</th><th>交易主线</th><th>指数权重</th><th>今日</th><th>近5日</th><th>年初至今</th><th>贡献</th><th>FY1 PE</th><th>PB</th><th>FY1 预期13周</th></tr></thead><tbody>' +
+      rows.map(function (c) {
+        return '<tr><td><span class="tname">' + c.n + '</span><span class="tcode">' + c.t + '</span></td>' +
+          '<td class="ttag">' + c.biz + '</td>' +
+          '<td style="text-align:left"><span style="font-size:11px;color:#7A4DFF">' + c.line + '</span></td>' +
+          '<td>' + c.w.toFixed(2) + '%</td>' +
+          '<td style="color:' + col(c.d1) + '">' + sg(c.d1) + '%</td>' +
+          '<td style="color:' + col(c.d5) + '">' + sg(c.d5) + '%</td>' +
+          '<td style="color:' + col(c.ytd) + ';font-weight:600">' + sg(c.ytd, 1) + '%</td>' +
+          '<td>' + sg(c.ctr, 2) + '</td>' +
+          '<td>' + (c.pe === null ? '—' : c.pe.toFixed(1) + 'x') + '</td>' +
+          '<td>' + (c.pb === null ? '—' : c.pb.toFixed(1) + 'x') + '</td>' +
+          '<td style="color:' + (c.rev13 === null ? '#8A94AC' : col(c.rev13)) + '">' + (c.rev13 === null ? '—' : sg(c.rev13, 1) + '%') + '</td></tr>';
+      }).join('') + '</tbody>';
+  });
+  switchSector(BK[0]);
+})();
+function switchSector(k) {
+  BK.forEach(function (x) {
+    var tab = document.getElementById('stab-' + x), d = document.getElementById('sd-' + x);
+    if (!tab) return;
+    var on = x === k;
+    tab.classList.toggle('active', on);
+    tab.style.background = on ? tab.dataset.c : '#fff';
+    tab.style.color = on ? '#fff' : '';
+    if (d) d.classList.toggle('active', on);
+  });
+  CHARTS.forEach(function (c) { c.resize(); });
+}
+
+/* ============ 成分股表 ============ */
+var CST_FILTER = 'all';
+(function () {
+  document.getElementById('cstDate').textContent = B.asof;
+  document.getElementById('holdDt').textContent = B.cons_meta.asof_holdings;
+  var tabs = [['all', '全部 ' + B.n_cons + ' 只']].concat(BK.map(function (k) { return [k, B.sectors[k].name]; }));
+  var ltabs = Object.keys(B.lines).map(function (k) { return ['L:' + k, k]; });
+  document.getElementById('cstTabs').innerHTML =
+    '<span style="font-size:11px;color:var(--ink3);align-self:center;margin-right:2px;">按端：</span>' +
+    tabs.map(function (t, i) {
+      return '<span class="rb' + (i === 0 ? ' active' : '') + '" id="cf-' + t[0] + '" onclick="cstFilter(\'' + t[0] + '\')">' + t[1] + '</span>';
+    }).join('') +
+    '<span style="flex-basis:100%;height:2px;"></span>' +
+    '<span style="font-size:11px;color:var(--ink3);align-self:center;margin-right:2px;">按主线：</span>' +
+    ltabs.map(function (t) {
+      return '<span class="rb" id="cf-' + t[0].replace(/[^\w]/g, '_') + '" onclick="cstFilter(\'' + t[0] + '\')">' + t[1] + '</span>';
+    }).join('');
+  cstFilter('all');
+})();
+function cstFilter(k) {
+  CST_FILTER = k;
+  document.querySelectorAll('#cstTabs .rb').forEach(function (el) { el.classList.remove('active'); });
+  var id = k.indexOf('L:') === 0 ? 'cf-' + k.replace(/[^\w]/g, '_') : 'cf-' + k;
+  var act = document.getElementById(id); if (act) act.classList.add('active');
+  var rows = B.cons.filter(function (c) {
+    if (k === 'all') return true;
+    if (k.indexOf('L:') === 0) return c.line === k.slice(2);
+    return c.b === k;
+  });
+  document.getElementById('cstFoot').innerHTML = T.cstFoot.replace('{{n}}', rows.length);
+  document.getElementById('cstTable').innerHTML =
+    '<thead><tr><th>公司</th><th>业务标签</th><th>交易主线</th><th>端</th><th>上市地/总部</th><th>年初权重</th><th>当前权重</th><th>价格</th><th>今日</th><th>近5日</th><th>年初至今</th><th>对指数贡献</th><th>FY1 PE</th><th>PB</th><th>FY1 预期13周</th></tr></thead><tbody>' +
+    rows.map(function (c) {
+      return '<tr><td><span class="tname">' + c.n + '</span><span class="tcode">' + c.t + '</span></td>' +
+        '<td class="ttag">' + c.biz + '</td>' +
+        '<td style="text-align:left"><span style="font-size:11px;color:#7A4DFF">' + c.line + '</span></td>' +
+        '<td style="text-align:left"><span style="color:' + B.sectors[c.b].color + ';font-size:11px">' + B.sectors[c.b].name + '</span></td>' +
+        '<td style="font-size:11px;color:var(--ink3)">' + c.hq + '</td>' +
+        '<td>' + c.w0.toFixed(2) + '%</td><td>' + c.w.toFixed(2) + '%</td><td>' + nfmt(c.px, 2) + '</td>' +
+        '<td style="color:' + col(c.d1) + '">' + sg(c.d1) + '%</td>' +
+        '<td style="color:' + col(c.d5) + '">' + sg(c.d5) + '%</td>' +
+        '<td style="color:' + col(c.ytd) + ';font-weight:600">' + sg(c.ytd, 1) + '%</td>' +
+        '<td>' + sg(c.ctr, 2) + '</td>' +
+        '<td>' + (c.pe === null ? '—' : c.pe.toFixed(1) + 'x') + '</td>' +
+        '<td>' + (c.pb === null ? '—' : c.pb.toFixed(1) + 'x') + '</td>' +
+        '<td style="color:' + (c.rev13 === null ? '#8A94AC' : col(c.rev13)) + '">' + (c.rev13 === null ? '—' : sg(c.rev13, 1) + '%') + '</td></tr>';
+    }).join('') + '</tbody>';
+}
+
+/* ============ S5 境内 ============ */
+(function () {
+  document.getElementById('s5desc').innerHTML = T.s5desc;
+  document.getElementById('chkDate').textContent = '核查于 ' + B.asof;
+  document.getElementById('chkBox').innerHTML = T.chkBox;
+  document.getElementById('altDate').textContent = '近 2 年日收益｜' + B.asof;
+  document.getElementById('altTable').innerHTML =
+    '<thead><tr><th>产品</th><th>代码</th><th>类型</th><th>跟踪标的</th><th>与 SOX 日收益相关</th><th>口径</th><th>样本天数</th>' +
+    '<th>今年以来</th><th>规模(亿)</th><th>成交额(亿)</th><th>溢价率</th></tr></thead><tbody>' +
+    B.alt.map(function (v) {
+      var c = v.corr;
+      return '<tr' + (v.nf ? ' style="background:#F4F8FF"' : '') + '>' +
+        '<td><span class="tname">' + v.name + '</span>' + (v.nf ? '<span class="tcode">南方</span>' : '') + '</td>' +
+        '<td>' + v.code + '</td><td style="font-size:11px">' + v.kind + '</td>' +
+        '<td style="text-align:left;font-size:11px;color:var(--ink2)">' + v.track + '</td>' +
+        '<td style="font-weight:700;color:' + (c >= 0.8 ? BRAND : (c >= 0.4 ? '#B67A00' : '#8A94AC')) + '">' + c.toFixed(2) + '</td>' +
+        '<td style="font-size:11px">' + (v.lag ? '滞后 ' + v.lag + ' 日' : '当日') + '</td>' +
+        '<td>' + v.n_obs + '</td>' +
+        '<td style="color:' + col(v.ytd) + ';font-weight:600">' + (v.ytd === null ? '—' : sg(v.ytd, 1) + '%') + '</td>' +
+        '<td>' + (v.mv === null ? '—' : nfmt(v.mv, 1)) + '</td>' +
+        '<td>' + (v.amt === null ? '—' : v.amt.toFixed(2)) + '</td>' +
+        '<td style="color:' + (v.prem === null ? '#8A94AC' : col(v.prem)) + '">' + (v.prem === null ? '—' : sg(v.prem) + '%') + '</td></tr>';
+    }).join('') + '</tbody>';
+  document.getElementById('altNote').innerHTML = T.altNote;
+
+  var A = B.alt.slice(0, 8);
+  mk('chartAlt', {
+    grid: { left: 150, right: 46, top: 12, bottom: 24 },
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: function (p) {
+        var v = A.slice().reverse()[p[0].dataIndex];
+        return v.name + '<br/>相关系数 <b>' + v.corr.toFixed(2) + '</b><br/>可解释的方差比例 <b>' + (v.corr * v.corr * 100).toFixed(0) + '%</b>';
+      }
+    },
+    xAxis: Object.assign({ type: 'value', max: 1, axisLabel: { color: '#8A94AC', fontSize: 10 } }, AX),
+    yAxis: Object.assign({
+      type: 'category', data: A.slice().reverse().map(function (v) { return v.name.replace(/\(QDII.*$/, '').slice(0, 14); }),
+      axisLabel: { color: '#48546F', fontSize: 10.5 }
+    }, AX, { splitLine: { show: false } }),
+    series: [{
+      type: 'bar', barWidth: '56%',
+      data: A.slice().reverse().map(function (v) {
+        var c = v.corr >= 0.8 ? BRAND : (v.corr >= 0.4 ? '#F5A524' : '#B4BCCD');
+        return { value: v.corr, itemStyle: { color: gradH(c + '99', c), borderRadius: [0, 4, 4, 0] } };
+      }),
+      label: { show: true, position: 'right', fontSize: 11, fontWeight: 600, color: '#48546F', formatter: function (p) { return Number(p.value).toFixed(2); } }
+    }]
+  });
+  document.getElementById('altCalc').innerHTML = T.altCalc;
+  document.getElementById('altCalcNote').innerHTML = T.altCalcNote;
+  document.getElementById('prodCards').innerHTML = B.products.map(function (p) {
+    return '<div class="pcard"><span class="tag">' + p.tag + '</span>' +
+      '<div class="nm">' + p.name + '<span>' + p.code + '</span></div>' +
+      '<div class="ds">' + p.desc + '</div><div class="fe">' + p.fee + '</div></div>';
+  }).join('');
+  document.getElementById('footStamp').textContent = T.stamp;
+  document.getElementById('footBody').innerHTML = T.foot;
+})();
+
+</script>
+</body>
+</html>
