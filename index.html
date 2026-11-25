@@ -8,7 +8,6 @@
   :root{
     --bg:#eef2f7; --panel:#fff; --ink:#16233b; --muted:#6b7a90;
     --line:#e3e9f2; --navy:#12315c; --accent:#2f6fd0;
-    --shadow:0 2px 10px rgba(20,40,80,.06),0 8px 28px rgba(20,40,80,.05);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;height:100%}
@@ -46,6 +45,7 @@
   .tab:hover{color:var(--ink);background:#f7f9fc}
   .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
   .tab.active small{color:#7b93b8}
+  .tab.ext small{color:#b07a1e}
 
   .stage{flex:1;position:relative;min-height:0}
   .pane{display:none;position:absolute;inset:0;background:#fff}
@@ -71,27 +71,38 @@
       <div class="logo">南</div>
       <div>
         <h1>南方国际看板</h1>
-        <p class="subtitle">原始看板原样呈现 · 点击顶部标签切换</p>
+        <p class="subtitle">原始看板原样呈现 · 同类文件默认取最新日期 · 点击顶部标签切换</p>
       </div>
       <div class="meta">
         <span class="chip">来源 · <b>资料库 / 南方国际看板源文件</b></span>
-        <span class="chip">看板 · <b>3</b></span>
-
+        <span class="chip">看板 · <b>9</b></span>
       </div>
     </div>
   </div>
 </div>
 
 <div class="tabbar" role="tablist">
-  <button class="tab active" data-target="t1" role="tab">恒生科技主线<small>销售版 2026-08-14</small></button>
-  <button class="tab" data-target="t2" role="tab">汇丰渣打<small>股价与宏观周期看板</small></button>
-  <button class="tab" data-target="t3" role="tab">费城半导体主线<small>桌面版 2026-08-11</small></button>
+  <button class="tab active" data-target="t1" role="tab">黄金铜油煤宏观周期<small>2026-11-22</small></button>
+  <button class="tab" data-target="t2" role="tab">美股ETF周度复盘<small>2026-11-22</small></button>
+  <button class="tab" data-target="t3" role="tab">周期股四象限投资框架<small>内部研究 2026-11-21</small></button>
+  <button class="tab" data-target="t4" role="tab">美国策略周报<small>2026-11-15</small></button>
+  <button class="tab" data-target="t5" role="tab">恒生科技主线<small>销售版 2026-08-14</small></button>
+  <button class="tab" data-target="t6" role="tab">费城半导体主线<small>桌面版 2026-08-11</small></button>
+  <button class="tab" data-target="t7" role="tab">汇丰渣打<small>股价与宏观周期看板</small></button>
+  <button class="tab ext" data-target="t8" role="tab">地产高频数据<small>外链</small></button>
+  <button class="tab ext" data-target="t9" role="tab">境外固收定期报告<small>外链</small></button>
 </div>
 
 <div class="stage">
-  <div class="pane active loaded" id="t1" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hengtai.html" title="恒生科技主线"></iframe></div>
-  <div class="pane" id="t2" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打"></iframe></div>
-  <div class="pane" id="t3" role="tabpanel"><div class="loader">加载原始看板…</div><iframe data-src="boards/sox.html" title="费城半导体主线"></iframe></div>
+  <div class="pane active loaded" id="t1" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/macro_cycle.html" title="黄金铜油煤宏观周期"></iframe></div>
+  <div class="pane" id="t2" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_etf_weekly.html" title="美股ETF周度复盘"></iframe></div>
+  <div class="pane" id="t3" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/cyclical_quadrant.html" title="周期股四象限投资框架"></iframe></div>
+  <div class="pane" id="t4" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_strategy_weekly.html" title="美国策略周报"></iframe></div>
+  <div class="pane" id="t5" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/hengtai.html" title="恒生科技主线"></iframe></div>
+  <div class="pane" id="t6" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/sox.html" title="费城半导体主线"></iframe></div>
+  <div class="pane" id="t7" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打"></iframe></div>
+  <div class="pane" id="t8" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://a512ab6c8df86202a.app.workbuddy.host/?sharecode=DE5NGS3JSA" title="地产高频数据" referrerpolicy="no-referrer"></iframe></div>
+  <div class="pane" id="t9" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://yxy-research.top/periodic/?type=daily" title="境外固收定期报告" referrerpolicy="no-referrer"></iframe></div>
 </div>
 
 <script>

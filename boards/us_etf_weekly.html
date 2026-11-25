@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><title>美国ETF策略周报 @ 2026-11-22</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f3f4f8;color:#1e293b;line-height:1.55;padding:0 0 60px}
+.wrap{max-width:1280px;margin:0 auto;padding:24px}
+
+:root{ --c-ok:#16a34a; --c-warn:#dc2626; --c-attn:#f59e0b; --c-info:#3b82f6; }
+
+header{color:#fff;padding:32px 24px 24px;background:linear-gradient(135deg,#0f172a 0%,#312e81 50%,#1e40af 100%)}
+header .inner{max-width:1280px;margin:0 auto}
+header h1{font-size:22px;font-weight:700;letter-spacing:.5px}
+
+/* nav + slashbar 统一固定顶部，不滚动 */
+.fixed-top{position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+.slashbar{background:#0f172a;color:#fff;padding:18px 24px;border-bottom:3px solid #f59e0b}
+.slashbar .inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr) 1.4fr 1fr;gap:16px}
+.slashbar .pillar{padding:0 12px;border-left:3px solid;font-size:12.5px}
+.slashbar .pillar.metric{border-color:#3b82f6}
+.slashbar .pillar.view{border-color:#16a34a}
+.slashbar .pillar.action{border-color:#f59e0b}
+.slashbar .pillar h3{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;margin-bottom:6px;font-weight:600}
+.slashbar .pillar .body{font-size:12.5px;line-height:1.55}
+.slashbar .pillar b{color:#fbbf24;font-variant-numeric:tabular-nums}
+.slashbar .pillar .pos{color:#86efac;font-variant-numeric:tabular-nums;font-weight:600}
+.slashbar .pillar .neg{color:#fca5a5;font-variant-numeric:tabular-nums;font-weight:600}
+
+nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:8px 0;font-size:13px;overflow-x:auto;white-space:nowrap}
+nav .inner{max-width:1280px;margin:0 auto;padding:0 24px}
+nav a{color:#475569;text-decoration:none;padding:6px 12px;border-radius:4px;margin-right:2px;display:inline-block;font-weight:500}
+nav a:hover{background:#dbeafe;color:#1e40af}
+
+.section{background:#fff;border-radius:10px;padding:20px 24px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.h-major{font-size:22px;font-weight:700;color:#fff !important;margin-bottom:14px;padding:12px 18px;border-radius:6px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#1e40af 0%,#3b82f6 100%) !important;background-color:#1e40af !important;box-shadow:0 2px 6px rgba(30,64,175,.18);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.h-major .num{background:rgba(255,255,255,.22);color:#fff;padding:4px 12px;border-radius:6px;font-size:14px;font-weight:700}
+.h-sub{font-size:16px;font-weight:600;color:#1e293b;margin:24px 0 12px;padding-left:12px;border-left:4px solid #3b82f6;display:flex;align-items:center;gap:10px}
+.h-sub .small{font-size:11px;color:#64748b;font-weight:400}
+.h-mini{font-size:13px;font-weight:600;color:#475569;margin:14px 0 6px}
+
+.observation{background:#eff6ff;border-left:4px solid #3b82f6;padding:14px 18px;border-radius:6px;margin:12px 0;font-size:13px;line-height:1.7;color:#1e3a8a}
+.observation .tag{display:inline-block;background:#3b82f6;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-right:8px;font-weight:600}
+.callout{background:#fff7ed;border-left:4px solid #f59e0b;padding:14px 18px;border-radius:6px;margin:12px 0;font-size:13px;line-height:1.7}
+.callout .tag{display:inline-block;background:#f59e0b;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-right:8px;font-weight:600}
+.warn{background:#fef2f2;border-left:4px solid #dc2626;padding:14px 18px;border-radius:6px;margin:12px 0;font-size:13px;line-height:1.7;color:#991b1b}
+.warn .tag{display:inline-block;background:#dc2626;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-right:8px;font-weight:600}
+
+/* v13 ETF Pool table (v15: 暂不输出, CSS 保留) */
+.pool-table{font-size:12.5px;table-layout:fixed}
+.pool-table th{background:#f1f5f9;color:#0f172a;font-weight:600;padding:7px 10px;text-align:center;border-bottom:1px solid #cbd5e1;text-transform:none;letter-spacing:0;font-size:12px;cursor:default}
+.pool-table .cat-cell{background:#1e40af;color:#fff;font-weight:600;vertical-align:middle;text-align:center;font-size:12px;line-height:1.4;padding:8px 6px;border-bottom:1px solid #1e3a8a;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pool-table .code-cell{font-family:'SF Mono',Consolas,Menlo,monospace;font-weight:700;color:#1e40af;font-size:14px;letter-spacing:.3px;text-align:center}
+.pool-table tbody tr{border-bottom:1px solid #e2e8f0}
+.pool-table tbody td{padding:5px 10px;vertical-align:middle;color:#334155;font-size:12.5px}
+.pool-table tbody tr:hover td:not(.cat-cell){background:#f8fafc}
+
+summary{list-style:none}summary::-webkit-details-marker{display:none}details>summary{cursor:pointer}
+/* v12 想法与观点 */
+.thought-block{margin-bottom:14px}
+.thought-block .h-sub{background:#1e40af;color:#fff;padding:8px 14px;border-radius:6px;font-size:14px;font-weight:600;border-left:none;margin:18px 0 10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.thought-block .observation{background:#eff6ff;border-left:4px solid #3b82f6;padding:12px 18px;border-radius:6px;margin:0}
+.thought-block .observation ul{margin:0;padding-left:22px;line-height:1.75}
+.thought-block .observation li{margin-bottom:8px;font-size:13px;color:#1e293b}
+.thought-block .observation li:last-child{margin-bottom:0}
+.thought-block .observation strong{color:#1e40af;font-weight:700}
+.thought-block .callout{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 18px;border-radius:6px;margin:0}
+.thought-block .callout ul{margin:0;padding-left:22px;line-height:1.75}
+.thought-block .callout li{margin-bottom:8px;font-size:13px;color:#1e293b}
+.thought-block .callout li:last-child{margin-bottom:0}
+.thought-block .callout strong{color:#92400e;font-weight:700}
+
+/* v13 想法与观点 - 图片样式 */
+.thought-images{display:flex;gap:12px;margin:16px 0 4px;flex-wrap:wrap;align-items:flex-start}
+.thought-img{max-width:48%;height:auto;border:1px solid #e2e8f0;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.img-caption{width:100%;font-size:11px;color:#64748b;text-align:right;font-style:italic;margin-top:4px}
+
+/* v15 科技新闻脉络专版 */
+.tech-news-section { margin: 18px 0; }
+.tech-news-section .calendar-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.calendar-week{background:#f1f5f9;padding:10px 14px;border-left:4px solid #1e40af;margin-bottom:12px;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.calendar-week h4{color:#1e40af;font-size:13px;margin:0 0 6px 0;font-weight:700}
+.calendar-event{font-size:11px;padding:2px 0;color:#1e293b;line-height:1.55}
+.calendar-event.high{font-weight:700;color:#dc2626}
+.tech-news-section .source{font-size:10.5px;color:#64748b;font-style:italic;margin-top:6px}
+.tech-news-section .flow-card{background:#f8fafc;border-left:4px solid #f59e0b;padding:12px 16px;border-radius:4px;margin-bottom:12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tech-news-section .flow-card h4{background:#f59e0b;color:#fff;padding:4px 10px;border-radius:3px;font-size:13px;display:inline-block;margin:0 0 8px 0;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tech-news-section .flow-card ul{margin:0 0 0 0;padding-left:22px;line-height:1.7}
+.tech-news-section .flow-card li{font-size:12.5px;color:#1e293b;margin-bottom:4px}
+.tech-news-section .flow-card strong{color:#1e40af;font-weight:700}
+.tech-news-section .etf-frenzy{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;border-radius:4px;margin-top:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tech-news-section .etf-frenzy h4{background:#dc2626;color:#fff;padding:4px 10px;border-radius:3px;font-size:13px;display:inline-block;margin:0 0 8px 0;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tech-news-section .etf-frenzy ul{margin:0;padding-left:22px;line-height:1.7}
+.tech-news-section .etf-frenzy li{font-size:12.5px;color:#1e293b;margin-bottom:4px}
+.tech-news-section .etf-frenzy strong{color:#991b1b;font-weight:700}
+
+/* v15 外资研报精选专版 */
+.foreign-report-section{margin:18px 0}
+.foreign-report-card{background:#f8fafc;border-left:4px solid #3b82f6;padding:12px 16px;margin-bottom:14px;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.foreign-report-card h4{background:#1e40af;color:#fff;padding:4px 10px;border-radius:3px;font-size:13px;display:inline-block;margin:0 0 8px 0;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.foreign-report-card h5{font-size:12.5px;color:#1e40af;font-weight:700;margin:8px 0 4px 0}
+.foreign-report-card ul{margin:0;padding-left:22px;line-height:1.7}
+.foreign-report-card li{font-size:12.5px;color:#1e293b;margin-bottom:4px}
+.foreign-report-card strong{color:#1e40af;font-weight:700}
+.foreign-report-card.bofa{border-left-color:#dc2626}
+.foreign-report-card.bofa h4{background:#dc2626}
+.foreign-report-card.bofa strong{color:#991b1b}
+.foreign-report-card.jpm{border-left-color:#f59e0b}
+.foreign-report-card.jpm h4{background:#f59e0b}
+.foreign-report-card.jpm strong{color:#92400e}
+.foreign-report-card.consensus{border-left-color:#16a34a}
+.foreign-report-card.consensus h4{background:#16a34a}
+.consensus-table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.consensus-table th{background:#f1f5f9;color:#0f172a;padding:6px 8px;text-align:left;border-bottom:1px solid #cbd5e1;font-weight:600}
+.consensus-table td{padding:5px 8px;border-bottom:1px solid #e2e8f0;color:#1e293b;line-height:1.5}
+.consensus-table td.triggered{color:#dc2626;font-weight:700}
+.consensus-table td.value{font-variant-numeric:tabular-nums;font-weight:600}
+
+/* v13 板块综合观点表 */
+.sector-conviction-table{margin:18px 0}
+.sector-conviction-table h3.sub-title{background:#1e40af;color:#fff;padding:8px 14px;border-radius:6px;font-size:14px;font-weight:600;margin-bottom:8px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sector-conviction-table table.chart{font-size:11px;table-layout:fixed}
+.sector-conviction-table table.chart thead th{background:#f1f5f9;color:#0f172a;font-weight:600;padding:7px 8px;text-align:center;font-size:11px;text-transform:none;letter-spacing:0;cursor:default}
+.sector-conviction-table table.chart tbody td{padding:6px 8px;vertical-align:top;line-height:1.5;font-size:11px;color:#1e293b;border-bottom:1px solid #e2e8f0;white-space:normal;overflow:visible;text-overflow:clip}
+.sector-conviction-table table.chart tbody td:first-child{color:#1e40af}
+.sector-conviction-table table.chart tbody tr:hover td{background:#f8fafc}
+
+table.chart{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed;margin-top:8px}
+table.chart col.lbl{width:180px}
+table.chart col.code{width:60px}
+table.chart col.val{width:60px}
+table.chart col.mom{width:54px}
+.chart thead th{background:#f1f5f9;color:#64748b;font-weight:600;padding:8px 10px;text-align:center;font-size:11px;letter-spacing:.4px;text-transform:uppercase;border-bottom:1px solid #e2e8f0;cursor:pointer;user-select:none;position:relative}
+.chart thead th.lbl{text-align:left;cursor:default}
+.chart thead th.code{text-align:left;cursor:default}
+.chart thead th.sortable::after{content:" \2195";font-size:9px;opacity:.4;letter-spacing:0}
+.chart thead th.sort-asc::after{content:" \25B2";opacity:.9;color:#1e40af}
+.chart thead th.sort-desc::after{content:" \25BC";opacity:.9;color:#1e40af}
+.chart thead th.sortable:hover{background:#e2e8f0}
+.chart tbody td{padding:6px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.chart tbody td.lbl{font-weight:500;color:#1e293b;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.chart tbody td.code{color:#94a3b8;font-variant-numeric:tabular-nums;font-size:11px}
+.chart tbody tr:hover td{background:#f8fafc}
+.chart tbody tr.beat{background:#f0fdf4}
+.chart tbody tr.beat td.lbl::before{content:"\2605 ";color:#f59e0b;font-weight:bold}
+.chart tbody tr.lag td.lbl{color:#94a3af}
+.chart tbody tr.lag{background:#fef2f2}
+.chart tbody tr.bench{background:#fff7ed;font-weight:600}
+.chart tbody tr.bench td.lbl{color:#92400e}
+.chart tbody tr.lead td.lbl{color:#1e40af;font-weight:700}
+.chart .num{text-align:right;font-variant-numeric:tabular-nums}
+.bar-val{display:inline-block;text-align:right;font-variant-numeric:tabular-nums;font-weight:500;font-size:12px;padding:0 4px}
+
+.pos{color:#16a34a}.neg{color:#dc2626}.flat{color:#94a3b8}
+
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+.metric-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 14px;font-size:12px}
+.metric-card .lbl{color:#64748b;font-size:11px;margin-bottom:4px;letter-spacing:.4px;text-transform:uppercase}
+.metric-card .val{font-size:18px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums}
+.metric-card .det{color:#64748b;font-size:11px;margin-top:3px}
+
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
+.dash-card{background:#f8fafc;border-left:4px solid #94a3b8;padding:12px 14px;border-radius:6px}
+.dash-card.green{border-left-color:#16a34a;background:#f0fdf4}
+.dash-card.yellow{border-left-color:#f59e0b;background:#fef3c7}
+.dash-card.red{border-left-color:#dc2626;background:#fef2f2}
+.dash-card.red-deep{border-left-color:#991b1b;background:#fecaca;border-left-width:6px}
+.dash-card.blue{border-left-color:#3b82f6;background:#eff6ff}
+.dash-card .lbl{font-size:12px;color:#64748b;font-weight:600;margin-bottom:4px}
+.dash-card .val{font-size:14px;color:#0f172a;font-weight:600}
+.dash-card .det{font-size:11px;color:#64748b;margin-top:4px}
+.dash-card .src{font-size:10px;color:#94a3b8;margin-top:6px;font-style:italic}
+
+.corr-table{font-size:11px;border-collapse:collapse;margin:12px 0;background:#fff;width:100%}
+.corr-table th, .corr-table td{padding:5px 8px;text-align:center;border:1px solid #e2e8f0;font-variant-numeric:tabular-nums}
+.corr-table th{background:#f1f5f9;color:#475569;font-weight:600;font-size:11px}
+.corr-table td.lbl{text-align:left;font-weight:600;background:#f8fafc;color:#1e293b}
+
+.expect-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin:10px 0}
+.expect-card{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #3b82f6;border-radius:6px;padding:12px 14px;font-size:12px}
+.expect-card.A{border-left-color:#3b82f6}
+.expect-card.B{border-left-color:#9333ea}
+.expect-card.C{border-left-color:#ea580c}
+.expect-card .head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;gap:8px}
+.expect-card .label{font-weight:700;color:#0f172a;font-size:13px}
+.expect-card .num{font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;color:#1e40af}
+.expect-card .src{font-size:10.5px;color:#64748b;font-style:italic;margin:2px 0 6px;line-height:1.4}
+.expect-card .read{font-size:12px;line-height:1.55;color:#475569}
+.expect-card .read b{color:#0f172a}
+
+footer{text-align:center;color:#94a3b8;font-size:11px;padding:24px;margin-top:20px}
+
+.note-yellow{background:#fef9c3;color:#713f12;padding:1px 6px;border-radius:3px;font-size:11px;margin-left:6px;font-weight:600}
+.note-red{background:#fee2e2;color:#7f1d1d;padding:1px 6px;border-radius:3px;font-size:11px;margin-left:6px;font-weight:600}
+.tag-mom{display:inline-block;background:#0f766e;color:#fff;font-size:10px;padding:1px 6px;border-radius:6px;margin-right:6px;font-weight:600}
+
+.subtable{font-size:12px;width:100%;border-collapse:collapse;margin:8px 0}
+.subtable th{background:#f1f5f9;color:#475569;font-weight:600;padding:6px 10px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #e2e8f0;cursor:pointer;user-select:none}
+.subtable th.sortable::after{content:" \2195";font-size:9px;opacity:.4}
+.subtable th.sort-asc::after{content:" \25B2";opacity:.9;color:#1e40af}
+.subtable th.sort-desc::after{content:" \25BC";opacity:.9;color:#1e40af}
+.subtable td{padding:6px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle;font-variant-numeric:tabular-nums}
+.subtable tr:hover td{background:#f8fafc}
+.subtable .num{text-align:right}
+.subtable .code{color:#94a3b8;font-size:11px;width:80px}
+.subtable .lbl{font-size:12px}
+.warn-row{background:#fef9c3 !important}
+
+.tech-card{background:#f0fdf4;border:1px solid #bbf7d0;padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:8px}
+.bond-vert{display:flex;flex-direction:column;gap:18px}
+
+/* v14 宏观相关性图嵌入 */
+.macro-chart{margin:10px 0 14px;text-align:center}
+.macro-img{max-width:100%;height:auto;border:1px solid #e2e8f0;border-radius:6px;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+/* v14 倒计时事件卡片 */
+.countdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:12px 0}
+.countdown-card{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid #f59e0b;border-radius:6px;padding:14px 16px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.countdown-card .event-date{font-size:12px;color:#92400e;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.countdown-card .event-title{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:6px}
+.countdown-card .event-det{font-size:12px;color:#1e293b;line-height:1.55}
+.countdown-card .event-det b{color:#92400e}
+
+@media print{
+  @page{size:A4;margin:1cm}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+  .fixed-top,.slashbar,nav,header{position:static !important;box-shadow:none !important}
+  body{padding-bottom:0;font-size:11px !important;line-height:1.45 !important}
+  p{margin:4px 0 !important}
+  /* 减少 section 间距 */
+  section.section,.section{margin-bottom:12px !important;padding:8px 12px !important;box-shadow:none;break-inside:avoid-page}
+  h1.h-major,.h-major{margin:8px 0 6px 0 !important;padding:6px 12px !important;font-size:16px !important;break-after:avoid;page-break-after:avoid}
+  h2.h-sub,.h-sub{margin:6px 0 4px 0 !important;padding:4px 10px !important;font-size:13px !important;break-after:avoid;page-break-after:avoid}
+  .h-mini{break-after:avoid;page-break-after:avoid;margin:4px 0 !important;font-size:12px !important}
+  /* 减少 thought-block 间距 */
+  .thought-block{margin-bottom:8px !important;page-break-inside:avoid !important;break-inside:avoid !important}
+  .thought-block .observation,.thought-block .callout{padding:8px 12px !important;margin:0 !important}
+  .thought-block .observation ul,.thought-block .callout ul{margin:4px 0 !important;padding-left:18px !important}
+  .thought-block .observation li,.thought-block .callout li{margin-bottom:4px !important;line-height:1.4 !important;font-size:11.5px !important}
+  .thought-block .h-sub{margin:8px 0 4px 0 !important;padding:4px 10px !important}
+  /* 减少表格上下空白 */
+  table.chart,table.subtable,table.corr-table{margin:4px 0 !important;break-inside:avoid;page-break-inside:avoid;font-size:11px !important}
+  .chart td,.chart th,table.subtable td,table.subtable th{padding:3px 6px !important}
+  /* metric-card / dash-card 紧凑化 */
+  .metric-card,.dash-card{padding:6px 8px !important;margin-bottom:4px !important;break-inside:avoid;page-break-inside:avoid}
+  .metric-grid,.dash-grid,.expect-grid{gap:6px !important;margin:6px 0 !important}
+  .metric-card .val{font-size:15px !important}
+  /* 图片紧凑 */
+  .thought-images{margin:6px 0 !important;gap:6px !important}
+  .thought-img{max-width:48% !important}
+  /* 倒计时 callout 紧凑 */
+  .countdown-grid{gap:6px !important;margin:6px 0 !important}
+  .countdown-card{padding:6px 10px !important;break-inside:avoid;page-break-inside:avoid}
+  .countdown-card .event-title{font-size:13px !important;margin-bottom:3px !important}
+  .countdown-card .event-det{font-size:11px !important;line-height:1.4 !important}
+  /* observation/callout/warn 紧凑 */
+  .observation,.callout,.warn,.tech-card{padding:6px 10px !important;margin:4px 0 !important;font-size:11.5px !important;line-height:1.5 !important;break-inside:avoid;page-break-inside:avoid}
+}
+
+@media(max-width:768px){
+  .slashbar .inner{grid-template-columns:1fr}
+  .metric-grid,.dash-grid,.expect-grid{grid-template-columns:1fr}
+  header,.fixed-top,.slashbar,nav,.h-major{position:relative;top:0}
+}
+</style></head><body>
+<header><div class="inner">
+<h1><!--pnid:wsCddK4xjxvOiHNxDfHu4q-->美国ETF策略周报</h1>
+</div></header>
+<div class="fixed-top">
+<nav><div class="inner">
+<a href="#s0"><!--pnid:8ys676R2WjCiExvVViq3NA-->1. 配置观点</a>
+<a href="#sData"><!--pnid:SCJ3dPMZBW0FmqDVrX1SVT-->2. 本周数据综述</a>
+<a href="#sB"><!--pnid:99E5n583xsEkEWg1nJMEeC-->3. 外资研报精选</a>
+<a href="#sA"><!--pnid:xACsQrDNn4f0HfB5XxdTJ9-->4. 重要催化前瞻</a>
+</div></nav>
+</div>
+<div class="wrap">
+<section class="section" id="s0">
+<h1 class="h-major"><span class="num"><!--pnid:X02IUv3buapTHdqAhFAq7d-->1</span><!--pnid:mGVbf3eAGC1SQGacTjL3qj-->配置观点</h1><div class="sector-conviction-table">
+<h3 class="sub-title"><!--pnid:4yEx9XFMTVFfGXYaHiv9Yp-->TAA 配置观点总览</h3>
+<table class="chart">
+<colgroup><col style="width:48px"><col style="width:95px"><col style="width:85px"><col style="width:145px"><col style="width:75px"><col style="width:400px"><col style="width:80px"><col style="width:152px"></colgroup>
+<thead>
+<tr><th><!--pnid:KGaH0aXczInC9nMTdfEamA-->类别</th><th><!--pnid:16afvL2pfPxSXByUOlzv5P-->资产</th><th><!--pnid:d5IspNI9bFoZScu8MDzbzZ-->预期区间</th><th><!--pnid:GF0bc8EIdUqBXh5boa7izn-->驱动 / 叙事</th><th><!--pnid:gHYjqQUlJdXpvwTJ3gisFj-->波动率</th><th><!--pnid:7afS5z9SKnNT6KXUnFKscG-->观点与操作</th><th><!--pnid:gxU7ptQs6EOfAdpgHgmvcL-->观点确信度</th><th><!--pnid:ayETpR8073GVnNOdM94Fsi-->本周市场表现（11/13 至 11/20）</th></tr>
+</thead>
+<tbody><tr><td><!--pnid:tuoz4gsQeQc4lLchd0wXRg-->权益</td><td><!--pnid:mvN4drcJPiPQXGy7H2pJan-->美国</td><td><!--pnid:0o6ROpNtgwtPryzn97nzfu-->−15%~15%</td><td><!--pnid:HeCuyyo6Vq4jFaIo19DP1n-->AI叙事、实际利率与盈利扩散</td><td style="text-align:center"><!--pnid:3LPImtBGZJFVUTHjvBljaC-->22.39%</td><td><!--pnid:PeBARBUmLSMWtthAHx50hP-->风险已经有所释放但尚未出清，长端实际利率仍对估值形成压制且有继续走高风险、云厂资本开支增速见顶，科技板块多空博弈激烈反复测试支撑位，叠加劳动力市场增速再度加快、明年财政政策将形成拖累等待右侧买点或是更稳健的选择。结构上，宽基、质量因子优先，当前防御板块已非常拥挤，防御周期比价、动量低波都来到极值位置，避免追高；成长和价值／红利之间暂不做大幅偏离。</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:70%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:MzXe7p1TkdJTcIhKjQcaoC-->70</span></div></td><td><!--pnid:fe3nX7c2U7VbB1p3c1xef5-->SPY -8.56%、QQQ -10.51%、RSP -6.20%</td></tr><tr><td><!--pnid:YEsH10boA5iSy9v3bdEenE-->权益</td><td><!--pnid:HQGjTHoT0hHF6atQ6cJ9xk-->韩国</td><td><!--pnid:See6MGp7MdwsXWXm6tHpzd-->-10%~30%</td><td><!--pnid:VEoz8GLVnKlwGtIUI9Dl5j-->存储，AI 叙事</td><td style="text-align:center"><!--pnid:Pg1W6HIJBdQDnvRgPa4Ijs-->68.25%</td><td><!--pnid:4tgRiQDxJyzs6hZDkBPMqj-->震荡，无新叙事驱动下已不是主线。韩国杠杆机械仓影响已小，但筹码集中在 6 月下半旬进场、涨起来抛压大。</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:70%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:0blVeETEzBkOJgl1RQBTIH-->70</span></div></td><td><!--pnid:f47avu2iA2nit3ssS6q18M-->EWY -13.67%</td></tr><tr><td><!--pnid:qd9bIgmRhm0CLDVKcPf0TY-->权益</td><td><!--pnid:vLktcWsQEfY4FmC6vH6F5H-->日本</td><td><!--pnid:cx4IjSlZqFIQOzeuWw0z21-->−10%~10%</td><td><!--pnid:vYkywkeIBIiF7ZJlHBVjtJ-->半导体设备+银行；走出通缩</td><td style="text-align:center"><!--pnid:0MZzCZo2VRFsP31A6Dyz4A-->27.41%</td><td><!--pnid:bs1HeEUGVZbCRWJw1JjHI6-->标配。总体盈利广度健康，EPS同比上修、从涨AI盈利为主到各行业普涨。</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:60%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:Del8IfLEaOzFIDBg8mclBU-->60</span></div></td><td><!--pnid:sC5Beq4cNKJ8s03ZO6W9zB-->EWJ -9.08%</td></tr><tr><td><!--pnid:mTmDlJFLmAAEgLfDmoIfnv-->权益</td><td><!--pnid:oFXfQKtjTxbHauKtWFJe1b-->香港</td><td><!--pnid:9tJs075h4s0F5z8dpfr2d5-->−20%~10%</td><td><!--pnid:ijoGUM0zPH6GZPbLOxZFrl-->互联网+创新药+红利</td><td style="text-align:center"><!--pnid:8drRrcpwG7QpfXuRddHjHi-->25.51%</td><td><!--pnid:2ws3LSFR21v8XsNOxJ2yCu-->分母端压制减轻。但内需仍弱，财报季电商继续下修</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:70%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:NMH2aeMTn28kpatwg3ywed-->70</span></div></td><td><!--pnid:9bAU50YFQyWkbKpls7qJyH-->KWEB -9.64%</td></tr><tr><td><!--pnid:wX3sudBS4hZENwsLq6LWO6-->权益</td><td><!--pnid:FHZQwKPZRhYnT7g7gwAylD-->欧洲</td><td><!--pnid:Np6fGBr0iQf0ai5wBRDVgq-->−5%~5%</td><td><!--pnid:fJCVgyH4aL510jFukZJYDu-->德国财政、工业投资兑现与能源成本</td><td style="text-align:center"><!--pnid:M2Qr4rb4h6t4sAQ2FeuEGF-->19.69%</td><td><!--pnid:bnQWMYcsw6z0Ah7M7zeGKC-->标配欧洲。AI扩散和能源降价有利于相对表现，关注德国财政与工业投资兑现。风险包括法债、油价回升和AI再度集中；原油突破100美元或费半突破通道上沿时重估。</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:75%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:kYbLffUCDSfJ7AvLbmb9LQ-->75</span></div></td><td><!--pnid:EgY8furnJj6k3BYgOzTELv-->VGK -7.22%</td></tr><tr><td><!--pnid:Te0hOxWCTES8bybYNg2009-->商品</td><td><!--pnid:abSVmcd6UOo0EZFkTz40Gp-->黄金</td><td><!--pnid:X6leEUgdYJLj8qltBqQPwd-->-10%~10%</td><td><!--pnid:l1Lak2ir5LsBG7Zd3EtFAw-->做空美元信用+流动性避险（高波时流动性定价强）</td><td style="text-align:center"><!--pnid:GDR8l7cdKN1ksVvKSCo6oL-->27.32%</td><td><!--pnid:s7WBosjxSaFbqOtMi1l3rM-->叙事未破，波动率回落拥挤资金出清，已回落至2025年8月水平。但ETF持仓已回到前高，受加息预期压制，短期动能仍弱。</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:60%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:fUOJvZRxx6HNlQENxtWJnN-->60</span></div></td><td><!--pnid:5jS4ICg1G5hvb4u5PXfFZd-->GLD -9.17%、SLV -16.22%、GDX -16.22%</td></tr><tr><td><!--pnid:UeTbklqJXBNSPTpjH7skfe-->商品</td><td><!--pnid:lmX9AqvEjDL9qfwM9PennZ-->原油</td><td><!--pnid:mLJnUfHGp8gTetWSx6oTAq-->−25%</td><td><!--pnid:5RIFOpe1GGBSY1Maf51cZI-->地缘；黑天鹅对冲</td><td style="text-align:center"><!--pnid:1kUGsBMQf2Jug9FqLWKYiE-->47.25%</td><td><!--pnid:yOlEH6aVubLE7i5iCzPy6m-->地缘反复难以预测，需注意虽然股市已脱敏，但对美债利率波动有影响。</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:50%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:5MHOYFeOF26ufwDbymFWv6-->50</span></div></td><td><!--pnid:skn1l8fow6mB7WPeUrUC8C-->BNO -3.34%、USO -4.09%</td></tr><tr><td><!--pnid:B53vRPDkCzcYBipX5mHQEC-->利率</td><td><!--pnid:lU5omVwJZKcDiR3i5i9e6j-->10Y 美债利率</td><td><!--pnid:vXvfXuU03HbwlwHdw9UpCB-->4.8-5.5</td><td><!--pnid:rNQcHsBdvohUsBoe7kCDBF-->增长+通胀+期现溢价</td><td style="text-align:center"><!--pnid:JtP3VeLXpnLlbMRoJSv42v-->周σ≈13.66bp</td><td><!--pnid:JU3foAhGZB444AmLd8XA43-->本周避险买盘因素主导，盖过鹰派发言影响，且尽管能源价格有所回落，但美联储立场趋鹰且服务业通胀居高不下，避险买盘或面临通胀数据反转风险。</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:50%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:6LEffGSsiVluhQqOsuX8lX-->50</span></div></td><td><!--pnid:tfAIxajl2WI5axufLXXzcz-->-23bp至4.92%；TLT +2.61%</td></tr><tr><td><!--pnid:CTci0h9k9CHmalneDOOHt4-->利率</td><td><!--pnid:ZuOM78BWpjQ2021sK1yX2k-->5Y 美债利率</td><td><!--pnid:BPyWfals5b6jy55h3rTl9g-->4.0–4.6</td><td><!--pnid:DLBYbaIYUC1JiaLFWDvSZx-->增长+通胀</td><td style="text-align:center"><!--pnid:R1iI9I8w0a0NOdrXNsQzqY-->周σ≈15.38bp</td><td><!--pnid:MN2KaPMp3BGyufmsVhrP5X-->同 10Y</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:50%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:LAjpMgd3rR7JXu10xp9BRJ-->50</span></div></td><td><!--pnid:INMhyakDUr41dZ3mCGZRV4-->-27bp至4.71%；IEF +1.79%</td></tr><tr><td><!--pnid:8g2I3luIjn0krkIC1TUlvA-->利率</td><td><!--pnid:xZi6lriaxIefADocrIO2Yh-->2Y 美债利率</td><td><!--pnid:PX01Jve56doYZArbz9NV6J-->4.0–4.4</td><td><!--pnid:Rj27oSfyv6R5NjzvuxPr1X-->政策利率</td><td style="text-align:center"><!--pnid:VDKhPI8S8fnPCpS4jmjXlI-->周σ≈15.13bp</td><td><!--pnid:7M00PolWZqYxp8MtGM2JwJ-->同 10Y</td><td><div style="position:relative; min-width:46px"><div style="position:absolute; left:0; top:0; bottom:0; width:50%; background:rgba(15,118,110,.14); border-radius:3px"></div><span style="position:relative; font-weight:600"><!--pnid:GyFmUNvfgE4m4xTFfKRShj-->50</span></div></td><td><!--pnid:eYWGseJ4jj0qdkGfsq0BVb-->-25bp至4.63%；2s10s 27→29bp</td></tr></tbody>
+</table>
+<div class="callout" style="margin-top:10px"><span class="tag"><!--pnid:xfbPXHIj0Amy5OnAGsB9u8-->可能的 TAA 方向</span><ul><li><!--pnid:mgovaQre17VlX3cKQ29XPL-->结构上，宽基、质量因子优先，当前防御板块已非常拥挤，防御周期比价、动量低波都来到极值位置，避免追高；成长和价值／红利之间暂不做大幅偏离。</li><li><!--pnid:CmfHhSoen1bshCJYgI73yI-->本周避险买盘因素主导，盖过鹰派发言影响，且尽管能源价格有所回落，但美联储立场趋鹰且服务业通胀居高不下，避险买盘或面临通胀数据反转风险。</li></ul></div>
+</div>
+<div class="sector-conviction-table">
+<h3 class="h-sub"><!--pnid:ifWnMGcPa3z4gDN1IxQ487-->事件交易展望</h3>
+<table class="chart">
+<colgroup>
+<col style="width:110px">
+<col style="width:200px">
+<col style="width:330px">
+<col style="width:330px">
+</colgroup>
+<thead>
+<tr>
+<th><!--pnid:SGURvNSRvl2ZuUHCZsfs04-->交易事项</th>
+<th><!--pnid:165mvpDfgsDyI1XSwWapDO-->时点节奏</th>
+<th><!--pnid:sOMcErgNgckL10AYG4J8fW-->影响</th>
+<th><!--pnid:xNraZcpQFWoPfHxfAbudHj-->策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><!--pnid:WuNnA9evoFRm6e0xKCaudM-->11月美国制造业、服务业与综合PMI初值</td>
+<td><!--pnid:VAw9ur2oHTxgU4ID8gVSAC-->11月23日22:45</td>
+<td><!--pnid:AN1ysmbfZD4wV5sBHT93eg-->新订单、就业及价格分项；判断需求放缓与成本压力能否同时缓解。</td>
+<td><!--pnid:ghPXfsDrshCWlu7XYE5Qt6-->新订单与价格若同步回落，可提高久期的观察优先级；若需求弱而价格强，维持权益风险约束。</td>
+</tr><tr>
+<td><!--pnid:yOvOYcYJi0OfcSM44jqPq0-->10月PCE物价、个人收入与支出；三季度GDP二估及企业利润</td>
+<td><!--pnid:PVqevYPq6lMZltky1AuPWC-->11月25日21:30</td>
+<td><!--pnid:5Hhvzl8bLVjQSN5PegxSXk-->核心PCE月率与修订、实际消费、企业利润；增长和通胀共同影响12月加息幅度。</td>
+<td><!--pnid:KeoDvBYqoixk4W107R7By4-->核心通胀放缓且实际消费稳定，才有利于久期与成长估值共同修复；通胀偏强时收紧估值敏感敞口。</td>
+</tr><tr>
+<td><!--pnid:VhwVIm19Zcnbp8VvYMzryv-->周度初请失业金（感恩节提前发布）</td>
+<td><!--pnid:i82g6LYHMuTELlVhakZDsJ-->11月25日21:30</td>
+<td><!--pnid:Ixgo4GqiYGnzL4drhwAles-->结合四周均值与续请，避免按单周噪声判断就业拐点。</td>
+<td><!--pnid:lrHQmwI8VHDe2spgt6xEya-->以四周均值和续请核验就业趋势；若信用压力同时上升，优先比较国债与现金的保护作用。</td>
+</tr><tr>
+<td><!--pnid:GNkhHL338IXwswXrFS6Siv-->美联储褐皮书</td>
+<td><!--pnid:ErZ6sL7nuZ6XLePDbHrAud-->11月26日03:00</td>
+<td><!--pnid:PjU5pNSkIX9pu7E6cC2CD0-->地区就业、工资、终端提价及信贷条件；为12月议息提供定性证据。</td>
+<td><!--pnid:2ST8zet6INA4LL8datK6BB-->比较工资、提价与信贷描述；若通胀压力跨地区延续，谨慎延长久期，避免仅凭避险上涨判断政策转向。</td>
+</tr><tr>
+<td><!--pnid:9EOSyttgG1d8hrzUJx8VrE-->感恩节休市与周五半日交易</td>
+<td><!--pnid:KREgbrqDnNbqO7zamdw1pB-->11月26日晚休市；28日02:00提前收市</td>
+<td><!--pnid:Oe4uR5Lh7VI3afRuQcf77E-->缩短交易周内控制成交冲击与隔夜风险；黑五消费信号需区分销售额、折扣和利润。</td>
+<td><!--pnid:q2LfFdQwEzoVZLfrb5sqa0-->缩短交易周控制成交冲击和隔夜敞口；零售主题同时核验销量、折扣与利润率，不以销售额单独追涨。</td>
+</tr></tbody>
+</table>
+</div>
+<div class="sector-conviction-table">
+<h3 class="sub-title"><!--pnid:7rl3c7FIeAlkwqC6eSt2aA-->板块综合观点</h3>
+<table class="chart">
+<colgroup>
+<col style="width:130px">
+<col style="width:120px">
+<col style="width:300px">
+<col style="width:90px">
+<col style="width:150px">
+<col style="width:190px">
+</colgroup>
+<thead>
+<tr>
+<th><!--pnid:Hp7quIyndf3tb7NyVefshG-->板块</th>
+<th><!--pnid:HdgGryb6eW7Y4vJE24H0xo-->证据来源</th>
+<th><!--pnid:DEXpyeexjFQAcX8Kry1Mwp-->主要逻辑</th>
+<th><!--pnid:YVYc86dqf36qwavUFOQa4i-->观点信心</th>
+<th><!--pnid:cmlCnpuIh99XqCKtsD17P2-->判断条件 / 风险</th>
+<th><!--pnid:yeTkPkjPIldFCrLVl04UBH-->涉及 ETF</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><!--pnid:bCxPCS2nXF3Nmws1nu0ttK-->AI / 半导体 / HBM</td>
+<td><!--pnid:R1trqsueopbKxwThJ6x2hs-->MS / GS / JPM</td>
+<td><!--pnid:oicNnCYdrIXJbdcyb4aTtG-->AI建设仍支撑需求，但融资、利用率与变现约束上升；周五科技抛售进一步提高订单及现金流验证要求。</td>
+<td><!--pnid:QZZMjm0a8IOferMgekGJvT-->★★★</td>
+<td><!--pnid:np55o6eoOgcPBnBgm1Bn4Q-->盈利兑现和风险预算优先，控制科技与动量重叠。</td>
+<td><!--pnid:XEZFjIXmU3deUoojJ7Vn2d-->QQQ / SMH / SOXX / IGV</td>
+</tr><tr>
+<td><!--pnid:m2ubhVgtNtsSiFDfqoZfkG-->美债 / 利率</td>
+<td><!--pnid:2lOxwgeX0oPZmp43pPXJ7b-->GS / 官方宏观</td>
+<td><!--pnid:DQXnLNkIAkWK8Uc6Ttyjos-->主要期限收益率回落，久期提供部分对冲；FOMC纪要仍指向进一步加息，不能把避险反弹等同政策转向。</td>
+<td><!--pnid:zQZbsQgeTZb6JSORIedIq9-->★★★</td>
+<td><!--pnid:T5QLyQRBSsqOqJ3pkIR0r5-->比较票息、久期和波动，关注PCE与实际消费。</td>
+<td><!--pnid:kFB7ne27y51oHXG7BytpKr-->IEF / TLT / AGG</td>
+</tr><tr>
+<td><!--pnid:UqOQqj4fvmaSGGROtysmgT-->黄金 / 白银</td>
+<td><!--pnid:J08vpdTRkK6qvYPy8AlCDT-->价格与利率检验</td>
+<td><!--pnid:HRWof5gDNu85mwzPY2ByIu-->实际利率下降而金银进一步回撤，美元、流动性与持仓调整仍有影响；白银还包含工业需求风险。</td>
+<td><!--pnid:81s7qMaXOdutW3emeU7ZRS-->★★★</td>
+<td><!--pnid:uA04AK0FhHEiGsqgTJBipR-->GLD 30日实波约27.3%；分别核算避险与商品敞口。</td>
+<td><!--pnid:O078sTXd1jBakindqLpmAw-->GLD / SLV</td>
+</tr><tr>
+<td><!--pnid:iQDaB222UowM8zPTGniaY0-->韩国 / 台湾 / EM</td>
+<td><!--pnid:NcLUcPCCI4Ge7G5tKZLtGy-->MS产业链研究 / 地区收益</td>
+<td><!--pnid:eFeVaVtfUXCUzp4HEKjHZH-->硬件市场与美国科技共享资本开支周期，地区分散不能消除共同因子；汇率与产业结构需同时考察。</td>
+<td><!--pnid:UoEiCC6ncQRxvQTPpTjWOx-->★★</td>
+<td><!--pnid:cU8hcrtOa77xTmCEH6ALo1-->订单、出口许可与汇率联动验证。</td>
+<td><!--pnid:gIAnKCRRpOZqTaXphDSbTp-->EWY / EWT / EEM</td>
+</tr><tr>
+<td><!--pnid:QZ3BqVWFZmNjtNlHi2jvp2-->工业 / 金融 / 医疗</td>
+<td><!--pnid:ANsa4dHtoWslpBhF6pDV6f-->MS / JPM / 配置研究</td>
+<td><!--pnid:hocxiwi2isZHYhhWhcMjXe-->中周期扩散需要非AI订单、信用质量及稳定医疗盈利支持；本周价格广度尚未恢复。</td>
+<td><!--pnid:OBS6DqvRzTusoLFvlRhMtW-->★★★</td>
+<td><!--pnid:aZGxCpqZ7Q1NwwC2I3eHEh-->相对表现与盈利修正需共同改善。</td>
+<td><!--pnid:l6pmpHW0qbslX2cn2nMhQa-->XLI / XLF / XLV / IHI</td>
+</tr><tr>
+<td><!--pnid:ZnlgPufStOiRepOVDwDail-->欧洲 / 能源成本</td>
+<td><!--pnid:YHiQPw3B6iON7st0WlQYO2-->配置研究 / 全球配置</td>
+<td><!--pnid:MOUvzdE59cHYYmwjve1kWy-->工业投资与能源成本仍影响相对回报；增长放缓、财政兑现节奏和科技再集中是关键风险。</td>
+<td><!--pnid:Ak6lnqNAdY2qWxqasvG36k-->★★★</td>
+<td><!--pnid:IkY9VUyk7yf5d0Ee27THEx-->保留分散，观察资本开支兑现与能源成本。</td>
+<td><!--pnid:ZGehOQMyOnOMVj2TnPwrMK-->VGK / EUFN</td>
+</tr></tbody>
+</table>
+</div>
+</section>
+<section class="section" id="sData"><h1 class="h-major"><span class="num"><!--pnid:XWTltpaiU7bQSUgbhTnDci-->2</span><!--pnid:XdPlHqL0yvndeCOGpsTskO-->本周数据综述</h1><div class="thought-block"><blockquote style="margin:0 0 12px; padding:8px 14px; background:#fff; border-left:4px solid #0f766e; border-radius:4px; font-style:italic; color:#134e4a; font-size:13px; line-height:1.65"><!--pnid:yxNa7apRP5mvVYAebuvTX2-->本周风险偏好继续收缩，周五科技抛售加速。SPY -8.56%、QQQ -10.51%，半导体与动量跌幅更大；国债上涨，金银随风险资产下跌。10年美债收益率下降23bp至4.92%，实际利率下降14bp；VIX升至35.89，MOVE升至106.31。利率回落尚未转化为权益企稳，实际利率、融资条件与盈利兑现仍需共同验证。</blockquote></div><div class="thought-block"><h2 class="h-sub"><!--pnid:ZdRirMY0TRf1g5kfZKmQyJ-->① 本周主线 —— 科技与动量领跌，国债与黄金分化</h2><div class="observation"><ul><li><strong><!--pnid:GdarT2M4Yqc4S3qA52yiPV-->权益风险集中释放。</strong><!--pnid:MuTw4pu2S8784UNbH2xKyJ--> SPY -8.56%、QQQ -10.51%、SMH -17.81%、SOXX -17.35%、MTUM -11.34%、SPMO -10.76%。等权RSP跌幅小于SPY，但11个一级行业均下跌；相对抗跌尚未形成正收益扩散。</li><li><strong><!--pnid:aXqzch3dLXhSjJSnTUvnQd-->避险资产表现分化。</strong><!--pnid:yyqz6xaMwMkpKcWmor7PuT--> IEF +1.79%、TLT +2.61%、AGG +1.11%、GLD -9.17%、SLV -16.22%、UUP +0.41%。实际利率回落未能阻止黄金与股票同跌，流动性和风险溢价仍需与利率共同观察。</li><li><strong><!--pnid:VyoNBVdcx2NLvwFYsdrPUN-->产业链重叠放大地区风险。</strong><!--pnid:fXyYAx7I3xSXnqAvQefXSp--> EWY -13.67%、EWT -23.22%、EWJ -9.08%、VGK -7.22%、INDA +2.82%。北亚硬件市场与美国科技共享资本开支周期，跨地区持仓不必然分散同一产业风险。</li></ul></div></div><div class="thought-block"><h2 class="h-sub"><!--pnid:J0zjTkeoXXdSAMozEOf1G4-->② 波动率信号 —— 股债隐含波动同步上升</h2><div class="observation"><ul><li><strong><!--pnid:cvfk0KeSO5AsQvFUjR9cAJ-->已实现波动。</strong><!--pnid:Lyd3HidOd2jOb1fmYe1Ojd--> SPY 30日年化实波为22.39%，前期为18.93%；10%波动目标对应的单资产敞口由52.8%降至44.7%。该机械示例不等于实际仓位建议。</li><li><strong><!--pnid:Eabb9ZRBZu0Bgjrwo5PSgW-->条件波动与前瞻波动。</strong><!--pnid:El3dauMSoQtiA6adswZTmr--> SPY GARCH当前条件σ为20.97%，下一日预测27.58%，未来21日预测22.64%。当前条件σ在周五收益进入模型前形成，后两项已计入周五冲击；三者均为年化值，不能与已实现波动混称。</li><li><strong><!--pnid:HZRm2jx5JOkfOeLrCYi2xS-->隐含波动与资产差异。</strong><!--pnid:35Fp0Fulg6Oia3nlnZesPl--> VIX 35.89（周变动+16.59点）、MOVE 106.31（+7.52点）；股债隐含波动同步上升。GLD下一日、未来21日预测σ分别为33.32%、32.32%，与国债的风险结构明显不同。</li></ul></div></div><div class="thought-block"><h2 class="h-sub"><!--pnid:ZnE6c5sG2z5pct8RURuXwz-->③ 相关性结构（30D vs 252D）—— 国债近期分散改善</h2><div class="observation"><ul><li><strong><!--pnid:sMfLG1pUhOfWnKzwRkQIbW-->股债。</strong><!--pnid:JrlIQAvnzE3F3Pa0NqiL8P--> SPY—AGG的30日相关性为-0.24，252日为+0.29。近期负相关与国债反弹一致，但不能推断长期必然维持。</li><li><strong><!--pnid:wtG7j0HU6dJSekyKEWoVjn-->股金。</strong><!--pnid:cfuDWBKR6yvBXLaUhIqSNr--> SPY—GLD的30日相关性为+0.46，252日为+0.38；黄金未提供与国债同样的当期保护。AGG—GLD的30日相关性为+0.10。</li><li><strong><!--pnid:hfbNdRlSztrAzDzP6DOCZl-->美元。</strong><!--pnid:6f5YEJvDRRLjdSqBfECWC9--> SPY—UUP的30日相关性仅-0.04，252日为-0.31。美元本周小幅上涨，但短窗口不支持将其称为稳定、唯一的负相关资产。</li></ul></div></div><div class="thought-block"><h2 class="h-sub"><!--pnid:b8nZfVWzuWliLIzmHH0gT4-->④ 各资产复盘点评</h2><div class="observation"><ul><li><strong><!--pnid:GjeOWjlf6kKzvXzB9Ojj3S-->股票与风格。</strong><!--pnid:mDnQaiR8OTyz3Wkjx5koPf--> RSP -6.20%、IWM -7.54%、QUAL -7.41%、USMV -5.67%、SCHD -6.04%。宽基、等权和低波均有回撤，质量与红利亦未形成绝对保护。</li><li><strong><!--pnid:j3ajvGkqhbkOEGIQl17F8P-->债券与信用。</strong><!--pnid:oHwyUuXlfeueF3QyvN7WNw--> IEF +1.79%、TLT +2.61%、AGG +1.11%、LQD +0.86%、HYG -0.79%。10年实际利率由2.91%降至2.77%，通胀补偿由2.24%降至2.15%；国债上涨与信用资产表现应分别衡量。</li><li><strong><!--pnid:vyTGOYF58tjECqhnhmJ5bS-->商品。</strong><!--pnid:IUieNZdmArUbW1RlcjMYtH--> USO -4.09%、BNO -3.34%、DBC -4.77%、GLD -9.17%、SLV -16.22%。原油周五有所反弹，但完整周仍下跌；金银回撤与实际利率下降并存，单一贴现率叙事无法解释全部价格变化。</li><li><strong><!--pnid:jVZ130JthzUWwRWzVsrbai-->行业。</strong><!--pnid:QrGbu8nDiV0EHKgNNLRnoz--> XLK -12.49%、XLI -7.35%、XLF -7.00%、XLV -6.15%、XLP -2.05%、XLU -3.07%。必需消费、公用事业相对抗跌，医疗并未同步展现强防御；便宜与否仍需结合盈利和业务风险。</li><li><strong><!--pnid:da8kBKwV9AMAwV2wOVMaOc-->软件与半导体。</strong><!--pnid:Wx5TQYPLUfs7Tqq2QmmHhG--> SMH -17.81%、SOXX -17.35%、IGV -9.42%、SKYY -10.48%、WCLD -7.03%。半导体跌幅更大；订单、融资、设备利用率和应用收入应分别核验，不能将资本开支承诺直接等同利润。</li><li><strong><!--pnid:41YUezldPBxkrkEqegftlG-->多策略。</strong><!--pnid:B9tvVfwQp7pi68MyNdqoYL--> TAIL +10.05%、BTAL +4.43%、DBMF -2.99%、KMLM -3.11%、JEPI -6.40%、BUFR -6.13%。尾部保护与管理期货收益分化，不能仅凭策略标签推定其能够对冲股票回撤。</li></ul></div></div><div class="thought-block"><h2 class="h-sub"><!--pnid:WQarrji42YkuwVu34GjkIL-->⑤ 本周重要事件点评回顾</h2><div class="observation"><ul><li><strong><!--pnid:o8VQ0fqjttHYLgweGp92mc-->10月零售销售。</strong><!--pnid:kvq4CvEE6K7RLxU4aLhyhN--> 季调名义总额环比+0.2%、同比+6.8%，剔除汽车与汽油环比+0.5%；总量月率90%置信区间包含0。 名义消费韧性与实际购买力、利润率需要分别判断。</li><li><strong><!--pnid:rgA9tm3P7SoVqNyEWQFwTA-->10月FOMC纪要。</strong><!--pnid:bsmhFlJHEXYGGq9IwN5dzr--> 几乎所有与会者认为其基准情景下未来仍需加息；两名与会者提出若通胀数据不利，下次可考虑超过25bp。 不是已决定12月加息50bp；本周国债上涨不能直接解释为降息交易。</li><li><strong><!--pnid:nUy8KCdllLRF2b4q0cVcPj-->费城联储11月制造业调查。</strong><!--pnid:GdMGKivXDz03f5LBmhE0jy--> 总体活动20.9降至6.3，新订单4.3降至−0.4；投入价格43.2升至58.2，售价40.1升至47.0。 需求扩张放缓与价格扩散同时存在；该地区调查不是全国经济衰退判定。</li></ul></div></div></section>
+<section class="section foreign-report-section" id="sB"><h1 class="h-major"><span class="num"><!--pnid:NyejDayMCasx4wfwBqzwj3-->3</span><!--pnid:DbbDa2POJuUfg5VfVuncSY-->外资研报精选</h1><div class="foreign-report-card"><h4><!--pnid:RDrnciVe5fjhRgdxJ4k2MA-->1. 盈利接力还是周期反转？</h4><ul><li><!--pnid:E8fEjmDOqJubfh8xJgQ0Wq-->MS认为调整接近尾声，建议在质量框架内增加周期性，工业为首选，并关注部分金融与可选消费；AI应用是下一阶段利润率改善的重要来源。高盛预计2027年美股仍有正回报，但盈利增长放缓、利率偏高及AI不确定性限制估值扩张。</li><li><strong><!--pnid:27WwZaEJsnyWJyE1UJ4dh5-->后续验证：</strong><!--pnid:UGk9Lqj8OZzRM6jTP0XSVn-->工业和非科技EPS修正、利润率及RSP相对SPY；观察增长能否从AI基础设施扩展至其他行业。</li></ul></div><div class="foreign-report-card jpm"><h4><!--pnid:esb0AHp9ZXUd1zGhglFzlN-->2. 盈利扩散已有多少证据？</h4><ul><li><!--pnid:1QREmgQj20MStu3Du31NXY-->JPM指出，截至报告时点，美欧三季度盈利分别同比增长23%、25%，公司利润率中位数继续改善。已披露样本支持盈利增长与市场表现进一步扩散；报告时财报季尚未结束，比较仍不完整。</li><li><strong><!--pnid:CGcPHQXScPykUYq0J9ISVh-->后续验证：</strong><!--pnid:vvJrL1Prv9Bw4DA44GYAv4-->继续补齐后续披露样本，比较行业中位数与市值加权盈利，避免少数权重主导判断。</li></ul></div><div class="foreign-report-card"><h4><!--pnid:zuHYyMWUiY2CBwxPtPeaQJ-->3. 高收益率能否恢复债券缓冲？</h4><ul><li><!--pnid:cxjOKMNhs2lPnKztX7kmZ4-->高盛认为，较高的起始收益率、未来加息风险减弱及债券对冲作用改善，有望支持2027年债券总回报。其预计美国10年期国债收益率在2027年末降至4.6%，短期仍可能区间震荡，回报先以票息为主。</li><li><strong><!--pnid:KJlH4sjGZ4Rh2S5rsoh7W5-->后续验证：</strong><!--pnid:yEAbA7dD6Na1XTGac8rJXU-->核心PCE、实际利率及曲线；区分国债上涨与信用利差扩大，观察股债相关性是否持续改善。</li></ul></div><div class="foreign-report-card"><h4><!--pnid:5Z8IGkK2nkVRzFhMh7ffRh-->4. AI融资会否约束资本开支？</h4><ul><li><!--pnid:TNAqzW0AOrXruQKp8zEyAN-->高盛将2027年全球数据中心与算力项目融资发行预测由3000亿美元上调至5450亿美元，其中机房建设2250亿美元、算力融资3200亿美元。建设延误、高融资成本与设备残值担保仍是风险。</li><li><strong><!--pnid:YeQhZbtBO8SMFsFPkRI3XI-->后续验证：</strong><!--pnid:g6xU7mahfwpfS46twL9hEc-->融资利差、机房通电、设备残值与客户付款；核对资本开支增量能否转化为经营现金回收。</li></ul></div><div class="foreign-report-card jpm"><h4><!--pnid:NN3Uk90vsfOynJ1YuX8bHX-->5. 新增股票供给是否解释本轮下跌？</h4><ul><li><!--pnid:rSyUXAcRUzEsXW4QtHREjp-->JPM以发行与回购、全球指数股本变化两种方法估算，2026年全球股票净供给较2025年多约2700亿美元。在股票需求不变的情况下，历史模型估算其对全球权益回报带来约4.5个百分点拖累；该行不把供给变化视为近期下跌的主要原因。</li><li><strong><!--pnid:4dNRrhi2wk4bXyhqgnvjy4-->后续验证：</strong><!--pnid:2CSedCx2PdlOpXab97n3iB-->实际回购、股票基金净申购与发行进度；不将指数自由流通调整全部视为新增融资。</li></ul></div><div class="foreign-report-card jpm"><h4><!--pnid:PKMnZhQH8HNRm0tIlhzzxg-->6. 散户是否在全面买回科技？</h4><ul><li><!--pnid:EEp94GrdTmH0qZaRPJVsfn-->JPM统计，11月12日至18日散户净买入32亿美元，只有过去12个月周均64亿美元的一半；其中ETF净买入25亿美元，但科技行业ETF净卖出2.68亿美元。</li><li><strong><!--pnid:NGLHvR3e6e2eppyQ367KqI-->后续验证：</strong><!--pnid:SVE19dZHi4uyOQpeMkTsfu-->持续多周流量、科技相对宽基表现及盈利修正；区别交易流量与份额申赎。</li></ul></div><div class="foreign-report-card"><h4><!--pnid:VbkMq8JQ3NwLoJ9skInAga-->7. 医疗防御是否已有拥挤风险？</h4><ul><li><!--pnid:JqseERCA6peoiOJccWmBDn-->高盛研究453只大型股主动共同基金、约3.9万亿美元权益资产。三季度末医疗平均超配199bp，为十年高位；工业和金融分别超配约200、196bp，信息技术低配631bp，现金占比1.1%。</li><li><strong><!--pnid:ySjM5wsc6DaLPPAWR2w3kc-->后续验证：</strong><!--pnid:BwYceAP7kNMyVxwX6KRW6U-->行业估值、医疗成本率与盈利修正；结合基金配置约束判断持仓偏离，避免直接推导未来买卖量。</li></ul></div><div class="foreign-report-card"><h4><!--pnid:Dv1BPhegI3YqTSApf6faDa-->8. 算力政策如何改变部署和利润？</h4><ul><li><!--pnid:jr6S6BsjIBDXBBpR0H6Cii-->MS认为相关限制对AI产业链的影响明显分化：海外部署与中国相关云业务面临压力，美国境内部署与部分美国云厂商可能受益；报告列出三种政策情景。</li><li><strong><!--pnid:D2F3QAH9AvZSRTsV8jTxye-->后续验证：</strong><!--pnid:255DFEW4rbxt8ccvnkmxWC-->最终政策文本、境内外部署、通电与许可；比较硬件、云与软件的收入和成本传导。</li></ul></div><div class="foreign-report-card consensus"><h4><!--pnid:TrG7ggUUVyiJQJSqdTqsAc-->9. AI下行情景会否扩大宏观损失？</h4><ul><li><!--pnid:JflLPdPU5UwkofKtI3Cgqs-->TS Lombard首页摘要检验AI投资崩落的条件情景：此前情景为显著财富损失与AI生态信用压力、宏观冲击相对温和；本篇检验财富效应、自动化和美联储反应是否放大损失，也讨论投资热潮延长的情景。</li><li><strong><!--pnid:bDmqu5HSqTKESd0kBhUwWx-->后续验证：</strong><!--pnid:1fRrHnL0GL8DjWECun6AFl-->资本开支增速、就业与财富效应、信用利差；若通胀缓和，政策缓冲可能改变损失路径。</li></ul><p><!--pnid:cNxyw4p5RagD6V6mizmGqQ-->TS Lombard观点来自门户首页摘要；未取得完整论证，不据此推断具体仓位、损失概率或拐点时间。</p></div><div class="foreign-report-card consensus"><h4><!--pnid:GSHAs9EzNd2VNfGy8oWLlX-->10. 跨资产配置为何出现分歧？</h4><ul><li><!--pnid:OpCiqxkKAaBvkBpaqMpXj9-->高盛GOAL维持适度风险偏好，更强调股债及股票内部平衡，偏好股票相对信用，关注质量、防御及分红回购。TS Lombard首页摘要提出降低全球股票至低配、增加现金，并削减美国及台湾AI相关敞口。</li><li><strong><!--pnid:hLTYzMppJXmQrG6afv7peO-->后续验证：</strong><!--pnid:dqjUJI7YbhUoUnvzOFEe3y-->盈利修正、信用利差与实际利率能否同步改善；现金和久期的作用随冲击来源变化。</li></ul><p><!--pnid:2nVM6w0pmdh3iel4EsS3gJ-->TS Lombard观点来自门户首页摘要；未取得完整论证，不据此推断具体仓位、损失概率或拐点时间。</p></div><div class="foreign-report-card"><h4><!--pnid:cJQfetAT3PRbg8mgxFxhP2-->11. 电力板块能否统一视为防御？</h4><ul><li><!--pnid:KT92v2GUSNS2Ek4uALY81r-->高盛短期偏好PJM相对ERCOT，强调德州敞口与发电对冲差异；远期项目风险不等于同幅度的近期盈利损失。</li><li><strong><!--pnid:hhd90RvjB8wVnyaoUjXTmn-->后续验证：</strong><!--pnid:aewdVAcMIj9pHELdHO2aMm-->2027年对冲覆盖、2028年后项目投产与电价；新增资本开支是否得到回报机制支持。</li></ul></div></section>
+<section class="section tech-news-section" id="sA"><h1 class="h-major"><span class="num"><!--pnid:iVjgwfjCy3uCtOUEuixiCh-->4</span><!--pnid:AYGZ0zS6yxysBVNUJBOmWF-->重要催化前瞻</h1><div class="callout"><span class="tag"><!--pnid:C6QuFQozNgKorHZ7FaIBDs-->下一轮验证</span><p><!--pnid:mjFmsvkHzkIJqFUEJOJgIZ-->11月23日PMI与25日PCE、实际消费、GDP修订集中检验需求和通胀。增长韧性若伴随价格黏性，政策约束仍在；若实际利率回落并伴随价格企稳和波动下降，再评估风险敞口恢复。</p></div><h3 class="h-sub"><!--pnid:zmXS6u5KWe6YmmmiIYIxIM-->宏观与事件日历</h3><div class="calendar-grid"><div><div class="calendar-week"><h4><!--pnid:F2zsgKU9zkhqBsUwpXzeNb-->已公布 — 11月16日至20日</h4><div class="calendar-event"><!--pnid:DC9lOkUCdph1vUpuYj18UU-->2026-11-17 · 10月零售销售：季调名义总额环比+0.2%、同比+6.8%，剔除汽车与汽油环比+0.5%；总量月率90%置信区间包含0。</div><div class="calendar-event"><!--pnid:iIMLkZwOI4eRVIr1XZOqWI-->2026-11-18 · 10月FOMC纪要：几乎所有与会者认为其基准情景下未来仍需加息；两名与会者提出若通胀数据不利，下次可考虑超过25bp。</div><div class="calendar-event"><!--pnid:j3fho2u0gUBG8N9ce1HysL-->2026-11-19 · 费城联储11月制造业调查：总体活动20.9降至6.3，新订单4.3降至−0.4；投入价格43.2升至58.2，售价40.1升至47.0。</div></div><div class="calendar-week"><h4><!--pnid:BKvuyUVXQr0opy5NzEIeyy-->11月23日至25日 — 需求与通胀</h4><div class="calendar-event"><strong><!--pnid:KoEoSrwoPEw5qF9hmG29vV-->11月23日22:45 · 11月美国制造业、服务业与综合PMI初值</strong><br><!--pnid:AzLEY7zKRX76av5CK06GdT-->新订单、就业及价格分项；判断需求放缓与成本压力能否同时缓解。</div><div class="calendar-event high"><strong><!--pnid:minXvoUYgB0yHwkUwFOMKe-->11月25日21:30 · 10月PCE物价、个人收入与支出；三季度GDP二估及企业利润</strong><br><!--pnid:xEXVwG2qK0fawbJlxRoY1j-->核心PCE月率与修订、实际消费、企业利润；增长和通胀共同影响12月加息幅度。</div><div class="calendar-event"><strong><!--pnid:pkmzFXVhCl0TZxKqJvqCoI-->11月25日21:30 · 周度初请失业金（感恩节提前发布）</strong><br><!--pnid:J7tQ6DJyGdA5SnDAv0qqQp-->结合四周均值与续请，避免按单周噪声判断就业拐点。</div><div class="calendar-event"><strong><!--pnid:sFrRfMMtbecSom6MDUkUhy-->11月26日03:00 · 美联储褐皮书</strong><br><!--pnid:M90l9pZrNdke5EaZB3BPb8-->地区就业、工资、终端提价及信贷条件；为12月议息提供定性证据。</div></div><div class="calendar-week"><h4><!--pnid:irxAqkMXPCuuX5VcfRmhad-->11月26日至27日 — 感恩节交易安排</h4><div class="calendar-event"><strong><!--pnid:4drfVH8dmOBMfBUYgrJ4wl-->11月26日晚休市；28日02:00提前收市</strong><br><!--pnid:3t88UAncytGvTet2B1mW90-->感恩节休市与周五半日交易。缩短交易周内控制成交冲击与隔夜风险；黑五消费信号需区分销售额、折扣和利润。</div></div></div></div><div class="callout" style="margin-top:8px"><span class="tag"><!--pnid:RN5fwuk9WuHRZ7h0VXHNUN-->事件提示</span><p><!--pnid:I78nnLMxvX0AjfX2BkP6ky-->北京时间按美东冬令时加13小时换算。假日缩短交易周内控制成交冲击和隔夜风险；零售数据同时观察销量、折扣和利润率，初请失业金优先结合四周均值判断。</p></div></section>
+<footer><p><!--pnid:NR3KT5fmDy2Q1XeWHR6HY6-->美股 ETF 周度复盘 · 数据截止 2026-11-20</p></footer>
+<script>(function(){
+function parseNum(s){if(!s)return NaN;s=String(s).replace(/[+,%\s]/g,'').replace(/^\(/,'-').replace(/\)$/,'');var n=parseFloat(s);return isNaN(n)?NaN:n;}
+function getCellValue(row,idx){
+  var c=row.cells[idx];if(!c)return '';
+  var v=c.querySelector('.bar-val');if(v)return v.textContent.trim();
+  if(c.querySelector('svg')){
+    var nx=row.cells[idx+1];
+    if(nx){var nv=nx.querySelector('.bar-val');if(nv)return nv.textContent.trim();}
+  }
+  return c.textContent.trim();
+}
+function makeSortable(table){
+  var thead=table.tHead;if(!thead)return;
+  var ths=thead.rows[0].cells;
+  var origOrder=null;
+  for(var i=0;i<ths.length;i++){
+    var th=ths[i];
+    if(th.classList.contains('lbl')||th.classList.contains('code'))continue;
+    var inner=(th.textContent||'').trim();
+    if(!inner)continue; // 空 th (bar-track 列) 跳过 — 邻 val th 会被绑
+    th.classList.add('sortable');
+    (function(idx,th){
+      th.addEventListener('click',function(){
+        var tbody=table.tBodies[0];if(!tbody)return;
+        if(origOrder===null){origOrder=Array.prototype.slice.call(tbody.rows);}
+        var state=th.classList.contains('sort-desc')?'asc':(th.classList.contains('sort-asc')?'orig':'desc');
+        var allTh=table.tHead.rows[0].cells;
+        for(var k=0;k<allTh.length;k++){allTh[k].classList.remove('sort-asc','sort-desc');}
+        if(state==='orig'){
+          origOrder.forEach(function(r){tbody.appendChild(r);});
+          return;
+        }
+        var rows=Array.prototype.slice.call(tbody.rows);
+        rows.sort(function(r1,r2){
+          var v1=getCellValue(r1,idx),v2=getCellValue(r2,idx);
+          var n1=parseNum(v1),n2=parseNum(v2);
+          if(isNaN(n1)&&isNaN(n2))return v1.localeCompare(v2);
+          if(isNaN(n1))return 1;if(isNaN(n2))return -1;
+          return state==='asc'?(n1-n2):(n2-n1);
+        });
+        rows.forEach(function(r){tbody.appendChild(r);});
+        th.classList.add(state==='asc'?'sort-asc':'sort-desc');
+      });
+    })(i,th);
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var tables=document.querySelectorAll('table.chart, table.subtable');
+  tables.forEach(function(t){makeSortable(t);});
+});
+})();</script>
+</div><div style="margin:26px auto 14px; max-width:1280px; padding:12px 16px; border-top:2px solid #dc2626; text-align:center; color:#dc2626; font-size:13px; font-weight:700; letter-spacing:1px"><!--pnid:Y5QZ85snG5cIgfRXHMmH2R-->仅面向特定对象展示，不得二次传播</div></body></html>
