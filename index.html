@@ -18,7 +18,7 @@
   }
   .topbar{
     background:linear-gradient(135deg,#0f2c54 0%,#1b4b8f 100%);color:#fff;
-    padding:14px 20px 12px;flex:none;
+    padding:12px 20px 10px;flex:none;
   }
   .wrap{max-width:1600px;width:100%;margin:0 auto}
   .brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -34,18 +34,31 @@
     border:1px solid rgba(255,255,255,.18);color:#eaf2ff}
   .chip b{color:#fff}
 
-  .tabbar{flex:none;background:var(--panel);border-bottom:1px solid var(--line);
-    padding:0 12px;display:flex;gap:4px;overflow-x:auto;box-shadow:0 2px 8px rgba(20,40,80,.04)}
-  .tab{
+  .groupbar{flex:none;background:var(--panel);border-bottom:1px solid var(--line);
+    padding:0 12px;display:flex;gap:8px;overflow-x:auto}
+  .group{
     flex:0 0 auto;cursor:pointer;user-select:none;border:none;background:transparent;font:inherit;
-    font-size:13px;font-weight:600;color:var(--muted);padding:12px 16px;white-space:nowrap;
+    font-size:14px;font-weight:700;color:var(--muted);padding:11px 18px;white-space:nowrap;
     border-bottom:3px solid transparent;transition:.15s;
   }
-  .tab small{font-size:10.5px;font-weight:400;color:#9aa8bc;margin-left:6px}
-  .tab:hover{color:var(--ink);background:#f7f9fc}
-  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-  .tab.active small{color:#7b93b8}
+  .group small{font-size:10.5px;font-weight:500;color:#9aa8bc;margin-left:7px}
+  .group:hover{color:var(--ink);background:#f7f9fc}
+  .group.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .group.active small{color:#7b93b8}
+
+  .tabbar{flex:none;background:#f8fafc;border-bottom:1px solid var(--line);
+    padding:0 12px;display:flex;gap:6px;overflow-x:auto}
+  .tab{
+    flex:0 0 auto;cursor:pointer;user-select:none;border:1px solid transparent;background:transparent;
+    font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);
+    padding:8px 14px;margin:6px 0;border-radius:999px;white-space:nowrap;transition:.15s;
+  }
+  .tab small{font-size:10px;font-weight:400;color:#9aa8bc;margin-left:6px}
+  .tab:hover{color:var(--ink);background:#eef3fa}
+  .tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
+  .tab.active small{color:#dce8ff}
   .tab.ext small{color:#b07a1e}
+  .tab.active.ext small{color:#ffe9b8}
 
   .stage{flex:1;position:relative;min-height:0}
   .pane{display:none;position:absolute;inset:0;background:#fff}
@@ -58,7 +71,8 @@
   @media(max-width:700px){
     .meta{display:none}
     h1{font-size:16px}
-    .tab{padding:10px 12px;font-size:12px}
+    .group{padding:9px 12px;font-size:13px}
+    .tab{padding:6px 11px;font-size:11.5px}
     .tab small{display:none}
   }
 </style>
@@ -71,7 +85,7 @@
       <div class="logo">南</div>
       <div>
         <h1>南方国际看板</h1>
-        <p class="subtitle">原始看板原样呈现 · 同类文件默认取最新日期 · 点击顶部标签切换</p>
+        <p class="subtitle">投资策略 · 研究共享 · 定期观点 ｜ 原始看板原样呈现，同类文件默认取最新日期</p>
       </div>
       <div class="meta">
         <span class="chip">来源 · <b>资料库 / 南方国际看板源文件</b></span>
@@ -81,34 +95,43 @@
   </div>
 </div>
 
+<div class="groupbar" role="tablist">
+  <button class="group active" data-group="strategy" role="tab" title="各种资产类别看板、宏观分析">投资策略<small>5</small></button>
+  <button class="group" data-group="research" role="tab" title="投资框架、研究框架、深度报告">研究共享<small>1</small></button>
+  <button class="group" data-group="periodic" role="tab" title="定期月报、周报、日报">定期观点<small>3</small></button>
+</div>
+
 <div class="tabbar" role="tablist">
-  <button class="tab active" data-target="t1" role="tab">黄金铜油煤宏观周期<small>2026-11-22</small></button>
-  <button class="tab" data-target="t2" role="tab">美股ETF周度复盘<small>2026-11-22</small></button>
-  <button class="tab" data-target="t3" role="tab">周期股四象限投资框架<small>内部研究 2026-11-21</small></button>
-  <button class="tab" data-target="t4" role="tab">美国策略周报<small>2026-11-15</small></button>
-  <button class="tab" data-target="t5" role="tab">恒生科技主线<small>销售版 2026-08-14</small></button>
-  <button class="tab" data-target="t6" role="tab">费城半导体主线<small>桌面版 2026-08-11</small></button>
-  <button class="tab" data-target="t7" role="tab">汇丰渣打<small>股价与宏观周期看板</small></button>
-  <button class="tab ext" data-target="t8" role="tab">地产高频数据<small>外链</small></button>
-  <button class="tab ext" data-target="t9" role="tab">境外固收定期报告<small>外链</small></button>
+  <button class="tab active" data-group="strategy" data-target="t1" role="tab">黄金铜油煤宏观周期<small>2026-11-22</small></button>
+  <button class="tab" data-group="strategy" data-target="t2" role="tab">恒生科技主线<small>销售版 2026-08-14</small></button>
+  <button class="tab" data-group="strategy" data-target="t3" role="tab">费城半导体主线<small>桌面版 2026-08-11</small></button>
+  <button class="tab" data-group="strategy" data-target="t4" role="tab">汇丰渣打<small>股价与宏观周期看板</small></button>
+  <button class="tab ext" data-group="strategy" data-target="t5" role="tab">地产高频数据<small>外链</small></button>
+  <button class="tab" data-group="research" data-target="t6" role="tab">周期股四象限投资框架<small>内部研究 2026-11-21</small></button>
+  <button class="tab" data-group="periodic" data-target="t7" role="tab">美股ETF周度复盘<small>2026-11-22</small></button>
+  <button class="tab" data-group="periodic" data-target="t8" role="tab">美国策略周报<small>2026-11-15</small></button>
+  <button class="tab ext" data-group="periodic" data-target="t9" role="tab">境外固收定期报告<small>外链</small></button>
 </div>
 
 <div class="stage">
   <div class="pane active loaded" id="t1" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/macro_cycle.html" title="黄金铜油煤宏观周期"></iframe></div>
-  <div class="pane" id="t2" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_etf_weekly.html" title="美股ETF周度复盘"></iframe></div>
-  <div class="pane" id="t3" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/cyclical_quadrant.html" title="周期股四象限投资框架"></iframe></div>
-  <div class="pane" id="t4" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_strategy_weekly.html" title="美国策略周报"></iframe></div>
-  <div class="pane" id="t5" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/hengtai.html" title="恒生科技主线"></iframe></div>
-  <div class="pane" id="t6" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/sox.html" title="费城半导体主线"></iframe></div>
-  <div class="pane" id="t7" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打"></iframe></div>
-  <div class="pane" id="t8" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://a512ab6c8df86202a.app.workbuddy.host/?sharecode=DE5NGS3JSA" title="地产高频数据" referrerpolicy="no-referrer"></iframe></div>
+  <div class="pane" id="t2" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/hengtai.html" title="恒生科技主线"></iframe></div>
+  <div class="pane" id="t3" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/sox.html" title="费城半导体主线"></iframe></div>
+  <div class="pane" id="t4" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打"></iframe></div>
+  <div class="pane" id="t5" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://a512ab6c8df86202a.app.workbuddy.host/?sharecode=DE5NGS3JSA" title="地产高频数据" referrerpolicy="no-referrer"></iframe></div>
+  <div class="pane" id="t6" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/cyclical_quadrant.html" title="周期股四象限投资框架"></iframe></div>
+  <div class="pane" id="t7" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_etf_weekly.html" title="美股ETF周度复盘"></iframe></div>
+  <div class="pane" id="t8" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_strategy_weekly.html" title="美国策略周报"></iframe></div>
   <div class="pane" id="t9" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://yxy-research.top/periodic/?type=daily" title="境外固收定期报告" referrerpolicy="no-referrer"></iframe></div>
 </div>
 
 <script>
 (function(){
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.group'));
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
   var panes = Array.prototype.slice.call(document.querySelectorAll('.pane'));
+  var currentGroup = null;
+
   function load(pane){
     var f = pane.querySelector('iframe');
     if(f && !f.src && f.dataset.src){
@@ -116,7 +139,7 @@
       f.onload = function(){ pane.classList.add('loaded'); };
     }
   }
-  function activate(id, hash){
+  function activateTab(id, hash){
     var t = document.getElementById(id);
     if(!t) return;
     tabs.forEach(function(x){ x.classList.toggle('active', x.dataset.target === id); });
@@ -124,17 +147,43 @@
     load(t);
     if(hash && history.replaceState) history.replaceState(null,'','#'+id);
   }
-  tabs.forEach(function(x){ x.addEventListener('click', function(){ activate(x.dataset.target, true); }); });
+  function activateGroup(key, hash){
+    var g = groups.filter(function(x){ return x.dataset.group === key; })[0];
+    if(!g) return;
+    currentGroup = key;
+    groups.forEach(function(x){ x.classList.toggle('active', x === g); });
+    tabs.forEach(function(x){ x.style.display = x.dataset.group === key ? '' : 'none'; });
+    var visible = tabs.filter(function(x){ return x.dataset.group === key; });
+    if(visible.length){
+      var active = visible.filter(function(x){ return x.classList.contains('active'); })[0] || visible[0];
+      activateTab(active.dataset.target, hash);
+    }
+  }
+  groups.forEach(function(x){
+    x.addEventListener('click', function(){ activateGroup(x.dataset.group, true); });
+  });
+  tabs.forEach(function(x){
+    x.addEventListener('click', function(){ activateTab(x.dataset.target, true); });
+  });
   document.addEventListener('keydown', function(e){
     if(e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
-    var i = tabs.findIndex(function(x){ return x.classList.contains('active'); });
+    var visible = tabs.filter(function(x){ return x.style.display !== 'none'; });
+    var i = visible.findIndex(function(x){ return x.classList.contains('active'); });
     if(i<0) return;
-    var n = e.key==='ArrowRight' ? (i+1)%tabs.length : (i-1+tabs.length)%tabs.length;
-    activate(tabs[n].dataset.target, true);
+    var n = e.key==='ArrowRight' ? (i+1)%visible.length : (i-1+visible.length)%visible.length;
+    activateTab(visible[n].dataset.target, true);
   });
-  load(document.querySelector('.pane.active'));
+
   var h = (location.hash||'').replace('#','');
-  if(h && document.getElementById(h)) activate(h, false);
+  var target = document.getElementById(h);
+  if(target){
+    var pane = target;
+    var tab = tabs.filter(function(x){ return x.dataset.target === h; })[0];
+    activateGroup(tab ? tab.dataset.group : groups[0].dataset.group, false);
+    activateTab(h, false);
+  }else{
+    activateGroup(groups[0].dataset.group, false);
+  }
 })();
 </script>
 </body>
