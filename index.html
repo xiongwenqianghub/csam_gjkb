@@ -67,6 +67,10 @@
   .loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     color:var(--muted);font-size:13px;background:#fff;z-index:1}
   .pane.loaded .loader{display:none}
+  .empty-state{position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;background:#fff;padding:24px}
+  .empty-state h2{margin:0 0 10px;font-size:20px;color:var(--ink)}
+  .empty-state p{margin:0;font-size:13px;color:var(--muted)}
 
   @media(max-width:700px){
     .meta{display:none}
@@ -85,33 +89,35 @@
       <div class="logo">南</div>
       <div>
         <h1>南方国际看板</h1>
-        <p class="subtitle">投资策略 · 研究共享 · 定期观点 ｜ 原始看板原样呈现，同类文件默认取最新日期</p>
+        <p class="subtitle">大类资产 · 投资策略 · 研究共享 · 定期观点 ｜ 原始看板原样呈现，同类文件默认取最新日期</p>
       </div>
       <div class="meta">
         <span class="chip">来源 · <b>资料库 / 南方国际看板源文件</b></span>
-        <span class="chip">看板 · <b>10</b></span>
+        <span class="chip">看板 · <b>11</b></span>
       </div>
     </div>
   </div>
 </div>
 
 <div class="groupbar" role="tablist">
-  <button class="group active" data-group="strategy" role="tab" title="各种资产类别看板、宏观分析">投资策略<small>5</small></button>
-  <button class="group" data-group="research" role="tab" title="投资框架、研究框架、深度报告">研究共享<small>1</small></button>
-  <button class="group" data-group="periodic" role="tab" title="定期月报、周报、日报">定期观点<small>4</small></button>
+  <button class="group active" data-group="asset" role="tab" title="港股、美股、美债、商品（原油、黄金）、另类（REIT）等看板与观点">大类资产<small>5</small></button>
+  <button class="group" data-group="strategy" role="tab" title="投资框架、配置框架、策略框架等">投资策略<small>1</small></button>
+  <button class="group" data-group="research" role="tab" title="深度报告、个股研究、研报综述、内部研究等">研究共享<small>1</small></button>
+  <button class="group" data-group="periodic" role="tab" title="定期月报、周报、日报、复盘">定期观点<small>4</small></button>
 </div>
 
 <div class="tabbar" role="tablist">
-  <button class="tab active" data-group="strategy" data-target="t1" role="tab">黄金铜油煤宏观周期<small>2026-11-22</small></button>
-  <button class="tab" data-group="strategy" data-target="t2" role="tab">恒生科技主线<small>2026-08-14</small></button>
-  <button class="tab" data-group="strategy" data-target="t3" role="tab">费城半导体主线<small>2026-08-11</small></button>
-  <button class="tab" data-group="strategy" data-target="t4" role="tab">汇丰渣打</button>
-  <button class="tab ext" data-group="strategy" data-target="t5" role="tab">地产高频数据<small>外链</small></button>
-  <button class="tab" data-group="research" data-target="t6" role="tab">周期股四象限投资框架<small>2026-11-21</small></button>
-  <button class="tab" data-group="periodic" data-target="t7" role="tab">南方跨境ETF日报<small>2026-11-26</small></button>
-  <button class="tab" data-group="periodic" data-target="t8" role="tab">美股ETF周度复盘<small>2026-11-22</small></button>
-  <button class="tab" data-group="periodic" data-target="t9" role="tab">美国策略周报<small>2026-11-15</small></button>
-  <button class="tab ext" data-group="periodic" data-target="t10" role="tab">境外固收定期报告<small>外链</small></button>
+  <button class="tab active" data-group="asset" data-target="t1" role="tab">黄金铜油煤宏观周期<small>2026-11-22</small></button>
+  <button class="tab" data-group="asset" data-target="t2" role="tab">恒生科技主线<small>2026-08-14</small></button>
+  <button class="tab" data-group="asset" data-target="t3" role="tab">费城半导体主线<small>2026-08-11</small></button>
+  <button class="tab" data-group="asset" data-target="t4" role="tab">汇丰渣打</button>
+  <button class="tab ext" data-group="asset" data-target="t5" role="tab">地产高频数据<small>外链</small></button>
+  <button class="tab" data-group="strategy" data-target="t6" role="tab">周期股四象限投资框架<small>2026-11-21</small></button>
+  <button class="tab" data-group="research" data-target="t7" role="tab">AI融资与银行信贷<small>2026-11-23</small></button>
+  <button class="tab" data-group="periodic" data-target="t8" role="tab">南方跨境ETF日报<small>2026-11-26</small></button>
+  <button class="tab" data-group="periodic" data-target="t9" role="tab">美股ETF周度复盘<small>2026-11-22</small></button>
+  <button class="tab" data-group="periodic" data-target="t10" role="tab">美国策略周报<small>2026-11-15</small></button>
+  <button class="tab ext" data-group="periodic" data-target="t11" role="tab">境外固收定期报告<small>外链</small></button>
 </div>
 
 <div class="stage">
@@ -121,10 +127,11 @@
   <div class="pane" id="t4" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/hsbc.html" title="汇丰渣打"></iframe></div>
   <div class="pane" id="t5" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://a512ab6c8df86202a.app.workbuddy.host/?sharecode=DE5NGS3JSA" title="地产高频数据" referrerpolicy="no-referrer"></iframe></div>
   <div class="pane" id="t6" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/cyclical_quadrant.html" title="周期股四象限投资框架"></iframe></div>
-  <div class="pane" id="t7" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/cross_border_etf_daily.html" title="南方跨境ETF日报"></iframe></div>
-  <div class="pane" id="t8" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_etf_weekly.html" title="美股ETF周度复盘"></iframe></div>
-  <div class="pane" id="t9" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_strategy_weekly.html" title="美国策略周报"></iframe></div>
-  <div class="pane" id="t10" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://yxy-research.top/periodic/?type=daily" title="境外固收定期报告" referrerpolicy="no-referrer"></iframe></div>
+  <div class="pane" id="t7" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/ai_bank_credit_research.html" title="AI融资与银行信贷"></iframe></div>
+  <div class="pane" id="t8" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/cross_border_etf_daily.html" title="南方跨境ETF日报"></iframe></div>
+  <div class="pane" id="t9" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_etf_weekly.html" title="美股ETF周度复盘"></iframe></div>
+  <div class="pane" id="t10" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="boards/us_strategy_weekly.html" title="美国策略周报"></iframe></div>
+  <div class="pane" id="t11" role="tabpanel"><div class="loader">加载看板…</div><iframe data-src="https://yxy-research.top/periodic/?type=daily" title="境外固收定期报告" referrerpolicy="no-referrer"></iframe></div>
 </div>
 
 <script>
@@ -159,6 +166,11 @@
     if(visible.length){
       var active = visible.filter(function(x){ return x.classList.contains('active'); })[0] || visible[0];
       activateTab(active.dataset.target, hash);
+    }else{
+      // 该分类暂无看板：显示空状态提示面板
+      var emptyPane = document.getElementById('empty_' + key);
+      panes.forEach(function(p){ p.classList.toggle('active', p === emptyPane); });
+      if(hash && history.replaceState) history.replaceState(null,'','#empty_'+key);
     }
   }
   groups.forEach(function(x){
@@ -179,10 +191,14 @@
   var h = (location.hash||'').replace('#','');
   var target = document.getElementById(h);
   if(target){
-    var pane = target;
     var tab = tabs.filter(function(x){ return x.dataset.target === h; })[0];
-    activateGroup(tab ? tab.dataset.group : groups[0].dataset.group, false);
-    activateTab(h, false);
+    var emptyKey = target.getAttribute('data-empty-group');
+    if(emptyKey){
+      activateGroup(emptyKey, false);
+    }else{
+      activateGroup(tab ? tab.dataset.group : groups[0].dataset.group, false);
+      activateTab(h, false);
+    }
   }else{
     activateGroup(groups[0].dataset.group, false);
   }
